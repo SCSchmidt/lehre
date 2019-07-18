@@ -1,0 +1,362 @@
+---
+title: "Wir lernen die Grundlagen von R"
+author:
+  - Schmidt, Sophie C.
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+    bookdown::word_document2:
+      fig_caption: yes
+      reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+bibliography: references.bib
+csl: "../templates/journal-of-archaeological-science.csl" # Insert path for the bib-style
+keywords: |
+  keyword 1; keyword 2; keyword 3
+highlights: |
+  These are the highlights. 
+---
+
+# R!
+R ist eine Programmiersprache, die besonders für statistische Analysen geeignet ist. Sie wurde 1992 als open und free source - Alternative zu der Sprache "S" entwickelt. Man könnte meinen, die Autoren solcher Programmiersprachen seien unheimlich kreativ in der Benennung... 
+
+R wird, da es ja eine offene und freie Programmiersprache ist, von diversen Menschen weiterentwickelt. Aus diesem Grund gibt es häufig viele Lösungen für das gleiche Problem. Nicht wundern, wenn sich online andere Ansätze finden lassen als hier!
+
+Eine Programmiersprache heißt auch, dass wir Code schreiben. In einem Rmd-Dokument wie diesem wird Code immer in sogenannten "Chunks" untergebracht, die mit bestimmten Symbolen beginnen und enden. Dann weiß R, dass der Inhalt dadrin Code ist, der ausgeführt werden muss. Drumherum lassen sich die Erklärungen und Kommentare von mir als normalen Text schreiben.
+
+
+
+Im ersten Code chunk werden ein paar Dinge festgelegt, die uns im Moment nicht im Detail beschäftigen müssen. Es geht darum, wie die folgenden Code chunks ausgeführt werden, wenn sie von dem Rmd-Dokument in ein Word-Dokument transformiert werden:
+```{r, setup}
+knitr::opts_chunk$set(
+  warning = FALSE, # keine Warnungen
+  message = FALSE, # keine Nachrichten
+  echo = TRUE, # Code wird auch abgebildet
+  comment = "#>", # so kann man Kommentare als solche kennzeichnen
+  fig.path = "../figures/" # hier werden Bilder gespeichert
+)
+
+```
+
+## Pakete
+Als allererstes laden wir die Pakete, die wir benötigen. R basiert auf Paketen, in denen bestimmte Funktionen liegen. Wenn  wir also Funktionen aus einem Paket brauchen, müssen wir es einmal installieren und dann jedesmal, wenn wir es benutzen am Anfang einer R-Sitzung laden (der library-Befehl)
+
+Falls sie noch nicht installiert sind, muss nur die Raute / der Hashtag (dieses Symbol: #) vor dem Befehl zur Paketinstallation gelöscht werden und der Befehl mit markieren und Strg+Enter ausgeführt werden. Danach ist das Paket auf dem System installiert und müsste (zumindest theoretisch) nie wieder installiert werden. Deswegen kann man den Befehl nach erfolgreicher Installation sofort wieder "auskommentieren" (den hashtag davor setzen). Auskommentierter Code innerhalb eines Code chunks wird nicht ausgeführt, wenn man das komplette Rmarkdown-Dokument ausführt bzw "knitted" (in ein Word- oder PDF-Dokument oder eine html-Datei umwandelt)
+
+[Mit Strg+Alt+i kann man einen Codechunk eröffnen. Oder einfach eintippen:]
+
+```{r packages}
+#install.packages("ggplot2")
+library(ggplot2) # Paket aktivieren
+#install.packages("archdata")
+library(archdata) #Paket aktivieren
+#install.packages("xlsx")
+#library(xlsx)
+
+```
+
+
+## Daten laden
+
+In dem Paket "archdata" befinden sich archäologische Datensätze, mit denen wir unsere Methoden lernen können. Schauen wir sie uns einmal an:
+
+```{r}
+data("BACups") # das geht, weil das Paket archdata geladen wurde und die Daten dort vorliegen
+
+View(BACups) #so kann ich mir die Tabelle angucken. Ich kann sie auch rechts unter dem Environments-Tab und "Data" anklicken
+```
+
+
+
+## R Markdown basics
+
+Wir beginnen mit rrtools. rrtools ist von Ben Marwick et al entwickelt worden, um es einfach zu machen ein R-Paket zu erstellen, in dem man alle seine Daten, seine Analyse und sein "paper" zusammen ablegt. Dieses Paket kann man dann auch einfach anderen Menschen zur Verfügung stellen, damit diese die eigenen Analysen nachvollziehen können. 
+
+Das Bereitstellen von Code und Daten (open access) ist wichtig für die Wissenschaftlichkeit einer Analyse, da sie so reproduzierbar wird (wenn jemand weder Code noch Daten hergibt, kann niemand jemals überprüfen, ob er/sie sich nicht doch verrechnet hat), aber auch für die Replizierbarkeit. Replizieren heißt, ich nehme die Methode der anderen und wende sie auf meine eigenen Daten an. Viele Artikel sind nicht sonderlich replizierbar, weil die Methode kaum im Detail beschrieben wird. Das ist frustrierend, wenn man die Methode und das Ergebnistoll fand und selber ausprobieren möchte.
+
+Deswegen ist Code teilen toll und wichtig. 
+
+Also. Wir installieren rrtools. Weitere Infos dazu gibt es hier: https://github.com/benmarwick/rrtools 
+
+```{r rrtools installieren}
+
+devtools::install_github("benmarwick/rrtools") #devtools:: ruft das Paket devtools. ich brauch es nur einmal, deswegen habe ich es nicht mit library ins Boot geholt.
+
+library(rrtools) # wir laden das Paket und alles was zum Thema git kommt, ignorieren wir.
+# Wer Lust hat git kennen zu lernen, findet hier ein paar hilfreiche Links zu dem Thema: http://archaeoinformatics.net/git-how-not-to-learn-it/ 
+```
+
+```{r rrtools anwenden}
+#rrtools::use_compendium("C:/Hier/kommt/ein/Pfadname/pkgname") # wir definieren wo unser Paket liegt und wie es heißen wird
+```
+Jetzt muss sich einfach so ein neues Projekt / Paket in Rstudio geöffnet haben. Oben rechts seht ihr den Namen eures Pakets. 
+
+Wenn ihr jetzt rechts unter "Files" schaut, seht ihr eine DESCRIPTION-Datei. Hier kann man jetzt ein paar Metadaten zu dem Paket editieren.
+
+Auf jeden Fall sollte man die Autoreninformation ändern und einen Satz dazu schreiben, was das Paket soll (Title). Sollte man seinen Code tatsächlich eines Tages veröffentlichen wollen, ist außerdem unbedingt über eine Lizenz nachzudenken. Lizenzen regeln, wer wie den Code weiterbenutzen darf und wie ihr als Autoren zitiert werden möchtet. Neben Encoding: empfehle ich UTF-8 zu schreiben, falls da was anderes stehen sollte. 
+
+Wenn wir jetzt mit rrtools weiter arbeiten wollen, müssen wir es noch einmal laden, weil wir in einem neuen Projekt unterwegs sind als ganz am Anfang. Deswegen: 
+```{r rrtools-Dateistruktur aufbauen}
+#library(rrtools)
+#use_analysis()
+```
+
+Dinge passieren! Netterweise erklärt rrtools in der Konsole, was es gerade getan hat. Wir haben jetzt eine sinnvolle Ordnerstruktur und schon das erste Rmd-Dokument. Was insgesamt also entstanden ist, ist ein "ganz normaler" Ordner, der den Namen eures Pakets trägt, in dem weitere Ordner angelegt wurden und eine Vorlage für ein Paper. 
+
+Bitte arbeitet für eure Analysen der eigenen Daten in einem eigenen Projekt nur dafür. 
+
+Ein Markdown-Dokument ist eigentlich nur ein txt-Dokument, also das simpelste an Textdatei was man sich vorstellen kann. In dem ich in dieser Textdatei einer bestimmten Syntax folge, kann ich die Datei von einem Programm im Hintergrund (namens pandoc) in hübsch formatierte Word-, html- oder PDF-Dateien umwandeln. Details findet ihr hier: <http://rmarkdown.rstudio.com>. 
+
+Es gibt oben den **Knit**-Knopf (englisch für stricken und das Symbol ist ein Wollknäul mit Stricknadeln), der das Dokument umwandelt. Wer faul ist wie ich, benutzt den Shortcut Strg+Umschalt+k.
+
+Code chunks sind die Bereiche, in denen ich Code unterbringen kann. Man erstellt am einfachsten einen mit dem Shortcut Strg+Alt+i.
+
+Sie folgen einer bestimmten Logik und werden durch drei Hochkommas (``` = die Art, die man auf der deutschen Tastatur neben dem Back-Pfeil findet) und einer öffnenden geschweiften Klammer mit einem r darin geöffnet. Daneben kann ich den Code Chunk benennen. Kann voll praktisch sein, wenn ich später mal darauf referenzieren möchte. Dahinter kann man noch Parameter für den Code Chunk setzen, z. B. ob der Code mit als Code in das Word-Dokument übertragen werden werden soll (echo = TRUE) oder nicht (echo = FALSE) oder falls ein Diagramm erstellt wird, wie groß es sein soll. Diese Parameter werden mit Komma voneinander getrennt, weitere  findet ihr unter: https://rmarkdown.rstudio.com/lesson-3.html. Man kann sie aber auch händisch einstellen, wenn man auf das kleine Zahnradsymbol klickt. Nach diesen Parametern folgt jedoch eine schließende geschweifte Klammer und der Bereich für Code beginnt. Er ist immer etwas dunkler hinterlegt. In diese erste Zeile sollte nichts weiter hinter die geschweifte Klammer kommen.
+
+Der Code Chunk muss aber auch beendet werden. Dafür braucht man wieder die drei Hochkommas alleine in einer Zeile.
+
+```{r Name des Code Chunks}
+# das hier ist ein Code Chunk. Ich sollte also nur Code hinein schreiben
+#alles was nicht Code ist, muss auskommentiert werden, sonst will pandoc es gerne als Code behandeln und fängt an zu weinen, weil es sehr fehlerhafter Code wäre
+```
+
+Außerhalb des Code Chunks weiß pandoc jedoch nicht, dass was ich schreibe, Code sein soll.
+
+library(archdata) bleibt also komplett wirkungslos. Es ist nur Text.
+
+Deswegen also noch einmal, diesmal im Code Chunk:
+```{r Pakete und Daten laden}
+library(archdata)
+library(ggplot2)
+data("BACups")
+data("Snodgrass")
+data("Bornholm")
+#install.packages("tidyr") 
+#install.packages("dplyr")
+#brauchen wir später, drum installiert es doch gleich am Anfang.
+library(tidyr)
+library(dplyr)
+```
+
+Die Informationen, die jetzt aufploppen "Attaching package", "objects are masked" etc brauchen uns nicht zu interessieren. Hier geht es um Paketabhängigkeiten und -überlagerungen.
+
+Was man aber machen kann, ist Variablen, die man erstellt hat, im Text einbetten. Man brauch ein Hochkomma \` r "Variablenname" und wieder ein Hochkomma \´ einfach mitten im Fließtext. Weiter unten kommt ein Beispiel.
+
+Den Text kann man formatieren. zB lassen sich Überschriften mit dem Rautensymbol markieren, Listen mit einem einfach Minus-Symbol und Text durch Unterstriche _kursiv_ und durch zwei Sternchensymbole **fett** drucken. 
+
+Man kann in Markdown mit einem Literaturverwaltungsprogramm zusammenarbeiten und sich automatisch Literaturverzeichnisse generieren lassen, man kann Bilder einfügen, die keine R-Diagramme sind, man kann eigentlich alles was man braucht. Sogar Präsentationen, Poster und Websiten lassen sich so generieren.
+
+
+Jetzt noch ein paar weitere _R-basics_:
+
+###Grundlegende Zeichen:
+
+- <-    mit einem kleinen Pfeil weisen wir einen Wert / eine Berechnunge / einen Vektor oder sogar einen Dataframe einer Variablen zu. Wie im Mathe-Unterricht, wo Formeln mit f(x) und y = a*x + b beschrieben wurden. R merkt sich NICHTS, es sei denn, ich weise es einer Variablen zu. Das heißt auch, wenn ich einen Befehl / eine Formel auf einen Datensatz anwende, bleibt das nur langfristig bestehen, wenn ich mit dem Befehl gleichzeitig entweder meinen alten Datensatz überschreibe ODER einen neuen entstehen lasse.
+
+- $  das Dollarzeichen steht zwischen Dataframe und dem Vector im Dataframe: df\$vector, damit wählen wir also den Vector an.
+
+-  Klammern ( ) sind grundlegend, weil ich bei jeder Funktion, die ich aufrufe erst den Funktionsnamen / den Befehl schreibe und dahinter in Klammern, worauf er sich bezieht, also auf welche Daten der Befehl angewandt werden soll.
+
+- in anderen Kontexten umgeben Klammern ( ) immer eine Sinneinheit. D. h. bei der Erstellung eines Diagramms, dass die Informationen, die zu aes gehören in Klammern hinter aes geschrieben werden, sie dürfen nicht hinter die schließende Klammer rutschen. Passiert manchmal.
+
+- Eckige Klammern []: Über sie haben wir noch nicht geredet. Sie sind spannend, weil man mit ihnen Zeilen, Spalten und Felder eines Dataframes anwählen kann. Ein kleines Beispiel:
+
+Will ich in dem Datensatz BACups zB die allererste Information (1. Zeile, 1. Spalte, was steht da?) herausholen, geht das so:
+
+```{r Daten anwählen 1}
+
+BACups_1_1 <-BACups[1,1]
+# Es ist genau ein Wert der Variable BACups_1_1 zugewiesen worden. Sie ist rechts unter "Values" zu finden
+```
+
+Ich kann aber auch die gesamte erste Zeile auslesen:
+
+```{r Daten anwählen 2}
+
+BACups_1 <-BACups[1,]
+# BACups_1 ist rechts unter "data", weil es sich um einen Vector handelt. 1 observation, 6 variables steht daneben.
+```
+
+Natürlich lassen sich auch Spalten auswählen
+
+```{r Daten auswählen 3}
+
+BACups_x_1 <-BACups[,1]
+# es sollte geklappt haben
+```
+Folgerichtig kann man sich merken: In der eckigen Klammer hinter dem Datensatz kann man mit der ersten Zahl die Zeile bestimmen und mit der zweiten Zahl hinter einem Komma die Spalte. Gerade Spalten haben häufig Namen, die kann man für die Auswahl auch nutzen. Aber dazu kommt später noch ein Beispiel.
+
+Negativauswahl gibt es natürlich auch. Also: Gib mir alles außer diese Spalte:
+
+```{r Daten auswählen 4}
+BACups_vieles <- BACups[, -2]
+# alles außer Spalte 2 ist jetzt dem neuen Datensatz BACups_vieles zugewiesen worden
+```
+
+Ganz toll ist auch die Auswahlmöglichkeit "von a bis x". Das geht mit Doppelpunkt:
+
+```{r Daten auswählen 5}
+BACups_x <-BACups[c(10:20),]
+# Schaut euch an, was entstanden ist.
+```
+Das wird jetzt richtig tricky: Ich muss R fast immer, wenn ich eine Reihe von Werten hintereinander angebe, die zusammengehören, dem Programm sagen, dass sie das tun. Dafür benutzt man das "c()" in der Klammer sind dann die Angaben zusammengefasst. Mit Doppelpunkt sage ich dann vom 10. bis zum 20. Wert hätte ich gern die Zeilen ausgewählt (weil das die Zahlen VOR dem Komma sind).
+
+
+Alles klar soweit?
+
+Was ich also hier auch machen kann, ist Werte in den Rmd-Text einbetten. Der Median von der Spalte RD ist `r median(BACups$RD)`. Geschrieben habe ich nicht die Zahl sondern: \` r median(BACups$RD)\` und das Programm hat es sozusagen "on the fly" im Text für mich ausgerechnet. 
+
+Das ist suuuuper praktisch, weil man, wenn sich irgendwelche Daten ändern, nicht mehr unbedingt den Text ändern muss.
+
+Dafür darf man nicht vergessen zu überprüfen, ob die Interpretation noch zu den neuen Zahlen passt, aber meistens ändern sich ja nur Kleinigkeiten.
+
+Dann:
+
+### Skalenniveaus
+
+Wir hatten über **Skalenniveaus** geredet und ich hatte auch erwähnt, dass es dafür äquivalente in R gibt. Was ich euch nicht gezeigt hatte, war, wie man das überprüfen kann und wie man vllt eine Information in R ändert.
+
+Der class-Befehl zeigt, welches Datenformat die Daten haben. 
+
+- boolean: Das sind TRUE / FALSE - Angaben, man braucht sie häufig innerhalb von Funktionen, um bestimmte Parameter einzustellen
+
+-  factor und character sind nominal, wobei character Buchstaben enthalten muss, factor nicht. Ein factor hat "level", das sind die Werte, die in dem Vektor, der die class factor hat, enthalten sind
+
+-  ordered factor ist ordinal
+
+- numeric: metrisch
+
+- Es gibt zwei Typen numeric, nämlich: integer (ganze Zahlen) und double (Kommazahlen, Dezimalzahlen)
+
+Diese Typen findet man mit dem Befehl typeof heraus.
+
+```{r Skalenniveaus mit class-Funktion herausfinden}
+class(Bornholm)
+
+class(Bornholm$Site)
+
+class(Bornholm$Number)
+typeof(Bornholm$Number)
+
+```
+
+
+Ordinale Daten sind irgendwie logischerweise in R einfach factor-Daten, deren Werte (level) eine Ordnung zugewiesen bekommen haben. Das kann man recht einfach mit dem Befehl ordered. 
+
+Gerade so etwas wie Periodenbezeichnungen kann man mit seinem archäologischen Fachwissen wunderbar in die richtige Reihenfolge bringen. Mit dem levels-Befehl lässt sich überprüfen, wie diese Reihenfolge aussieht. 
+
+
+```{r ordinales Skalenniveau}
+
+class(Bornholm$Period) # welcher Datentyp ist der vector Period des Datensatzes Bornholm ?
+# schaut euch den einfach mal an (zB mit View())
+# wie ihr seht, sind die Perdioden mit 1a und 1b, 2a und 2b etc kodiert. 
+# Denen ist also eine aphabetische Reihenfolge schon inhärent. Deswegen muss ich keine Reihenfolge angeben, wenn ich sie ordnen möchte:
+Bornholm$Period <- ordered(Bornholm$Period) 
+
+class(Bornholm$Period) #checken: hat sich was verändert?
+
+levels(Bornholm$Period) #das sind die Werte in der geordneten Reihenfolge
+```
+
+Weil ich es kann, bringe ich jetzt noch einmal Unordnung in diese Reihenfolge:
+
+```{r Skalenniveau: Unordnung in der Reihenfolge}
+
+Bornholm$Period <- ordered(Bornholm$Period, levels = c("3a", "1b", "1a", "2c", "3b", "2a", "2b"))
+class(Bornholm$Period)
+levels(Bornholm$Period)
+
+```
+
+Was für eine Macht!  Das Chronologie-System ist zerstört!
+
+Und noch etwas kann ich:  Zahlen in Text umwandeln!
+
+Manchmal ist das sinnvoll, nicht jede Zahl als Zahl zu verstehen, sondern als Abkürzung für eine Kategorie. DAs geht so:
+
+```{r}
+class(Bornholm$Number)
+Bornholm$Number <-  as.character(Bornholm$Number)
+class(Bornholm$Number)
+```
+
+
+Aber, naja, wir wollen ja nicht, dass wir gleich falsche Ergebnisse bekommen, deshalb benutzen wir jetzt folgenden Trick:
+
+Der Vektor Bornholm\$Period wurde von uns mit der falschen Reihenfolge überschrieben. 
+Und der Bornholm\$Number mit einem anderen Datentyp als er vorher war.
+
+Was passiert, wenn wir einfach die Daten noch einmal neu einladen?
+
+Also den data-Befehl noch einmal benutzen?
+
+Ha! Damit überschreiben wir die falsch geordneten Daten einfach wieder. Solange wir unsere Originaldaten irgendwo haben und diese NICHT ÜBERSCHREIBEN (deswegen legen wir sie immer in einem anderen Ordner ab als die Daten, die wir aus R hinaus wieder irgendwo abspeichern, nämlich im Ordner raw data). Die Originaldaten sind im Paket archdata unangetastet geblieben, weil wir sie nicht exportiert haben.
+
+Und man braucht das alles nicht neu zu schreiben oder so, nein, man scrollt in seinem RMarkdown-Dokument einfach nach oben und wiederholt den Befehl, der da noch irgendwo steht.
+
+Tatsächlich ist das relativ häufig notwendig, wenn man  versucht etwas umzusetzen, was man noch nie gemacht hat und ein paar unterschiedliche Dinge ausprobieren möchte.... muss...  ;-) 
+
+Allgemeiner Tipp: Was funktioniert, immer erst einmal stehen lassen, kopieren und an der Kopie rumprobieren bis es klappt. Wenn  man die Lösung irgendwann hat, kommentiert man sie sich und löscht alles, was vorher nicht geklappt hatte.
+
+
+## Lagemaße
+
+Lagemaße sind einfache Berechnungen von Werten, die uns etwas über die Verteilung der Werte aussagen soll. Am bekanntesten ist der Mittelwert, wir berechnen jedoch auch Modus, Median, Standardabweichung und Varianz.
+
+- Der Mittelwert berechnet sich in dem man alle Werte zusammenrechnet und durch die Anzahl der Werte teilt.
+- Der Median ist der Wert, der, wenn ich meine Wertereihe nach Größe ordne, den Datensatz in genau zwei Hälften teilt.
+- Der Modus ist der Wert, der am häufigsten vorkommt.
+- Die Standardabweichung sagt, wie wie stark die Streuung der Werte um den Mittelwert ist. Sie ist die Wurzel aus der Varianz.
+- Die Varianz ist die "mittlere quadratische Abweichung der Werte um den Mittelwert". Sie wird quadriert zur Berechnung, damit die Plus- und Minusabweichungen um den Mittelwert sich nicht aufheben. Dadurch ist die Zahl aber immer sehr groß. Die Standardabweichung ist für uns einfacher zu verstehen, weil sie diese Quadrierung wieder aufhebt.
+
+
+Mit einem "<-" wird ein Wert, den ich berechne einer Variablen zugewiesen, mit der ich später weiterrechnen kann. Das ist häufig eine gute Idee. Das Dollar-Zeichen bezeichnet den vector ("die Spalte") eines data frames ("der Tabelle"). Also "BACups$RD" ist die Spalte RD in der Tabelle BACups. 
+
+```{r Lagemaße}
+
+RD_mean <- mean(BACups$RD) # Hiermit wird der Mittelwert berechnet. (alle Werte zusammengerechnet / Anzahl der Werte)
+RD_med <- median(BACups$RD) #das ist die Berechnung des Medians. 
+table(BACups$RD) #hiermit kann man sich anschauen, wie häufig jeder Wert vorkommt (was der Modus ist)
+RD_sd <- sd(BACups$RD) #Standardabweichung
+RD_var <- var(BACups$RD) # Varianz
+RD_range <- range(BACups$RD) # kleinster und größter Wert
+
+## Aufgabe: Andere Variablen ebenso erkunden. Unklar welche? Schaut euch die Tabelle BACups mit View() an und entscheidet, welche sich eignen würden. 
+```
+
+
+Euch ist vielleicht aufgefallen, dass es für den Modus keine Funktion in R zu geben scheint. Keine Ahnung warum. Aber man findet online schlaue Menschen, die eine Funktion geschrieben haben, mit der man ganz genauso den Modus abfragen kann, wie man den Median abfragen kann. Diese Funktion kann man einmal markieren und mit Strg+Enter ausführen und bekommt dann unter Environment und Functions angezeigt, dass man eine Funktion "getmode" erstellt hat. JETZT kann man sie anwenden, wie unten im Bsp.
+
+```{r Exkurs: Modus-Funktion}
+
+# Funktion schreiben
+getmode <- function(v) { # die Funktion heißt getmode und wird auf einen Vektor v angewendet
+   uniqv <- unique(v) # die einzelnen Werte des Vektors (ohne Dopplungen) werden in einem Vektor uniqv gesammelt 
+   uniqv[which.max(tabulate(match(v, uniqv)))] # welcher maximale Wert entsteht, wenn ich zähle, wie häufig die Werte von uniqv in v vorkommen (das ist der Modus)
+}
+
+mod_RD <- getmode(BACups$RD) # Modus 
+
+```
+
+Überprüft doch einmal, ob ihr mit der getmode genau den gleichen Modus bekommt, wie ihr selber mit table gefunden habt! :-)
+
+
+
+<!-- The following line inserts a page break when the output is MS Word. For page breaks in PDF, use \newpage on its own line.  -->
+##### pagebreak
+
+# References 
+<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
+<div id="refs"></div>
+
+##### pagebreak
+
+### Colophon
+
+This report was generated on `r Sys.time()` using the following computational environment and dependencies: 
+
+```{r colophon, cache = FALSE}
+# which R packages and versions?
+devtools::session_info()
+```
+

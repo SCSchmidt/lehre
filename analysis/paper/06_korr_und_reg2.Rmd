@@ -1,0 +1,166 @@
+---
+title: "Korrelation und Regression"
+author:
+  - Schmidt, Sophie C.
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+    bookdown::word_document2:
+      fig_caption: yes
+      reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+bibliography: references.bib
+csl: "../templates/journal-of-archaeological-science.csl" # Insert path for the bib-style
+---
+
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  echo = TRUE,
+  comment = "#>",
+  fig.path = "../figures/",
+  fig.width=2, 
+  fig.height=2
+)
+```
+
+Pakete für heute:
+```{r Pakete}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+library(archdata)
+data("BACups")
+
+```
+
+## Korrelation
+Um Zusammenhänge zu erfassen, gibt es für jedes Skalenniveau unterschiedliche Methoden:
+
+- für nominale Daten: Cramérs V
+
+- für ordinale Daten: Kendalls Tau und Spearmans Rho
+
+- für metrische Daten: Pearson-Bravais r
+
+### Kendalls Tau
+
+Rechnen wir doch einfach das Bsp aus der Präsentation nach: Wir haben einen Datensatz mit 4 Siedlungen, deren Anzahl von Öfen und Größe. Wir brauchen für den Test zwei Vektoren, die in der richtigen Reihenfolge diese beiden Wertereihen darstellen:
+
+```{r Werte }
+ha <-  c(2, 1, 4, 3.5)
+nOfen <-  c(2, 3, 5, 1)
+```
+
+Jetzt geben wir diese in die Korrelationstestfunktion ein. R wählt automatisch die benötigte Version (a ist standard und b, wenn es Bindungen gibt). Über "alternative" kann man definieren, ob man schon glaubt, dass die erste oder zweite Gruppe größere Ränge einnimmt als die andere. Wir testen "two.sided", d.h. wir wissen das nicht:
+
+```{r Kendalls Tau}
+ cor.test(ha, nOfen, method = "kendall", alternative = "two.sided")
+```
+
+Sie mal einer an! Das Ergebnis ist ein anderes, wenn man meinen Rechenfehler nicht macht.
+
+Ein letztes Wort zu Kendalls Tau: Wenn man sehr viele Daten hat (sehr lange Vektoren), die man testen möchte, kann die Berechnung recht lange dauern (da ja jedes Paar gegeneinander getestet werden muss).  Sollte das zu einem Rechnerabsturz oder so führen, informiert euch über Spearmans Rho (z.B.: https://www.crashkurs-statistik.de/spearman-korrelation-rangkorrelation/), der ist eigentlich wie der folgende (Pearson und Bravais r), aber an Rängen wie Kendalls Tau und geht deshalb auch mit ordinalen Daten. Er gilt als "weniger genau", aber für große Datensätze besser geeignet.
+
+ Der Code ist simpel:
+```{r}
+ cor.test(ha, nOfen, method = "spearman", alternative = "two.sided")
+```
+
+
+
+Jetzt aber geht es noch um metrische Daten:
+
+# Pearson und Bravais' R
+
+Für diesen Test können wir den gleichen Befehl nutzen, müssen nur die Methode ändern. Und den Datensatz, denn mit Vektoren der Länge 4 ist der Pearson-und Bravais' R nicht glücklich.
+
+Nehmen wir doch also einfach Rand- und Nackendurchmesser der bronzezeitlichen Tassen:
+
+```{r}
+
+ cor.test(BACups$RD, BACups$ND, method = "pearson", alternative = "two.sided")
+
+```
+Das Ergebnis sagt uns folgendes:
+
+Der p-Wert ist sehr sehr klein, er wird über eine Testgröße t berechnet, die den Wert 53,87 hat. Ein dafür wichtiger Freiheitsgrad (df) hat den Wert 58.
+
+Das Konfidenzintervall liegt bei einem R-Wert zwischen 0,98 und 0,99.
+
+Der in diesem Test errechnete Korrelationskoeffizient ist 0,99.
+
+Wir haben also einen sehr sicheren und sehr starken Zusammenhang zwischen Rand- und Nackendurchmesser.
+
+Applaus!
+
+Jetzt erstellen wir noch eine Linare Regression daraus:
+
+## Lineare Regression
+
+Die lineare Regression legt eine "best-fit"-Linie zwischen die Punkte. Sie soll möglichst gut den Punktverlauf abbilden.
+
+In R ist das ziemlich einfach, in dem ich einem Streudiagramm den geom_smooth-Befehl mit der Methode "lm" (linear model) hinzufüge. Der Befehl "se = FALSE" sagt aus, dass ich jetzt gern *kein* Konfidenzintervall (standard error) dazu visualisieren möchte.
+
+```{r lin reg}
+ggplot(data = BACups)+
+  geom_point(aes(x = RD, y = ND))+
+  geom_smooth( aes(x = RD, y = ND), method = "lm",
+              se = FALSE)
+```
+
+Einfach oder?
+
+Dieses Diagramm können wir jetzt noch ein bisschen verbessern. Wir könnten 
+
+1. doch das Konfidenzintervall angeben
+
+2. dazuschreiben, wie diese Linie mathematisch beschrieben werden kann und angeben, wie der R²-Wert der Linie aussieht.
+
+Also, fangen wir an mit 1.:
+
+```{r lin reg + se}
+ggplot(data = BACups)+
+  geom_point(aes(x = RD, y = ND))+
+  geom_smooth( aes(x = RD, y = ND), method = "lm",
+              se = TRUE)
+```
+Denkbar einfach. Das Konfidenzintervall ist sehr schmal, was für eine gute Anpassung der Linie an die Punkte spricht.
+
+Schauen wir uns doch einmal an, wie diese Linie mathematisch beschrieben werden und zusammen mit dem R²-Wert dem plot hinzugefügt werden kann.
+
+Wir brauchen dafür das Paket "ggpmisc".
+
+Dann fügen wir dem  bisherigen Plot (am besten ihr kopiert das bisherige einfach mit strg+c und strg+v) den Befehl "stat_poly_eq" hinzu. "Stat_poly_eq" kann die Statistik der equation (Formel) einfügen. Dafür braucht es erst einmal noch die  Eingabewerte der Regression (x =  und y = ), dann die Information, welcher Text als "label" in den Graphen hinzugefügt werden soll: Paste (füge ein) die Formel (..eq.label..,) und den R²-Wert (..adj.rr.label..) und separiere die beiden mit vier Leerzeichen (symbolisiert durch die Tilde). Formula  sind eine bestimmte Art von Objekten in R. An dieser Stelle sagt man mit  "formula = y~x", dass y  die abhängige Variable sein soll.  "parse = TRUE" bedeutet "ja bitte schreib es hin" und "size" gibt die Schriftgröße an. "label.y.npc"  platziert die Schrift und zwar auf der y-Achse nach Prozent (also in diesem Fall bei 70% der Y-Achse).
+
+
+```{r lin reg + formel}
+
+if (!require("ggpmisc")) install.packages("ggpmisc")
+library(ggpmisc)
+
+ggplot(data = BACups)+
+  geom_point(aes(x = RD, y = ND))+
+  geom_smooth( aes(x = RD, y = ND), method = "lm",
+              se = TRUE)+
+  stat_poly_eq(aes(x = RD, y = ND, label =  paste(..eq.label.., 
+                                  ..adj.rr.label..,
+                                  sep = "~~~~")),
+               formula = y~x, # y sei die abhängige Variable
+               parse = TRUE,
+               size = 3,
+               label.y.npc = 0.7)
+
+```
+
+Cool oder?
+
+
+## Herzlichen Glückwunsch!
+Das war das Methodenrepertoire der Quantitativen Methoden-Übung. 
+
+Ihr könnt jetzt: verschiedene Skalenniveaus auseinander halten, Daten aufnehmen, Daten in R importieren, in R damit Grafiken erstellen, Lagemaße berechnen und Tests durchführen. Das ist echt ordentlich! Knallhart wissenschaftliches Arbeiten und so.
+
+Viel Erfolg bei der Umsetzung in Zukunft!

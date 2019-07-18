@@ -1,0 +1,69 @@
+---
+title: "Spalten trennen"
+author: "Sophie C. Schmidt"
+date: "2 Mai 2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Workflow
+Hier lge ich meinen workflow dar, wie ich Spalten, die mehrere Informationen beinhalten, 
+1. trennen
+2. in ein langes Datenformat überführen
+3. in ein breites Datenformat überführen
+kann
+
+
+```{r cars}
+library(tidyr)
+```
+
+### Beispieldatensatz
+
+```{r df, echo=FALSE}
+df2 <-data.frame(x = c(NA, "a,b", "a,b,d", "b,c", "d,a,f,e"))
+df2 #daten anschauen
+df2$id <- c(1,2,3,4,5)
+```
+
+###  Spalten trennen -> die Komma-seperierten mehrfachen Angaben in einzelne Spalten unterteilen
+
+```{r seperate df, echo=FALSE}
+df3 <- df2 %>% separate(x, c("A", "B","C","D"))
+df3
+```
+
+WICHTIG
+* man benötigt so viele Spaltennamen (c("A", "B"...), wie max unterschiedliche Angaben in der Spalte zu finden sind, die getrennt wird
+* es entsteht einiges an NA. Nicht schlimm.
+
+
+### Die einzelnen Spalten in einzelne Zeilen umwandeln (von breitem zu langem Format überführen)
+
+```{r gather df, echo=FALSE}
+df4 <- df3 %>% gather(key = "fignr", value = "fig","A", "B","C","D", na.rm = TRUE)
+df4$fignr <- 1 # gesamte Spalte in 1 verwandeln, um Anzahl darzustellen 
+df4
+```
+
+WICHTIG: 
+* key bezeichnet einen NEUEN Spaltennamen, in dem die NAMEN der Spalten auftauchen, die von breit zu lang überführt werden
+* value bezeichnet den NEUEN Spaltennamen, in dem die WERTE der Spalten auftauchen, die überführt werden
+* na.rm entfernt alle NAs aus der Tabelle, die durch das seperate entstanden sind
+
+### In 0 und 1 Werte umrechnen
+
+```{r spread df, echo=FALSE}
+df5 <- df4 %>% spread(value = "fignr", key = "fig")
+df5
+```
+
+WICHTIG:
+* key ist der Spaltenname, dessen WERTE zu den neuen Spaltennamen werden
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
