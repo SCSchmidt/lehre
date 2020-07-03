@@ -1,0 +1,239 @@
+---
+title: "Einführung in die Grundlagen R"
+author: "Sophie C. Schmidt"
+date: "3 7 2020"
+output: html_document
+---
+# R basics 
+
+Hier geht es um ganz grundlegende Dinge zu R und Rstudio. 
+
+Zerst zu den zwei wichtigsten Bestandteilen:
+
+Ein *Skript* ist eine Text-Datei, in der Code steht. Den Code kann man ausführen, wann immer man möchte, in dem man den Code markiert und Strg+Enter drückt. Oder man kopiert in die Konsole und drückt Enter. Oder man klickt oben rechts auf das Dropdown-Menü neben "Run" und wählt aus, was man auführen möchte, aber das dauert alles länger. Man kann auch ganze Skripte auf einmal ausführen lassen. Innerhalb eins Skripts geht R dann davon aus, das alles was darin steht Code ist, es sei denn es wird *auskommentiert*. Indem ich vor eine Zeile Text im Skript das Symbol # (den Hashtag) setze, geb ich dem Programm zu verstehen: "In dieser Zeile steht kein Code. Ignorier es einfach". Rstudio färbt diese Zeile dann ein (meist grün), während der restliche Code schwarz bleibt.
+
+Die *Konsole* ist unten und ist der Link zum "eigentlichen R". Code wird hier neben dem ">" hin kopiert oder eingetippt und mit Enter abgeschickt. "Antworten" von R erscheinen ebenfalls in der Konsole, neben einer kleinen Zahl, die die Zeile der Antwort angibt.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = FALSE)
+```
+
+
+### Taschenrechner
+
+Man kann R wie einen Taschenrechner benutzen, die einfachen Rechenoperationen stehen zur Verfügung.
+
+Versucht einmal die folgenden Rechnungen in die Konsole einzutippen und mit Enter abzuschicken:
+
+```{r}
+3 + 2
+```
+
+
+```{r}
+5 - 7
+```
+
+
+```{r}
+5 * 2
+```
+
+
+```{r}
+100 / 10
+```
+
+Oder auch:
+```{r}
+3*(4+2)
+```
+
+### Zuweisungen
+Rechenergebnisse, wie z.B. das Ergebnis von 3*(4+2) können in Variablen gespeichert werden. Die Zuweisung des Ergebnisses zu einer Variablen geschieht mit dem Zuweisungsoperator “<-“ und sieht im allgemeinen folgenderweise aus:
+
+Variablenname <- Befehl
+
+Wird nacheinander mehrmals dergleichen Variablen verschiedene Ergebnisse zugewiesen, enthält die Variable das Ergebnis der letzten Zuweisung. Um nachzusehen, was eine Variable enthält, kann man den Variablennamen in die Konsole eingeben und mit Enter abschicken oder oben rechts unter Environment nachsehen. R merkt sich NICHTS, es sei denn, ich weise es einer Variablen zu. Das heißt auch, wenn ich einen Befehl / eine Funktion / eine Formel auf einen Datensatz anwende, bleibt das nur langfristig bestehen, wenn ich mit dem Befehl gleichzeitig entweder meinen alten Datensatz überschreibe ODER einen neuen entstehen lasse.
+
+Ergo:
+```{r}
+x <- 3*(4+2) 
+```
+
+Oben rechts ist jetzt unter dem Reiter *Environment* der Wert "x" erschienen. Wir können dort immer ablesen, welche Variablen wir zur Zeit definiert haben. 
+
+Mit x kann ich jetzt weiterrechnen:
+```{r}
+y <- x+2
+```
+
+
+Mit dem Befehl *class* kann ich testen, welcher Datentyp eine Variable hat:
+```{r}
+class(x)
+class(y)
+```
+
+Da x und y den gleichen Typ haben (*numeric*), kann ich sie in einem Vektor zusammenfassen:
+
+```{r}
+z <- c(x,y)
+```
+Was ist passiert?
+
+Das c() markiert, dass ich mehrere Werte in einer Reihe eingebe, die zusammengehören sollen (das ist dann ein Vektor). Mit <- habe ich diese Reihe der Variablen z zugeordnet. 
+
+
+Wenn ich das alles noch einmal mit anderen Werten mache, kann ich aus den zwei Vektoren einen Dataframe erstellen. Ein Dataframe wird relativ häufig benutzt, weil er eine "gute alte rechteckige Tabelle" abbildet, mit Spalten und Zeilen, wobei in den Spalten unterschiedliche Arten von Daten aufgenommen werden können. 
+Weiter zum Beispiel:
+
+```{r}
+a <- "Hund"
+b <- "Katze"
+```
+
+Die Hochkommas erklären R, dass es sich um Text handelt und nicht um Objekte (also andere Variablen). Vergisst man sie, kommt die Fehlermeldung "object 'Hund' not found", weil R nach etwas, das 'Hund' heißt, sucht und nicht findet.
+
+Jetzt lassen sich diese beiden in einen Vektor zusammengefügt:
+```{r}
+ab <- c(a,b)
+```
+
+Unter "Environment" oben rechts in Rstudio befinden sich jetzt alle neuen Variablen, die wir definiert haben. Wir können auch sehen, dass  "ab" "chr" -- also ein "character"-Vektor -- ist, während z als "num" -- numerical -- markiert wird.
+
+Jetzt bauen wir aus diesen beiden Vektoren einen Dataframe:
+```{r}
+df <- data.frame(z, ab)
+```
+
+Unter Environment erscheint unter der Überschrift "Data" jetzt df. Auf den blauen Pfeil kann man klicken und sich anschauen, woraus der Dataframe zusammengesetzt ist. Wir können ihn uns auch anschauen, entweder durch "draufklicken" oder per Code:
+
+```{r}
+View(df)
+```
+
+Was den Daten noch fehlt, ist eine sinnvolle Bezeichnung der Spalten, "z" und "ab" sagen mir nichts. Geben wir den Spalten also neue Namen:
+
+```{r}
+colnames(df) <- c("Gewicht", "Tier") 
+```
+Colnames bezeichnet "column names". Wir sagen R also, die Spaltennamen von dem Datensatz df sollen jetzt "Gewicht" und "Tier" heißen. Die Reihenfolge ist hier wichtig! Ich muss wissen, wie meine Spalten aneinander gereiht sind, damit dann am Ende auch die Spalten richtig heißen.
+
+Cool! Wir haben jetzt schöne tabellarische Daten! 
+
+Wir können jetzt mit unseren Daten viele tolle Sachen machen, aber erst einmal müssen wir lernen, wie wir mit ihnen umgehe. 
+
+### Auswählen von Daten
+Also wählen wir doch einmal in dem Datensatz ganz bestimmte Werte aus. Zum Beispiel würde ich gern nur die erste Zeile sehen:
+
+```{r}
+df[1,]
+```
+Mit ECKIGEN KLAMMERN kann ich angeben, welche Zeilen und Spalten ich aus dem Datensatz sehen möchte. Das Prinzip ist immer Daten[Zeile, Spalte]. Dadurch, dass hier die "Spalten"-Information gefehlt hat, wurde einfach die gesamte Zeile ausgegeben. Will ich aber nur die Information aus dem Feld der 1. Zeile und 2. Spalte, sieht das so aus:
+
+```{r}
+df[1,2]
+```
+
+Ok?
+Welche Information erwartet ihr, wenn ihr df[2,2] angebe?
+Testet das!
+
+Die Spaltennamen sind auch sehr praktisch, weil ich diese auch zur Auswahl nutzen kann. Ich kann den Vektor der Tiere, den ich in meinen Dataframe eingebaut habe, auch wieder ganz einfach auslesen:
+```{r}
+df$Tier
+```
+Das Dollarzeichen (\$) sagt "in dem Dataframe df die Spalte Tier". Und ausgegeben werden die "Hund" und "Katze", die in diesem Vektor (die Spalte ist ein Vektor) liegen.
+Das gleiche kann ich auch mit dem Gewicht machen:
+```{r}
+df$Gewicht
+```
+
+Und jetzt wäre es doch spannend, das durchschnittliche Gewicht meiner beiden Tiere herauszufinden. Dafür benutze ich die Funktion `mean`. Einer Funktion wird ein ein Objekt "gegeben", und mit diesem Objekt (hier: die Zahlen in der Spalte Gewicht) macht sie dann etwas. In diesem Fall den Mittelwert berechnen:
+```{r}
+mean(df$Gewicht)
+```
+
+Auf diese Art und Weise, wird mir das Ergebnis nur angezeigt. Ich kann es jedoch auch wieder speichern:
+```{r}
+mean_gewicht <- mean(df$Gewicht)
+```
+Wie oben wird durch die Zuweisung der Variablen "mean_gewicht" jetzt das Ergebnis der Berechnung "Mittelwert von der Reihe Zahlen, die in der Spalte "Gewicht" des Dataframes "df" stehen, gespeichert. Damit ließe sich wieder weiterrechnen.
+
+
+### Pakete
+
+Aber eigentlich wollten wir biologische Daten für den Workshop benutzen. Wir benutzen dafür einen Datensatz über Pinguine. Diesen müssen wir uns aber erst herunterladen und installieren. Er liegt in einem Paket namens "palmerpenguins" auf dem Github von Allison Horst (https://github.com/allisonhorst/palmerpenguins), die Daten wurden von Dr. Kristen Gorman und der Palmer Station, Antarctica LTER zur Verfügung gestellt.
+
+Mit diesem Code kann man etwas von Github herunterladen und installieren: `devtools::install_github("NameDesAutors/NamedesPakets")`. Den Code kann man wie folgt lesen:
+
+`devtools::` = damit sage ich, dass ich aus dem Paket `devtools` eine bestimmte Funktion benutzen möchte. Ich muss hierfür nicht das ganze Paket ein-laden, sondern greife sozusagen nur einmal in das Paket hinein.
+
+`install_github` = Diese Funktion weiß, dass das was folgt, auf ein Repositorium auf github verweist. Deshalb stellt es automatisch ein "https://github.com"  dem voran, was ich jetzt eingebe. Dadurch muss ich weniger tippen. Die Funktion lädt dann das Paket herunter und installiert es. Für die Installation von Paketen, die auf CRAN liegen, nutzt man `install.packages("Paketname")`. 
+
+```{r}
+devtools::install_github("allisonhorst/palmerpenguins")
+```
+Achtung! "allisonhorst/palmerpenguins" muss in Hochkommas, damit R nicht denk, dass es ein Objekt ist, dass es in der Environment finden muss.
+
+Nach erfolgreicher Installation (roter Text heißt in R nicht, dass Fehler passiert sind!), müssen wir das Paket noch in unsere Sitzung laden, damit wir damit umgehen können:
+
+```{r}
+library(palmerpenguins)
+```
+
+Pakete müssen nur EINMAL installiert, aber in jeder Sitzung neu "geladen" werden. Die Befehle fürs Laden heißen entweder "library" oder "require", beides funktioniert gleich gut.
+
+In dem Paket Palmerpenguins gibt es zwei Datensätze. Die rufen wir jetzt mit dem Befehl "data" auf und schauen uns den an.
+```{r}
+data(penguins)
+```
+
+Jetzt solltet ihr unter "Environment" zwei neue Einträge sehen: penguins und penguins_raw. Dahinter steht "Promise", was bedeutet, sie sind vorgeladen, aber noch nicht komplett da. Das spart Ressourcen. Wenn wir uns den ersten Datensatz jetzt anschauen, werden sie vollends eingeladen.
+
+Tun wir das:
+```{r}
+View(penguins)
+```
+Jetzt ist penguins in unserer Environment, also als Variable eingeladen. 
+
+Wir sehen jetzt folgende Spalten: `colnames(penguins)`. In einigen dieser Spalten steht manchmal ein schräggedrucktes *NA*. Diese Felder sind leer, die Information FEHLT. R kann gut mit leeren Feldern umgehen, gibt ihnen aber diese interne Bezeichnung. 
+
+Wiederholen wir das von eben noch einmal. Welches Feld wird durch diesen Code angesprochen:
+```{r}
+penguins_2_5 <- penguins[2,5]
+
+```
+Schau nach, ob es stimmt!
+
+
+Negativauswahl gibt es natürlich auch. Also: Gib mir alles außer diese Spalte: 
+
+```{r}
+penguins_alles_ausser_2 <- penguins[, -2]
+```
+Alles außer Spalte 2 ist jetzt dem neuen Datensatz penguins_alles_ausser_2 zugewiesen worden. Hinweis: Die Nutzung von Umlauten und ß geht zwar in R, ist aber manchmal etwas "buggy". Es führt zu Problemen. Deshalb ist davon in Spalten- und Variablennamen abzuraten. In Textfeldern ist es weniger problematisch.
+
+Ganz toll ist auch die Auswahlmöglichkeit “von a bis x”. Das geht mit Doppelpunkt: 
+```{r}
+penguins_x <- penguins[c(10:20),]
+
+```
+Versteht ihr, was ausgewählt wurde? 
+
+
+### Zusammenfassend noch einmal grundlegende Zeichen:
+
+- <-  mit einem kleinen Pfeil weisen wir einen Wert / eine Berechnunge / einen Vektor oder sogar einen Dataframe einer Variablen zu. Wie im Mathe-Unterricht, wo Formeln mit f(x) und y = a*x + b beschrieben wurden. R merkt sich NICHTS, es sei denn, ich weise es einer Variablen zu. Das heißt auch, wenn ich einen Befehl / eine Formel auf einen Datensatz anwende, bleibt das nur langfristig bestehen, wenn ich mit dem Befehl gleichzeitig entweder meinen alten Datensatz überschreibe ODER einen neuen entstehen lasse.
+
+- $  das Dollarzeichen steht zwischen Dataframe und dem Vector (Spalte) im Dataframe: df\$vector, damit wählen wir also den Vector an.
+
+-  Klammern ( ) sind grundlegend, weil ich bei jeder Funktion, die ich aufrufe erst den Funktionsnamen / den Befehl schreibe und dahinter in Klammern, worauf er sich bezieht, also auf welche Daten der Befehl angewandt werden soll.
+
+- in anderen Kontexten umgeben Klammern ( ) immer eine Sinneinheit. D. h. bei der Erstellung eines Diagramms, dass die Informationen, die zu aes gehören in Klammern hinter aes geschrieben werden, sie dürfen nicht hinter die schließende Klammer rutschen. Passiert manchmal.
+
+- Eckige Klammern []: Über sie haben wir noch nicht geredet. Sie sind spannend, weil man mit ihnen Zeilen, Spalten und Felder eines Dataframes anwählen kann. Ein kleines Beispiel:
+Alles klar soweit?
