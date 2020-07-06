@@ -10,9 +10,9 @@ Hier geht es um ganz grundlegende Dinge zu R und Rstudio.
 
 Zerst zu den zwei wichtigsten Bestandteilen:
 
-Ein *Skript* ist eine Text-Datei, in der Code steht. Den Code kann man ausführen, wann immer man möchte, in dem man den Code markiert und Strg+Enter drückt. Oder man kopiert in die Konsole und drückt Enter. Oder man klickt oben rechts auf das Dropdown-Menü neben "Run" und wählt aus, was man auführen möchte, aber das dauert alles länger. Man kann auch ganze Skripte auf einmal ausführen lassen. Innerhalb eins Skripts geht R dann davon aus, das alles was darin steht Code ist, es sei denn es wird *auskommentiert*. Indem ich vor eine Zeile Text im Skript das Symbol # (den Hashtag) setze, geb ich dem Programm zu verstehen: "In dieser Zeile steht kein Code. Ignorier es einfach". Rstudio färbt diese Zeile dann ein (meist grün), während der restliche Code schwarz bleibt.
+Ein *Skript* ist eine Text-Datei, in der Code steht. Eine neue Skript-Datei legt man mit dem kleinen Symbol links oben an, auf dem ein weißes Blatt und ein grünes Plus zu sehen ist. Den in einem Skript geschriebenen Code kann man ausführen, wann immer man möchte, in dem man den Code markiert und Strg+Enter drückt. Oder man kopiert in die Konsole und drückt Enter. Oder man klickt oben rechts auf das Dropdown-Menü neben "Run" und wählt aus, was man auführen möchte, aber das dauert alles länger als der Shortcut mit Strg+Enter. Man kann auch ganze Skripte auf einmal ausführen lassen. Innerhalb eins Skripts geht R Zeile für Zeile von oben nach unten und führt die Befehle (den Code) aus. R geht davon aus, dass alles was in dem Skript steht, Code ist, es sei denn es wird *auskommentiert*. Indem ich vor eine Zeile Text im Skript das Symbol # (den Hashtag) setze, geb ich dem Programm zu verstehen: "In dieser Zeile steht kein Code. Ignorier es einfach". Rstudio färbt diese Zeile dann ein (meist grün), während der restliche Code schwarz bleibt.
 
-Die *Konsole* ist unten und ist der Link zum "eigentlichen R". Code wird hier neben dem ">" hin kopiert oder eingetippt und mit Enter abgeschickt. "Antworten" von R erscheinen ebenfalls in der Konsole, neben einer kleinen Zahl, die die Zeile der Antwort angibt.
+Die *Konsole* ist das Panel unten und ist der Link zum "eigentlichen R". Code wird hier neben dem ">" hin kopiert (zB durch das markieren und Strg+Enter oder "per Hand") oder eingetippt und mit Enter abgeschickt. "Antworten" von R erscheinen ebenfalls in der Konsole, neben einer kleinen Zahl in eckigen Klammern ( [1] ), die die Zeile der Antwort angibt.
 
 
 ```{r setup, include=FALSE}
@@ -50,6 +50,13 @@ Oder auch:
 ```{r}
 3*(4+2)
 ```
+
+bzw:
+
+```{r}
+3*4+2
+```
+Was merkt ihr an den Ergebnissen?
 
 ### Zuweisungen
 Rechenergebnisse, wie z.B. das Ergebnis von 3*(4+2) können in Variablen gespeichert werden. Die Zuweisung des Ergebnisses zu einer Variablen geschieht mit dem Zuweisungsoperator “<-“ und sieht im allgemeinen folgenderweise aus:
@@ -109,7 +116,7 @@ Jetzt bauen wir aus diesen beiden Vektoren einen Dataframe:
 df <- data.frame(z, ab)
 ```
 
-Unter Environment erscheint unter der Überschrift "Data" jetzt df. Auf den blauen Pfeil kann man klicken und sich anschauen, woraus der Dataframe zusammengesetzt ist. Wir können ihn uns auch anschauen, entweder durch "draufklicken" oder per Code:
+Unter Environment erscheint unter der Überschrift "Data" jetzt "df". Auf den blauen Pfeil kann man klicken und sich anschauen, woraus der Dataframe zusammengesetzt ist. Wir können ihn uns auch anschauen, entweder durch "draufklicken" oder per Code:
 
 ```{r}
 View(df)
@@ -120,7 +127,7 @@ Was den Daten noch fehlt, ist eine sinnvolle Bezeichnung der Spalten, "z" und "a
 ```{r}
 colnames(df) <- c("Gewicht", "Tier") 
 ```
-Colnames bezeichnet "column names". Wir sagen R also, die Spaltennamen von dem Datensatz df sollen jetzt "Gewicht" und "Tier" heißen. Die Reihenfolge ist hier wichtig! Ich muss wissen, wie meine Spalten aneinander gereiht sind, damit dann am Ende auch die Spalten richtig heißen.
+Colnames bezeichnet "column names". Wir sagen R also, die Spaltennamen von dem Datensatz `df` sollen jetzt "Gewicht" und "Tier" heißen. Die Reihenfolge ist hier wichtig! Ich muss wissen, wie meine Spalten aneinander gereiht sind, damit dann am Ende auch die Spalten richtig heißen. Schaut ihn euch noch einmal an.
 
 Cool! Wir haben jetzt schöne tabellarische Daten! 
 
@@ -132,14 +139,14 @@ Also wählen wir doch einmal in dem Datensatz ganz bestimmte Werte aus. Zum Beis
 ```{r}
 df[1,]
 ```
-Mit ECKIGEN KLAMMERN kann ich angeben, welche Zeilen und Spalten ich aus dem Datensatz sehen möchte. Das Prinzip ist immer Daten[Zeile, Spalte]. Dadurch, dass hier die "Spalten"-Information gefehlt hat, wurde einfach die gesamte Zeile ausgegeben. Will ich aber nur die Information aus dem Feld der 1. Zeile und 2. Spalte, sieht das so aus:
+Mit ECKIGEN KLAMMERN kann ich angeben, welche Zeilen und Spalten ich aus dem Datensatz sehen möchte. Das Prinzip ist immer `Daten[Zeile, Spalte]`. Dadurch, dass hier die "Spalten"-Information gefehlt hat, wurde einfach die gesamte Zeile ausgegeben. Will ich aber nur die Information aus dem Feld der 1. Zeile und 2. Spalte, sieht das so aus:
 
 ```{r}
 df[1,2]
 ```
 
 Ok?
-Welche Information erwartet ihr, wenn ihr df[2,2] angebe?
+Welche Information erwartet ihr, wenn ihr `df[2,2]` angebt?
 Testet das!
 
 Die Spaltennamen sind auch sehr praktisch, weil ich diese auch zur Auswahl nutzen kann. Ich kann den Vektor der Tiere, den ich in meinen Dataframe eingebaut habe, auch wieder ganz einfach auslesen:
@@ -153,20 +160,25 @@ df$Gewicht
 ```
 
 Und jetzt wäre es doch spannend, das durchschnittliche Gewicht meiner beiden Tiere herauszufinden. Dafür benutze ich die Funktion `mean`. Einer Funktion wird ein ein Objekt "gegeben", und mit diesem Objekt (hier: die Zahlen in der Spalte Gewicht) macht sie dann etwas. In diesem Fall den Mittelwert berechnen:
+
 ```{r}
 mean(df$Gewicht)
 ```
 
 Auf diese Art und Weise, wird mir das Ergebnis nur angezeigt. Ich kann es jedoch auch wieder speichern:
+
 ```{r}
 mean_gewicht <- mean(df$Gewicht)
 ```
+
 Wie oben wird durch die Zuweisung der Variablen "mean_gewicht" jetzt das Ergebnis der Berechnung "Mittelwert von der Reihe Zahlen, die in der Spalte "Gewicht" des Dataframes "df" stehen, gespeichert. Damit ließe sich wieder weiterrechnen.
 
 
 ### Pakete
 
 Aber eigentlich wollten wir biologische Daten für den Workshop benutzen. Wir benutzen dafür einen Datensatz über Pinguine. Diesen müssen wir uns aber erst herunterladen und installieren. Er liegt in einem Paket namens "palmerpenguins" auf dem Github von Allison Horst (https://github.com/allisonhorst/palmerpenguins), die Daten wurden von Dr. Kristen Gorman und der Palmer Station, Antarctica LTER zur Verfügung gestellt.
+
+Pakete sind "Erweiterungen" für `base R`. `base R` ist das zugrunde liegende "einfache" R, das mit der Standardinstallation geladen wird. Es kann schon sehr sehr viel. Die vielfältige Community um R herum und auch einige professionelle Entwickler denken sich aber ständig neue Funktionalitäten (Funktionen, Möglichkeiten) aus und implementieren sie in Paketen (*packages*). Wenn ich also eine bestimmte Funktion nutzen möchte, muss ich das Paket installieren, in dem sie eingebaut wurde und in meine R-session laden. Pakete liegen meistens auf dem "Comprehensive R Archive Network" (*CRAN*), können aber auch woanders zur Verfügung gestellt werden. 
 
 Mit diesem Code kann man etwas von Github herunterladen und installieren: `devtools::install_github("NameDesAutors/NamedesPakets")`. Den Code kann man wie folgt lesen:
 
@@ -179,7 +191,7 @@ devtools::install_github("allisonhorst/palmerpenguins")
 ```
 Achtung! "allisonhorst/palmerpenguins" muss in Hochkommas, damit R nicht denk, dass es ein Objekt ist, dass es in der Environment finden muss.
 
-Nach erfolgreicher Installation (roter Text heißt in R nicht, dass Fehler passiert sind!), müssen wir das Paket noch in unsere Sitzung laden, damit wir damit umgehen können:
+Nach erfolgreicher Installation (roter Text heißt in R nicht, dass Fehler passiert sind!), müssen wir das Paket noch in unsere Sitzung ("R-session") laden, damit wir damit umgehen können:
 
 ```{r}
 library(palmerpenguins)
@@ -192,7 +204,7 @@ In dem Paket Palmerpenguins gibt es zwei Datensätze. Die rufen wir jetzt mit de
 data(penguins)
 ```
 
-Jetzt solltet ihr unter "Environment" zwei neue Einträge sehen: penguins und penguins_raw. Dahinter steht "Promise", was bedeutet, sie sind vorgeladen, aber noch nicht komplett da. Das spart Ressourcen. Wenn wir uns den ersten Datensatz jetzt anschauen, werden sie vollends eingeladen.
+Jetzt solltet ihr unter Environment zwei neue Einträge sehen: "penguins" und "penguins_raw". Dahinter steht "Promise", was bedeutet, sie sind vorgeladen, aber noch nicht komplett da. Das spart Ressourcen. Wenn wir uns den ersten Datensatz jetzt anschauen, werden sie vollends eingeladen.
 
 Tun wir das:
 ```{r}
@@ -219,7 +231,7 @@ Alles außer Spalte 2 ist jetzt dem neuen Datensatz penguins_alles_ausser_2 zuge
 
 Ganz toll ist auch die Auswahlmöglichkeit “von a bis x”. Das geht mit Doppelpunkt: 
 ```{r}
-penguins_x <- penguins[c(10:20),]
+penguins_x <- penguins[c(1:10),]
 
 ```
 Versteht ihr, was ausgewählt wurde? 
@@ -235,5 +247,4 @@ Versteht ihr, was ausgewählt wurde?
 
 - in anderen Kontexten umgeben Klammern ( ) immer eine Sinneinheit. D. h. bei der Erstellung eines Diagramms, dass die Informationen, die zu aes gehören in Klammern hinter aes geschrieben werden, sie dürfen nicht hinter die schließende Klammer rutschen. Passiert manchmal.
 
-- Eckige Klammern []: Über sie haben wir noch nicht geredet. Sie sind spannend, weil man mit ihnen Zeilen, Spalten und Felder eines Dataframes anwählen kann. Ein kleines Beispiel:
-Alles klar soweit?
+- Eckige Klammern []: Mit ihnen kann Zeilen, Spalten und Felder eines Datensatzes anwählen.
