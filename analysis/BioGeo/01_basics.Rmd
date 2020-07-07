@@ -235,5 +235,7 @@ Versteht ihr, was ausgewählt wurde?
 
 - in anderen Kontexten umgeben Klammern ( ) immer eine Sinneinheit. D. h. bei der Erstellung eines Diagramms, dass die Informationen, die zu aes gehören in Klammern hinter aes geschrieben werden, sie dürfen nicht hinter die schließende Klammer rutschen. Passiert manchmal.
 
-- Eckige Klammern []: Über sie haben wir noch nicht geredet. Sie sind spannend, weil man mit ihnen Zeilen, Spalten und Felder eines Dataframes anwählen kann. Ein kleines Beispiel:
-Alles klar soweit?
+- Eckige Klammern []: Über sie haben wir noch nicht geredet. Sie sind spannend, weil man mit ihnen Zeilen, Spalten und Felder eines Dataframes anwählen kann.
+
+
+
