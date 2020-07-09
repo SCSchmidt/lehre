@@ -11,9 +11,7 @@ bibliography: references.bib
 csl: "../templates/journal-of-archaeological-science.csl" # Insert path for the bib-style
 ---
 
-Das hier ist ein Code Chunk, der am Anfang immer als setup steht.
-Hier gebe ich vor, dass aller Code, den ich in Chunks schreibe, nicht nur umgewandelt werden soll, sondern auch abgedruckt werden soll (echo = TRUE).
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
@@ -21,8 +19,8 @@ knitr::opts_chunk$set(
   echo = TRUE,
   comment = "#>",
   fig.path = "../figures/",
-  fig.width=2, 
-  fig.height=2
+  fig.width=10, 
+  fig.height=10
 )
 ```
 
@@ -38,184 +36,192 @@ library(dplyr)
 
 Die Informationen, die jetzt aufploppen "Attaching package", "objects are masked" etc brauchen uns nicht zu interessieren. Hier geht es um Paketabhängigkeiten und -überlagerungen.
 
-
 ## ggplot- Logik!
 
-ggplot folt der "Grammatik der Grafiken". 
+ggplot2 ist ein Paket, dase von Hadley Wickham entwickelt wurde, und viele Funktionen zur Visualisierung von Daten bietet (für eine Übersicht und Inspirationen siehe z. B: http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html und https://www.r-graph-gallery.com/). Es folgt einer eigenen Logik, der "Grammatik der Diagramme" und gehört zum Tidyverse. Grundlegend ist eine Art "Layer-Konzept", dass ich mit jeder weiteren Zeile Code ein neues Layer zu dem Diagramm hinzufüge, wie bei der Bildbearbeitung mit Photoshop oder Gimp.
 
-Zur Wiederholung empfehle ich folgenden  Link, den Absatz 9.1: https://r-intro.tadaa-data.de/book/visualisierung.html 
-Ja, ich bin zu faul um das abzutippen. Gleichzeitig lernt ihr so aber auch eine weitere gute Ressource kennen, die R auf deutsch erklärt und frei zugänglich ist. 
+Erarbeiten wir uns das Schritt für Schritt.
 
-Es gibt eine große Onlinecommunity zu R, man findet eigentlich zu jeder Frage eine Antwort. Vieles ist aber tatsächlich auf englisch, deswegen ist es eine gute Idee, auch mal auf englisch zu googeln.
-Beim googeln sollte man übrigens immer neben R auch den Paketnamen zu der eigentlichen Frage / Stichworten eingeben. 
+3 Dinge gibt es in jedem ggplot, die definiert werden müssen:
 
-Wenn man eine Antwort nicht versteht, nicht verwirren lassen: Häufig gibt es mehrere Lösungswege. Wie in einer normalen Sprache, gibt es auch in Programmiersprachen unterschiedliche Wege um das gleiche auszudrücken. Sollte immer der gleiche Lösungsweg vorgeschlagen werden und man versteht ihn nicht, dann versucht euch über die R-Hilfe die einzelnen Schritte des Lösungsweges anzuschauen. Oder fragt jemanden, manchmal reicht schon ein zweites Paar Augen, um ein Problem zu lösen.
+- Welche Daten es benutzen soll ggplot(data = ), 
 
+- welche Art von Diagramm es bauen soll (geom) und 
 
+- wie das Diagramm aussehen soll (aes() von aesthetics), damit überhaupt etwas entsteht, also z. B., was auf der x- und der y-Achse abgetragen werden soll.
 
-Auf zu den Diagrammtypen jetzt:
+Alles andere danach sind reine Verschönerungsmaßnahmen. Mit "scales" lassen sich die Achsen und Legenden verändern, mit "theme" Hintergrundfarbe u. ä. (für mehr Infos siehe:  https://r-intro.tadaa-data.de/book/visualisierung.html )
 
-## Liniendiagramme!
-
-Liniendiagramme sind nur sinnvoll, wenn auf der X-Achse eine Abfolge erstellt werden kann, also mindestens ordinale Daten abgetragen werden können. Für zeitliche Entwicklungen eignen sie sich super, aber es muss beachtet werden, dass jedem X-Wert nur ein Y-Wert zurgeordnet werden darf. Das ist der Grund, warum wir in dem Bsp erst eine neue Tabelle bauen müssen. 
-
-Im Bornholmer Datensatz gibt es eine schöne Abfolge von verschiedenen Perioden und ich will einfach nur darstellen, wie viele Fundstellen es pro Periode gibt. Vielleicht benutze ich das für eine Bevölkerungsdichtenrekonstruktion, wer weiß.
-
-Der table-Befehl zählt, wie häufig eine Variable mit einer anderen vorkommt. Da ich nur eine Variable angeben, zählt er einfach, wie häufig diese vorkommt. Da ggplot nicht mit dem Format table arbeiten kann, wandeln wir bh_table noch in einen data frame um.
-
-Schaut euch die Tabelle bh_table einmal mit View an, dann versteht ihr, warum ich im Liniendiagramm die Variablen so gewählt habe, wie sie da stehen.
-
-```{r liniendiagramm 1, echo=TRUE}
-
-bh_table <- table(Bornholm$Period) # Häufigkeiten zählen 
-bh_table <- as.data.frame(bh_table) # als Dataframe überspeichern
+Nehmen wir uns ein Beispiel vor und erarbeiten es uns der Reihe nach.
 
 
-ggplot(data = bh_table)+
-  geom_point(aes(x = Var1, y = Freq))+
-  geom_line(aes(x = Var1, y = Freq, group = 1)) # group = 1 ist für geom_line wichtig, weil es sonst Daten gruppieren soll. Ich habe die Gruppierung aber schon vorher mit dem table-Befehl erledigt.
+## Ein Säulen- oder Balkendiagramm
+Ein Säulendiagramm eignet sich zur Darstellung nominaler und ordinaler Variablen. Ihr könnt es ja mal mit metrischen probieren, dann seht ihr schnell, warum das nicht gut ist.
 
-# ein Punktdiagramm über einem Liniendiagramm "markiert" die Stellen, wo ich Datenpunkte habe
-# wie ihr seht, kann man unterschiedliche Diagrammtypen übereinander plotten!
+Als erstes müssen wir das Paket ggplot2 installieren (*install.packages*) und aufrufen:
 
+```{r}
+library(ggplot2)
 ```
-Aufgabe: 
-Das ist zwar ein ordentliches Diagramm, aber die Beschriftung ist eher hässlich.
-Bitte kramt den Code der letzten Sitzung raus und beschriftet die Achsen angemessen.
 
-Viel Erfolg!
+Dann bauen wir ein erstes einfaches Säulendiagramm. Der Befehl für diese Art des Diagramms ist `geom_bar`. 
 
+Die Information `data = ` kann entweder direkt in die runden Klammern hinter `ggplot()` geschrieben werden ODER dem `geom_` hinzugefügt. 
 
+Wie aber soll das Säulendiagramm (`geom_bar`) aussehen, welche Spalte des Datensatzes soll genau wie dargestellt werden? Das ist die Information die in `aes()` eingegeben werden muss.
 
-### Liniendiagramm mit mehreren Linien und der notwendige Umstellungsspaß mit den Daten
+Wir möchten jetzt also ein Säulendiagramm bauen, dass auf der x-Achse die verschiedenen Spezies des penguin-Datensatzes und die Häufigkeiten (wie viele Datensätze aus den verschiedenen Spezies gibt es) auf der y-Achse zeigt:
 
-Häufig will ich ja gar nicht nur eine Linie darstellen, sondern mehrere Verläufe vergleichen. Selbstverständlich geht das auch mit R. Mit R geht aaaaalles.
-
-Ich muss allerdings erst ein bisschen die Daten in eine Form bringen, mit der ich arbeiten kann. Ich möchte jetzt gern wissen, wie häufig welche Fundtypen in welcher Periode auftauchen. Die Fundtypen sind die ganzen komischen Kürzel im Datensatz Bornholm.
-
-Was ich kreiieren möchte, ist eine Tabelle mit den Spalten: Periode, Fundtypus, Häufigkeit in der Periode. Site und Number interessieren mich nicht mehr. Ich wandle ein "breites" Datenformat in ein "langes" um. Allgemein geht ggplot lieber mit langen Datensätzen um als mit breiten.
-
-Was meine ich damit? Was passiert hier? 
-
-Vielleicht erklärt dieser Blogpost mehr: http://archaeoinformatics.net/r-seperate-gather-spread/ 
-Das Vorgehen "gather" brauchen wir hier auch: Es ist etwas komplizierter als die Tabelle vorhin, deswegen benutzen wir die beiden neuen Pakete tidyr und dplyr. Beide gehören zu einer R-Philosophie, die sich tidyverse nennt. Das ist eine Reihe von Paketen, die gut miteinander zurecht kommen und ähnliche Syntaxen verwenden. ggplot gehört auch dazu.
-
-Sie benutzen ein neues Zeichen, das in R base keine Rolle spielt: Die "Pipe" %>%
-
-Pipes sind auch aus anderen Programmiersprachen bekannt. Sie sagen eigentlich nur "was ich gerade in dieser Zeile gemacht habe, übertrage ich auch in die nächste" und man spart sich eine Reihe von "Zwischensicherungen" in Variablen.
-
-Als Bsp mach ich diese Umformung der Daten auf beide Weisen:
-
-Zuerst oldschool: 
-```{r Liniendiagramm 2, fig.height= 8, fig.width = 8}
-Bornh1  <- Bornholm[, -c(1:2)] #mit eckigen Klammern kann ich aus dem Datensatz Bornholm bestimmte Spalten entfernen: - Spalte 1 bis 2
-
-Bornh2 <-  gather(Bornh1, key = "Typ", value = "Haeufigkeit", "N2c":"A2e") # das ist der Code der die Umformung vornimmt.
-#Schaut euch Bornh2 einmal an, damit ihr versteht, was passiert. Manchmal gibt es jetzt gleiche Periode und Typ mit unterschiedlichen Häufigkeiten. Das muss noch einmal zusammengefasst werden: aggregate!
-
-Bornh3 <- aggregate(Bornh2$Haeufigkeit, by = list(Typ = Bornh2$Typ, Period = Bornh2$Period), FUN = sum)
-# jetzt ist dummerweise Haeufigkeit in x umbenannt worden
-
-ggplot(data = Bornh3)+
-  geom_point(aes(x = Period, y = x, color = Typ))+
-  geom_line(aes(x = Period, y = x, color = Typ, group = Typ)) # group bestimmt, welche Punkte verbunden werden
+```{r}
+ggplot()+ 
+  geom_bar(data = penguins, aes(x = species)) 
 ```
-Jetzt das gleiche in tidy code. Wie ihr seht, liegt der Unterschied v.a. darin, dass ich nicht dauernd neue Variablen benenne:
-```{r Liniendiagramm 2 tidy, fig.height= 8, fig.width = 8}
 
-Bornholm %>%
-  select(-Site, -Number) %>%
-  gather(key = "Typ", value = "x", "N2c":"A2e") %>%
-  group_by(Typ, Period)%>% #ich gruppiere mein Daten, wie bei aggregate
-  summarize(Haeufigkeit = sum(x))%>% #ich summiere sie jetzt und geb den Namen Haeufigkeit für die Spalte
-  ggplot()+
-  geom_point(aes(x = Period, y = Haeufigkeit, color = Typ))+
-  geom_line(aes(x = Period, y = Haeufigkeit, color = Typ, group = Typ))
-                 
-# Nach tidyverse-Logik ist das leichter zu lesen. Was denkt ihr?
+Das + am Ende jeder Zeile sagt R, dass der Befehl in der nächsten Zeile weiter geht, ähnlich wie bei der pipe. 
 
+Das ist doch schonmal was. Die Information die wir wollen, wird schnell und einfach angezeigt. 
+
+Aber schön ist es noch nicht.
+
+Geben wir den Achsen eine andere Beschriftung. Mit dem "labs"-Befehl lassen sich die Achsenbeschriftungen und die Überschriften ändern:
+```{r erstes Säulendiagramm mit Achsen-Titel}
+ggplot()+ 
+  geom_bar(data = penguins, aes(x = species))+ 
+  labs(y = "Anzahl",
+       title = "Anzahl Tiere pro Spezies")
 ```
-Aber  oje oje, weg vom Code, hin zum Plot: Was ist denn da passiert?
 
-Schöne Idee war das ja, mit den Typenhäufigkeiten nach Periode, aber...
+Wir können auch die Säulen bunt einfärben. Der Befehl *fill* gibt den Balken unterschiedliche Farben, je nach den Angaben in der Spalte, die ich spezifiziere (hier wieder Spezies):
 
-Wir erkennen ein Problem: Zu viele Informationen auf einmal sind keine gute Idee.
-
-Können wir die Daten also vllt ein bisschen gruppieren?
-
-Ich bin dafür, dass wir  nur die  Großbuchstaben der Typenbezeichnungen benutzen, weil ich davon ausgehe, dass das irgendwelche Übergruppen darstellen könnte. Ich arbeite dafür mit Bornh2 weiter. 
-
-Drei Schritte braucht es: 1. Ich brauche eine neue Spalte, in der die neuen Gruppentypenbezeichnungen eingetragen werden , 2. Ich muss dort die richtigen Typen eintragen -- in diesem Fall kann ich einfach nur den ersten Buchstaben aus den Typenbezeichnungen behalten Wie das geht, hab ich ergoogelt, sowas hab ich vorher nicht gebraucht -- 
-und 3. die neuen Gruppen müssen zusammengerechnet werden mit der Funktion aggregate.
-
-```{r neue Gruppen erstellen}
-#1. neue Spalte
-Bornh2$grobeTypen  <- Bornh2$Typ # hiermit erstelle ich eine neue Spalte, die genau den gleichen Inhalt hat, wie die Typ-Spalte
-
-#2. ersten Buchstaben erhalten (Buchstaben 1 bis 1 erhalten)
-# wir brauchen ein neues Paket namens "stringr". Bitte installiert es.
-library(stringr)
-
-Bornh2$grobeTypen <- str_sub(Bornh2$Typ, 1,1) # wir nehmen die Worte in Bornh2$Typ und benutzen nur Buchstabe 1 bis 1
-
-#3. Daten wieder zusammenfassen: 
-# es sind die gleichen Datensaetze mit unterschiedlichen Haeufigkeiten entstanden, die muessen noch mal zusammengefasst werden
-
-Bornh3 <- aggregate(Bornh2$Haeufigkeit, by = list(grobeTypen = Bornh2$grobeTypen, Period = Bornh2$Period), FUN = sum)
+```{r erstes Säulendiagramm und jetzt bunt!}
+ggplot()+ 
+  geom_bar(data = penguins, aes(x = species, fill = species))+ 
+  labs(y = "Anzahl",
+       title = "Anzahl Tiere pro Spezies")
 
 ```
 
-```{r Liniendiagramm 3, fig.height= 8, fig.width = 8}
-# wieso hier ein neuer Code Chunk? Reine Gewohnheit meinerseits, damit ich einen besseren Überblick behalte, trenne ich nach längeren Umwandlungen gern den Code für die Grafik nochmal ab.
-# neues Diagramm
+Vielleicht nervt euch auch, so wie mich, dass die Reihenfolge der Balken nicht nach Größe geordnet ist?
 
-ggplot(data = Bornh3)+
-  geom_point(aes(x = Period, y =x, color = grobeTypen))+
-  geom_line(aes(x = Period, y = x, color = grobeTypen, group = grobeTypen))
+Ändern wir das doch einmal! 
 
-```
-Das sieht doch gleich viel besser aus. Auch wenn immer noch etwas viel vllt.
+Leider bedeutet das in R, dass wir unseren Datensatz ändern müssen. Da R bei geom_bar während der Diagrammerstellung erst die Häufigkeiten zählt, kann er im Vorhinein nicht die Reihenfolge nach den Häufigkeiten sortieren.
 
-Ich kann den Datensatz auch noch weiter verkleinern, in dem ich mir zB nur bestimmte Typen rauspicke. Dafür gibt es unterschiedliche Möglichkeiten. Die subset-Funktion, mit der ich dann auch wieder neue Datensätze erstelle oder das Filtern:
+Also müssen wir R helfen und erst die Häufigkeiten auszählen und ihm dann einen neuen Befehl geben.
 
-```{r filter, fig.height= 8, fig.width = 8}
+### Exkurs: Pivot-Tabelle
 
-Bornh3%>%
-  filter(grobeTypen > "M")%>% # nur die groben Typen, die "größer als M" sind, also nach M im Alphabet kommen
-  ggplot()+
-  geom_point(aes(x = Period, y =x, color = grobeTypen))+
-  geom_line(aes(x = Period, y = x, color = grobeTypen, group = grobeTypen))
+Für das Zählen von Häufigkeiten gibt es einen einfachen Befehl, der einer pivot-Table in Excel entspricht, falls jemand das kennt. Ich wähle ein oder zwei Variablen aus, deren Zusammenhänge ausgezählt werden, also wie häufig kommen sie gemeinsam vor / bzw wie häufig kommt die eine Variable vor. Der Befehl heißt (echt simpel) `table`.
 
-#oder
-Bornh3%>%
-  filter(grobeTypen == "A" | grobeTypen== "J" | grobeTypen == "R")%>% #bitte nur die Zeilen, wo grobe Typen A, J oder R ist. Das Zeichen für ODER ist ein senkrechter Strich und findet sich links unten auf der deutschen Tastatur.
-  ggplot()+
-  geom_point(aes(x = Period, y =x, color = grobeTypen))+
-  geom_line(aes(x = Period, y = x, color = grobeTypen, group = grobeTypen))
-
+```{r}
+table(penguins$species)
 ```
 
-Das gleiche mit subset:
+Der Output ist klar, aber um damit arbeiten zu können, müssen wir die Tabelle speichern:
 
-```{r subset, fig.height= 8, fig.width = 8}
-Bornh4 <- subset(Bornh3, Bornh3$grobeTypen > "M") #ich nehme eine Auswahl von Bornh3 und zwar da, wo Bornh3$grobe Typen größer als M ist und weise diesem Datensatz die Variable Bornh4 zu
 
-ggplot(data = Bornh4)+
-  geom_point(aes(x = Period, y =x, color = grobeTypen))+
-  geom_line(aes(x = Period, y = x, color = grobeTypen, group = grobeTypen))
-
-Bornh5 <- subset(Bornh3, Bornh3$grobeTypen == "A" | grobeTypen== "J" | grobeTypen == "R")
-
-ggplot(data = Bornh5)+
-  geom_point(aes(x = Period, y =x, color = grobeTypen))+
-  geom_line(aes(x = Period, y = x, color = grobeTypen, group = grobeTypen))
-
+```{r}
+species <- table(penguins$species)
 ```
-Ob ich subset nehme oder filter, liegt ähnlich wie bei der Entscheidung oben zwischen tidy verse und old school R v.a. daran, ob ich mit dem reduzierten Datensatz noch häufiger arbeiten werde. Wenn ja, dann weise ich ihm lieber eine Variable zu, weil die Chance dann auch nicht ganz schlecht steht, dass ich noch weiß, was das für eine Variable ist (Bornh4 ist ein ganz schlechter Name. Sinnvoll wäre Bornh_M oder so gewesen). Wenn ich das aber nur ein-zweimal für eine Visualisierung mache, dann nutze ich filter.
 
-Welche Auswahlen jedoch archäologisch relevant ist, entscheidet ihr als Expert*innen im Feld! 
+Dummerweise ist das jetzt ein bestimmtes Datenformat, das ggplot nicht mag, schaut mal welches:
 
-Jetzt reicht es aber auch langsam mit den Liniendiagrammen, machen wir doch mal was mit Dichte.
+```{r}
+class(species)
+```
+
+ggplot arbeitet am besten mit dataframes. Darum wandeln wir species noch einmal in einen Dataframe um. Das geht einfach mit der Funktion `as.data.frame` und damit überschreiben wir die alte table:
+
+```{r}
+species  <- as.data.frame(species)
+```
+
+Schaut euch species jetzt einmal an:
+
+```{r}
+View(species)
+```
+Wie ihr seht, gibt es jetzt die Spalte "Var1" und die Spalte "Freq". Wir hatten R nicht gesagt, wie es die Spalten der neue Tabelle benennen sollte. Das holen wir jetzt nach. Nennen wir doch die erste Spalte "species" und die zweite "n". "n" ist eine typische Bezeichnung für Häufigkeiten in der Statistik.
+
+```{r}
+colnames(species)  <- c("species", "n")
+```
+
+Das waren ganz schön viele Zeilen Code. Wir können das auch alles in einer Zeile machen und die Aufgaben "verschachteln":
+
+```{r}
+species <- as.data.frame(table(penguins$species, dnn = list("species")), responseName = "n")
+```
+`as.data.frame` ist die "äußerste" Funktion, wird also als letztes ausgeführt, darin liegt `table`, welches auf unsere Daten "penguin$species" angewandt wird, mit den Argumenten `dnn = list("species")`. Innerhalb des as.data.frame-Befehls wird  `responseName = "n"` gesetzt, um die Spalten richtig zu benennen.
+
+Beide Wege führen zu dem Ergebnis, das wir haben wollen. Am Anfang schreibt man meist alles ausführlich aus, aber mit der Zeit fängt man an, kürzer und verschachtelter zu schreiben, weil einem das Lesen des Codes leichter fällt. Macht das, wie ihr wollt!
+
+### x nach Häufigkeiten sortieren
+
+Jetzt können wir endlich die Daten wieder visualisieren. Aber Achtung, wenn wir ggplot nicht selber die Häufigkeiten auszählen lassen wollen, sondern sie ihm "an die Hand geben", nehmen wir nicht `geom_bar` sondern `geom_col` und spezifizieren mit y die Höhe des Balkens.
+```{r}
+ggplot()+ 
+  geom_col(data = species, aes(x = species, y = n, fill = species))+ 
+  labs(y = "Anzahl",
+       title = "Anzahl Tiere pro Spezies")
+```
+
+"Aber ey!" werdet ihr sagen. Die Balken sind ja noch nicht in der richtigen Reihenfolge. Richtig. Aber jetzt können wir das machen, in dem wir eine ganz kleine Änderung einfügen: Wir ordnen x um, englisch "reorder". 
+
+```{r}
+ggplot()+ 
+  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+  labs(y = "Anzahl",
+       title = "Anzahl Tiere pro Spezies")
+```
+Die Ansage ist: Nimm als x species, aber geordnet nach der Größe von n. 
+Jetzt ist aber die Bezeichnung von der X-Achse wieder hässlich (nämlich der Code, den wir da eingegeben hatten). Also fügen wir noch eine Zeile hinzu:
+
+```{r}
+ggplot()+ 
+  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+  labs(y = "Anzahl",
+       x = "Spezies",
+       title = "Anzahl Tiere pro Spezies")
+```
+
+Wunderbar. 
+
+### Beschriftungen
+
+Jetzt gefällt mir aber nicht, das die Beschriftung so klein ist. Ändern wir das doch einmal. Beschriftungsgröße ist etwas, das zu den "Verschönerungsoptionen" gehört und in einem "theme" abgehandelt wird. Wir öffnen also ein "theme", spezifizieren darin, dass wir über die beiden Achsen-Titel reden wollen (axis.title) und die Elemente des Textes ändern (element_text). Wir können dort angeben, dass der Text dickgedruckt werden soll (face = "bold") und die Größe (size = 20). Dann machen wir doch das gleiche noch mit der Beschriftung der Werte auf den Achsen (axis.text). Hier ändern wir vllt nur die Größe. Und am Ende noch den Titel von dem ganzen
+
+```{r}
+ggplot()+ 
+  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+  labs(y = "Anzahl",
+       x = "Spezies",
+       title = "Anzahl Tiere pro Spezies")+
+  theme(axis.title = element_text(face="bold", size=20),
+        axis.text  = element_text(size=16),
+        title = element_text(size = 25))
+```
+
+Herzlichen Glückwunsch! Das sieht doch langsam nach einer publizierbaren Grafik aus.
+
+### und in ein Balkendiagramm ändern.
+
+Wenn wir der Meinung sind, wir hätten lieber ein Balkendigramm, dann können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt `coord_flip()` und wird einfach mit einem + unten dran gehängt:
+
+```{r}
+ggplot()+ 
+  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+  labs(y = "Anzahl",
+       x = "Spezies",
+       title = "Anzahl Tiere pro Spezies")+
+  theme(axis.title = element_text(face="bold", size=20),
+        axis.text  = element_text(size=16),
+        title = element_text(size = 25))+
+  coord_flip()
+      
+```
+
+
 
 
 ## Dichtediagramme!
@@ -259,66 +265,6 @@ BACups%>%
 
 # genauso viele Zeilen Code aber schicker.
 ```
-
-
-
-## Facettierung!
-
-Jetzt wird es nochmal richtig cool. Der Dichteplot eben, den nochmal nach unterschiedlichen Phasen anzulegen, das wär gut oder?
-
-```{r density facettieren, fig.height= 8, fig.width = 8}
-
-BACups%>%
-  gather(key = "Durchmesser", value = "Wert", "RD", "ND","SD") %>%
-  ggplot()+
-  geom_density(aes(x = Wert, col= Durchmesser))+
-  facet_grid(.~Phase)
-```
-Nur eine einzige Zeile Code mehr und schaut es euch an: Interessantes Ergebnis oder? Die ganzen hohen Durchmesser-Werte kommen fast alle aus der subappeninen Phase. Interessant!
-
-Noch ein anderes Bsp fürs Facettieren. Nehmen wir doch mal den Snodgrass-Datensatz mit den Häusern. Da gibt es zwei nominale Attribute, die man bei der "Facettierung" geenüber stellen kann.
-
-Achja. Und ich benutz mal alle Variablen eines Streudiagramms, die mir einfallen... Versucht mal durchzublicken.
-
-```{r facettieren2, fig.height= 8, fig.width = 8}
-ggplot(data = Snodgrass)+
-  geom_point(aes(x = Width, y = Length, col= Discs , shape = as.character(Effigies), size = Ceramics))+
-             facet_grid(Inside~Segment)
-# Was passiert hier alles?
-```
-
-
-## geom_raster
-
-Irgendjemand wollte etwas über geom_raster erfahren. Mein ggplot-Schummelzettel sagt mir, dass ich damit drei Variablen darstellen kann. Schauen wir doch mal:
-
-```{r, fig.height= 8, fig.width = 8}
-ggplot(data = Snodgrass)+
-  geom_raster(aes(x = Width, y = Length, fill = Ceramics))
-```
-Ja, nicht uninterssant, aber spannender mit dichteren Datensätzen , denke ich. Die Daten werden sozusagen "gerastert", also gleichmäßig abgetragen und eingefärbt nach einer dritten Variable.
-
-## Last comments
-
-GGplot hat noch viel viel mehr Möglichkeiten. Um einen Überblick zu bekommen, empfehle ich den Blogpost hier zu lesen, der vorführt, wie sich so eine Visualisierung entwickeln kann und am Ende richtig richtig gut aussieht:
-https://cedricscherer.netlify.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/
-
-Hilfen, um mit R und ggplot zurechtzukommen sind: 
-
-- die Schummelzettel: https://www.rstudio.com/wp-content/uploads/2015/06/ggplot2-german.pdf 
-
-- dieses R-Intro-Buch: https://r-intro.tadaa-data.de/book/visualisierung.html
-
-- das deutsche Wikibook zu R: https://de.wikibooks.org/wiki/GNU_R und 
-
-- das englische R-Cookbook: http://www.cookbook-r.com/ 
-
-Das Nachschlagewerk für RMarkdown:
-- The Definitive Guide: https://bookdown.org/yihui/rmarkdown/
-
-- offizielle website: https://rmarkdown.rstudio.com/index.html
-
-
 
 
 ## Metrische Daten
@@ -534,3 +480,26 @@ ggsave("Plotname.png", width = 4, height = 4, units = "cm", dpi = 300)
 Wir geben den Namen den die Datei haben soll (das kann auch ein Pfad werden, damit es in einem bestimmten Ordner gespeichert wird), wir geben mit der Endung das Dateiformat udn sagen mit width und height wie groß das Bild in units = cm abgespeichert werden soll. Außerdem die Auflösung mit dpi. Super praktisch!
 
 (D. h. ich hab das Bild als png in einer Größe von 4x4cm abgespeichert. Es hat eine Auflösung von 300 dpi und liegt in dem gleichen Ordner wie mein Rmarkdown-Dokument, weil ich keinen Pfad angegeben habe)
+
+
+
+# Letzte Hinweise ggplot
+GGplot hat noch viel viel mehr Möglichkeiten. Um einen Überblick zu bekommen, empfehle ich den Blogpost hier zu lesen, der vorführt, wie sich so eine Visualisierung entwickeln kann und am Ende richtig richtig gut aussieht:
+https://cedricscherer.netlify.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/
+
+Hilfen, um mit R und ggplot zurechtzukommen sind: 
+
+- die Schummelzettel: https://www.rstudio.com/wp-content/uploads/2015/06/ggplot2-german.pdf 
+
+- dieses R-Intro-Buch: https://r-intro.tadaa-data.de/book/visualisierung.html
+
+- das deutsche Wikibook zu R: https://de.wikibooks.org/wiki/GNU_R und 
+
+- das englische R-Cookbook: http://www.cookbook-r.com/ 
+
+Das Nachschlagewerk für RMarkdown:
+- The Definitive Guide: https://bookdown.org/yihui/rmarkdown/
+
+- offizielle website: https://rmarkdown.rstudio.com/index.html
+
+

@@ -1,0 +1,61 @@
+---
+title: "Skript zur 1. Präsentation"
+author: "Sophie C. Schmidt"
+date: "8 Juli 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Einführung
+
+### Programmieren 
+
+Programmieren ist so schwer nicht. Ich ersetze das "klicken auf einen button" mit "Text, der genau sagt, was getan werden soll". Man nennt die Umsetzungsform jedoch nicht umsonst "ProgrammierSPRACHE". Wie bei einer echten Sprache, muss man sich an gewisse Regeln halten. Im Gegensatz zu normalen menschlichen Sprachen, verzeiht einem der Computer jedoch kleine Fehler nicht. Das ist eigentlich die größte Schwierigkeit: Exakt korrekt zu schreiben. Keine Kommafehler, keine Klammer vergessen, Groß- und Kleinschreibung beachten... 
+
+Analysen in Code (egal ob R oder Python oder eine andere Skript- oder Programmiersprache) haben den großen Vorteil, dass sie deutlich leichter reproduzierbar und replizierbar sind als welche, die in Maus-gesteuerter Software erstellt werden (siehe alles von Ben Marwick). Ich kann den Code jemand anderem geben und er/sie kann bis ins letzte Detail nachvollziehen, was berechnet wurde. Benutze ich keinen Code brauche ich dafür Beschreibungen, die eventuell ausarten könnten. 
+
+Wenn sich in meinem Datensatz eine Kleinigkeit ändert (es könnte ja mal sein, dass eventuell ein Fehler passiert war), kann ich die gesamte Analyse sehr sehr schnell einfach wieder durchführen -- der Code ist ja noch da, und der bleibt gleich. Wiederhole ich nach einem Jahr eine Analyse mit anderen Daten, geht das sehr sehr schnell -- der Code kann einfach wieder benutzt werden. 
+
+Das ist ein Riesenvorteil. 
+
+
+### Warum R
+
+R wurde 1992 von Ross Ihaka und Robert Gentleman, zwei Statistikern, in Auckland als open und free source - Alternative zu der Sprache "S" entwickelt. Da sie auch plattformunabhängig ist, ist sie immer und überall benutzbar. 
+
+R wurde von Statistikern entwickelt und hat deshalb insbesondere für statistische Analysen eine große Menge an Paketen und definierten Funktionen, die von der Gemeinschaft beständig weiterentwickelt und erweitert werden. Sie werden auf dem Comprehensive R Archive Network (CRAN) zur Verfügung gestellt. Damit findet man eigentlich für jedes Problem eine Lösung. Inzwischen kann man mir R ein GIS ersetzen, es lassen sich interaktive und animierte Graphiken erstellen, Websites und Präsentationsfolien bauen und sicherlich noch mehr, das ich nicht kenne... 
+
+Online gibt es eine Menge Ressourcen und Hilfestellungen, die einem die Arbeit mit R erleichtern. Zugegebenermaßen ist der Einstieg nicht ganz leicht, aber der Mehraufwand lohnt sich! Es gibt eine wachsende Gemeinschaft von Archäologen, die es nutzen. 
+
+R selber hat keine schöne Benutzeroberfläche, sondern wird von der Konsole aus "gesteuert". Dafür benutzern wir Rstudio (es gibt noch andere wie RCommander, RGui), das einem Skript, Konsole, Programmierumgebung und noch weiteres übersichtlich in Fenstern anordnet. 
+
+
+
+## Einführung in die Grundlagen			
+R ist eine objektorientierte Sprache. Das heißt, alles ist in R entweder ein Objekt oder eine Funktion. Eine Funktion "macht" immer etwas mit einem Objekt. Wie im Mathe-Unterricht: f(x) = 2*x rechnet für jedes x den zugehörigen Wert (y) aus, der genau das Doppelte von x ist. Nur können die Funktionen in R deutlich komplizierter werden... 
+
+Die Funktionen sind in Paketen gespeichert, die sich auf einander beziehen: Wenn in Paket A eine Funktion f(x) liegt, in der die Funktion g(x) aus Paket B benutzt wird, besteht eine Abhängigkeit (dependency) von Paket A zu Paket B. Installiere ich Paket A, wird in der Regel automatisch Paket B mitinstalliert, damit ich die Funktion f(x) auch wirklich benutzen kann. Manchmal kommen aber trotzdem Fehlermeldungen wie "error: could not find function", dann kann es sein, dass eine dependency nicht mitinstalliert wurde ODER nicht geladen wurde. Denn: Wenn  wir Funktionen aus einem Paket brauchen, müssen wir es installieren und jedesmal, wenn wir es benutzen, am Anfang einer R-Sitzung laden (mit der *library* oder *require*-Funktion, Beispiele später). Die wichtigsten Funktionen sind in R "base" vorinstalliert. Manchmal haben Funktionen in unterschiedlichen Paketen den gleichen Namen. Dann gibt R eine Warnung aus, "objects are masked", d.h. die Funktionen des neu geladenen Pakets "überschreiben" die alten. Nicht irritieren lassen, meistens interessiert uns das nicht.
+
+Funktionen erkennt man daran, dass hinter dem Funktionsbefehl oder -namen in runden Klammern die Objekte stehen, auf die die Funktion angewandt wird sowie Parameter, wie diese Funktion angewandt werden soll. Ein einfaches Beispiel: 
+
+mean(x)
+
+--> "mean" ist der Funktionsname, auf x wird die Funktion ausgeführt.
+
+Was könnte x, können Objekte sein? 
+(Tatsächlich können Funktionen auch als Objekte behandelt werden)
+
+Wir betrachten hier nur die wichtigsten Typen von Objekten: Skalare, Vektoren und Dataframes. Diese werden in R in der Regel durch Variablen kodiert. Ein Skalar ist nur *ein einziger* Wert. Es kann sich um eine Zahl handeln, als *integer* also Ganzzahl oder *numeric* als Kommazahl. Ein Skalar kann aber auch eine Abfolge von Buchstaben sein, *character* genannt, also ein Wort oder ein Kürzel. 
+
+Vektoren sind eine Reihe von Skalaren gleichen Typs. Also eine Reihe von *integer* oder mehrere *character*-Einträge hintereinander. Wenn aber in einem Vektor sowohl Zahlen als auch Texteintragungen auftauchen, werden auch die Zahlen als Text gespeichert und man kann nicht mehr mit ihnen rechnen. Einen Vektor kann man sich auch als Spalte einer Tabelle vorstellen, wobei die Spalteneinträge immer die gleiche Datentypen beinhalten müssen. 
+
+Mehrere Vektoren können zu einem *Dataframe* zusammengefasst werden. Ein Dataframe ist wie eine Tabelle: Die unterschiedlichen Spalten können unterschiedliche Datentypen beinhalten und besitzen Spaltennamen. Die Zeilen werden als "row.names" entweder gezählt oder tatsächlich benannt.
+
+Beispiele kommen gleich!
+
+Noch eine Kleinigkeit vorneweg:
+
+R ist case-sensitive! Groß- und Kleinschreibung sind also stets zu beachten. Für Objektnamen (zum Beispiel von Funktionen und Variablen) sind neben den alphanumerischen Zeichen auch der Punkt und der Unterstrich erlaubt. Objektnamen mit Unterstrich sind allerdings eher selten anzutreffen, häufiger wird der Punkt benutzt, um Objektbezeichner zu strukturieren. Leerzeichen sind nie eine gute Idee!  

@@ -1,0 +1,38 @@
+---
+title: "Funktionen schreiben"
+author: "Sophie C. Schmidt"
+date: "8 Juli 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Option: Funktionen schreiben (falls vor der Pause noch Zeit ist)
+
+Wir haben jetzt schon Funktionen angewandt. Man kann sich in R aber auch Funktionen selber definieren. Die Syntax dafür ist immer gleich:
+
+myfunction <- function(x) {
+das wird mit x passieren
+}
+
+Die neue Funktion heißt "myfunction", sie wird auf eine Variable x angewandt und was mit x passiert, wird in den geschweiften Klammern definiert. Stellen wir uns vor, ich möchte eine Funktion für die Berechnung des doppelten Mittelwertes. Die könnte z. B. so aussehen:
+
+```{r}
+zwei_m <- function(x){
+  2*sum(x)/length(x)
+  }
+```
+Ich rechne zwei mal die Summe von x (d.h. x muss ein Vektor sein) und teile dies durch die Länge des Vektors (Anzahl der Einträge). Ich nenne die Funktion zwei_m.
+
+zwei_m kann ich jetzt anwenden:
+
+```{r}
+zwei_m(BACups$RD)
+```
+
+Es heißt, wenn man eine Abfolge von Berechnungen mehr als 3mal benutzt, sollte man sie in eine Funktion packen, damit man den Code nicht immer kopieren und einfügen muss. Außerdem kann man so Fehler vermeiden, weil man nur noch die Funktion aufrufen muss und nicht mehr den ganzen Code wiederholen.
+
+
+
+Beides funktioniert gleichermaßen gut.

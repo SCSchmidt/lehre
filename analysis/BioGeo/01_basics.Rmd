@@ -93,23 +93,16 @@ Was ist passiert?
 
 Das c() markiert, dass ich mehrere Werte in einer Reihe eingebe, die zusammengehören sollen (das ist dann ein Vektor). Mit <- habe ich diese Reihe der Variablen z zugeordnet. 
 
-
 Wenn ich das alles noch einmal mit anderen Werten mache, kann ich aus den zwei Vektoren einen Dataframe erstellen. Ein Dataframe wird relativ häufig benutzt, weil er eine "gute alte rechteckige Tabelle" abbildet, mit Spalten und Zeilen, wobei in den Spalten unterschiedliche Arten von Daten aufgenommen werden können. 
-Weiter zum Beispiel:
+Weiter zum Beispiel, erstellen wir uns einen zweiten Vektor und "kürzen ab", d.h. weisen die Werte gleich dem Vektor zu, nicht erst eigenen Variablen:
 
 ```{r}
-a <- "Hund"
-b <- "Katze"
+ab <- c("Hund","Katze")
 ```
 
 Die Hochkommas erklären R, dass es sich um Text handelt und nicht um Objekte (also andere Variablen). Vergisst man sie, kommt die Fehlermeldung "object 'Hund' not found", weil R nach etwas, das 'Hund' heißt, sucht und nicht findet.
 
-Jetzt lassen sich diese beiden in einen Vektor zusammengefügt:
-```{r}
-ab <- c(a,b)
-```
-
-Unter "Environment" oben rechts in Rstudio befinden sich jetzt alle neuen Variablen, die wir definiert haben. Wir können auch sehen, dass  "ab" "chr" -- also ein "character"-Vektor -- ist, während z als "num" -- numerical -- markiert wird.
+Unter "Environment" oben rechts in Rstudio befinden sich jetzt alle neuen Variablen, die wir definiert haben. Wir können auch sehen, dass  "ab" "chr" -- also ein "character"-Vektor -- ist, während "z" als "num" -- numerical -- markiert wird.
 
 Jetzt bauen wir aus diesen beiden Vektoren einen Dataframe:
 ```{r}
@@ -159,7 +152,9 @@ Das gleiche kann ich auch mit dem Gewicht machen:
 df$Gewicht
 ```
 
-Und jetzt wäre es doch spannend, das durchschnittliche Gewicht meiner beiden Tiere herauszufinden. Dafür benutze ich die Funktion `mean`. Einer Funktion wird ein ein Objekt "gegeben", und mit diesem Objekt (hier: die Zahlen in der Spalte Gewicht) macht sie dann etwas. In diesem Fall den Mittelwert berechnen:
+
+### Erste Funktion
+Und jetzt wäre es doch spannend, das durchschnittliche Gewicht meiner beiden Tiere herauszufinden. Dafür benutze ich die Funktion `mean`. Einer Funktion wird ein ein Objekt "gegeben", und mit diesem Objekt (hier: die Zahlen in der Spalte Gewicht) macht sie dann etwas. Es heißt, "in R ist alles entweder ein Objekt oder eine Funktion". So berechnen wir den Mittelwert:
 
 ```{r}
 mean(df$Gewicht)
@@ -178,26 +173,35 @@ Wie oben wird durch die Zuweisung der Variablen "mean_gewicht" jetzt das Ergebni
 
 Aber eigentlich wollten wir biologische Daten für den Workshop benutzen. Wir benutzen dafür einen Datensatz über Pinguine. Diesen müssen wir uns aber erst herunterladen und installieren. Er liegt in einem Paket namens "palmerpenguins" auf dem Github von Allison Horst (https://github.com/allisonhorst/palmerpenguins), die Daten wurden von Dr. Kristen Gorman und der Palmer Station, Antarctica LTER zur Verfügung gestellt.
 
-Pakete sind "Erweiterungen" für `base R`. `base R` ist das zugrunde liegende "einfache" R, das mit der Standardinstallation geladen wird. Es kann schon sehr sehr viel. Die vielfältige Community um R herum und auch einige professionelle Entwickler denken sich aber ständig neue Funktionalitäten (Funktionen, Möglichkeiten) aus und implementieren sie in Paketen (*packages*). Wenn ich also eine bestimmte Funktion nutzen möchte, muss ich das Paket installieren, in dem sie eingebaut wurde und in meine R-session laden. Pakete liegen meistens auf dem "Comprehensive R Archive Network" (*CRAN*), können aber auch woanders zur Verfügung gestellt werden. 
+Pakete sind "Erweiterungen" für `base R`. `base R` ist das zugrunde liegende "einfache" R, das mit der Standardinstallation geladen wird. Es kann schon sehr sehr viel. Die vielfältige Community um R herum und auch einige professionelle Entwickler denken sich aber ständig neue Funktionalitäten (Funktionen, Möglichkeiten) aus und implementieren sie in Paketen (*packages*). Wenn ich also eine bestimmte Funktion nutzen möchte, muss ich das Paket installieren, in dem sie eingebaut wurde und in meine R-session laden. Pakete liegen meistens auf dem "Comprehensive R Archive Network" (*CRAN*), können aber auch woanders zur Verfügung gestellt werden. So ist es mit dem Daten-Paket, was wir brauchen, es liegt auf github.com, einem unter Software-Entwicklern beliebten versionskontrollierten Repositorium für Code. 
 
-Mit diesem Code kann man etwas von Github herunterladen und installieren: `devtools::install_github("NameDesAutors/NamedesPakets")`. Den Code kann man wie folgt lesen:
+Allerdings: Um Pakete von github herunterladen zu können, brauche ich eine weitere bestimmte Funktion. Sie liegt in dem Paket `devtools`, kurz für "developer tools" und dieses Paket liegt auf CRAN. Um Pakete von CRAN zu installieren, nutzt man `install.packages("Paketname")`. 
+Folglich:
+
+```{r, eval=FALSE}
+install.packages("devtools")
+```
+
+Mit dem folgenden Code kann man jetzt etwas von Github herunterladen und installieren: `devtools::install_github("NameDesAutors/NamedesPakets")`. Den Code kann man wie folgt lesen:
 
 `devtools::` = damit sage ich, dass ich aus dem Paket `devtools` eine bestimmte Funktion benutzen möchte. Ich muss hierfür nicht das ganze Paket ein-laden, sondern greife sozusagen nur einmal in das Paket hinein.
 
-`install_github` = Diese Funktion weiß, dass das was folgt, auf ein Repositorium auf github verweist. Deshalb stellt es automatisch ein "https://github.com"  dem voran, was ich jetzt eingebe. Dadurch muss ich weniger tippen. Die Funktion lädt dann das Paket herunter und installiert es. Für die Installation von Paketen, die auf CRAN liegen, nutzt man `install.packages("Paketname")`. 
+`install_github` = Diese Funktion weiß, dass das was folgt, auf ein Repositorium auf github verweist. Deshalb stellt es automatisch ein "https://github.com"  dem voran, was ich jetzt eingebe. Dadurch muss ich weniger tippen. Die Funktion lädt dann das Paket herunter und installiert es. 
 
-```{r}
+```{r, eval = FALSE}
+# herunterladen des Datensatzes Palmer Penguins
 devtools::install_github("allisonhorst/palmerpenguins")
 ```
-Achtung! "allisonhorst/palmerpenguins" muss in Hochkommas, damit R nicht denk, dass es ein Objekt ist, dass es in der Environment finden muss.
+Achtung! "allisonhorst/palmerpenguins" muss in Hochkommas, damit R nicht denkt, dass es ein Objekt ist, dass es in der Environment finden muss.
 
 Nach erfolgreicher Installation (roter Text heißt in R nicht, dass Fehler passiert sind!), müssen wir das Paket noch in unsere Sitzung ("R-session") laden, damit wir damit umgehen können:
 
 ```{r}
 library(palmerpenguins)
+# Daten einladen
 ```
 
-Pakete müssen nur EINMAL installiert, aber in jeder Sitzung neu "geladen" werden. Die Befehle fürs Laden heißen entweder "library" oder "require", beides funktioniert gleich gut.
+Pakete müssen nur EINMAL installiert, aber in jeder Sitzung / nach jedem Neustart des Programms neu "geladen" werden. Die Befehle fürs Laden heißen entweder "library" oder "require", beides funktioniert gleich gut. In der Regel schreibt man die Ladebefehle für die Pakete, die man in einem Skript braucht, ganz nach oben, damit andere gleich am Anfang sehen, was sie vielleicht nach-installieren müssen. Wenn ich ein Skript nur für mich schreibe, setze ich es gern direkt vor die Funktion, für die ich das Paket brauche, damit ich weiß, aus welchem Paket die Funktion stammte. Meist erläutere ich das auch mit einem Kommentar.
 
 In dem Paket Palmerpenguins gibt es zwei Datensätze. Die rufen wir jetzt mit dem Befehl "data" auf und schauen uns den an.
 ```{r}
@@ -210,7 +214,7 @@ Tun wir das:
 ```{r}
 View(penguins)
 ```
-Jetzt ist penguins in unserer Environment, also als Variable eingeladen. 
+Jetzt ist penguins in unserer Environment, also als Datensatz mit einer bestimmten Variable eingeladen. 
 
 Wir sehen jetzt folgende Spalten: `colnames(penguins)`. In einigen dieser Spalten steht manchmal ein schräggedrucktes *NA*. Diese Felder sind leer, die Information FEHLT. R kann gut mit leeren Feldern umgehen, gibt ihnen aber diese interne Bezeichnung. 
 
@@ -232,9 +236,94 @@ Alles außer Spalte 2 ist jetzt dem neuen Datensatz penguins_alles_ausser_2 zuge
 Ganz toll ist auch die Auswahlmöglichkeit “von a bis x”. Das geht mit Doppelpunkt: 
 ```{r}
 penguins_x <- penguins[c(1:10),]
-
 ```
 Versteht ihr, was ausgewählt wurde? 
+
+Nutzen wir das doch einmal sinnvoll und berechnen den Mittelwert des Gewichts der Pinguine! D. h. Wir wählen die Spalte "body_mass_g" in dem Datensatz "penguins" und wenden die Funktion `mean` darauf an:
+
+```{r}
+mean(penguins$body_mass_g)
+```
+Was was was, was ist da passiert? Warum gibt er ein NA aus?
+
+`NA` steht in R für "not available". Warum sollte das Ergebnis einer so einfachen Berechnung nicht verfügbar sein? 
+
+Schauen wir uns den Vektor "penguins$body_mass_g" noch einmal genauer an. In dem wir ihn einfach in die Konsole tippen und mit Enter abschicken, listet uns R alle Werte in diesem Vektor auf.
+
+```{r}
+penguins$body_mass_g
+```
+
+Fällt euch etwas auf?
+
+Nicht alles sind Zahlen.
+Wie oben schon gesagt, manchmal steht statt einer Zahl ein `NA` im Feld. Mit `NA` markiert sich R leere Felder. Und jetzt hat R ein Problem: Wie soll es damit umgehen? Das weiß es nicht von allein. Deshalb helfen wir ihm und sagen, es soll die Felder, wo ein Wert fehlt, einfach ganz aus der Berechnung weglassen. In manchen Funktionen ist das von alleine implementiert, in `mean` offensichtlich nicht. Wir fügen der Funktion `mean` jetzt den "Flag" (deutsch: Aufrufparamter) `na.rm` hinzu und spezifizieren `na.rm = TRUE`. Das heißt auf un-abgekürzt: "Shall I remove all NA? - YES". Der Parameter wird mit Komma hinter das Objekt geschrieben, auf das die Funktion angewandt wird, bleibt aber in den Klammern!  
+
+```{r}
+mean(penguins$body_mass_g, na.rm = TRUE)
+```
+So, jetzt sollten wir wissen, wie schwer der durschschnittliche Pinguin in unserem Datensatz ist.
+
+
+## Daten nach Kriterien auswählen
+
+Häufig möchte man jedoch z.B. nur den Mittelwert der Pinguine einer bestimmten Art, wir müssen unseren Datensatz also nach einem Kriterium filtern.
+
+Dafür (wie so für so vieles) gibt es unterschiedliche Wege in R. Schauen wir uns zwei kurz an: 
+
+1. *subset*:
+
+Diese Funktion gehört zu base R. Ich erstelle einen neuen Datensatz, der besteht aus dem alten Datensatz, da wo in der Spalte species genau (Operator "==") "Chinstrap" steht. Ich hab den Code mal kommentiert: 
+
+```{r}
+# erstellen eines neuen Datensatzes nur der Pnguinspezies Chinstrap
+chinstraps <- subset(penguins, penguins$species == "Chinstrap")
+
+# Mittelwert berechnen:
+mean(chinstraps$body_mass_g)
+```
+
+2. *filter*
+
+Die Filter-Funktion gehört zum sogenannten "tidyverse". Das Tidyverse ist wie ein bestimmter Dialekt von R. Eine Reihe von Paketen folgt diesem Dialekt und diese Pakete arbeiten besonders gut miteinander. Da diese neuen Pakete auch einiges vereinfachen, erfreuen sie sich zunehmender Beliebtheit und wenn man nach Lösungen googelt, findet man Anleitungen, die "tidy" Lösungen erklären. Im Tidyverse gibt es eine Besonderheit, die man kennen sollte: Die sogenannte "*pipe*". Mit dem Befehl `%>%` wird das Ergebnis einer Zeile in die nächste überführt. Wir benötigen zwei Pakete als nächstes: "dplyr" und "magrittr", die mit *install.packages* installiert werden müssen.
+
+```{r, eval = FALSE}
+install.packages("dplyr")
+install.packages("magrittr")
+```
+(Das kann etwas dauern, die Pakete sind etwas größer.)
+
+Im Beispiel schicke ich damit den gesamten Datensatz penguins in den Filter, der in der nächsten Zeile beschrieben wird, "filtere" ihn und schick ihn gefiltert weiter in die nächste Zeile, in der ich die Spalte definiere und in die letzte, wo es dann um die Berechnung des Mittelwertes geht:
+
+```{r}
+# filter funktion
+library(dplyr)
+# zur Vereinfachung der Pipe gibt es 
+library(magrittr)
+
+penguins %>%
+  filter(species == "Chinstrap") %>%
+  use_series(body_mass_g) %>%    # das sagt, nimm die Spalte species, braucht Paket magrittr
+  mean()
+
+```
+
+Wie man sieht, ist der "Kernbefehl" (" species == "Chinstrap" ") fast genau gleich wie bei der subset-Funktion. Es sind auch nicht weniger Zeilen Code. Es ist aber eventuell lesbarer. Und wenn ich mir vorstelle, dass ich meine Daten vllt noch nach 20 anderen Variablen filtern möchte, will ich nicht jedesmal einen extra Datensatz erstellen müssen. Manchmal wird es dann schwierig, sich sinnvolle Namen für die Datensätze auszudenken. So sehe ich immer, welche Filter ich genau angewandt habe. Allerdings: Brauche ich diese Datensätze noch für andere Berechnungen, ist subset die bessere Lösung. Oder ich weise das gefilterte einer Variablen zu, das geht auch mit der filter-Version:
+
+```{r}
+chinstraps <- penguins %>%
+  filter(species == "Chinstrap")
+```
+
+### Zusammenfassend grundlegende Konzepte:
+
+- Es gibt Funktionen und Objekte. Eine Funktion "macht etwas" mit einem Objekt, berechnet zB den Mittelwert einer Zahlenreihe (Zahlenreihe = Vektor =  Objekt).
+
+- Die Installation von Paketen erweitert die Funktionalitäten in R. CRAN-Pakete werden mit "install.packages("Paketname")" installiert.
+
+- Ein Paket muss jede Sitzung neu geladen werden (einfach im Skript den library-Befehl reinschreiben)
+
+- mithilfe von Zuweisungen werden Variablen definiert, mit denen weiter gearbeitet werden kann.
 
 
 ### Zusammenfassend noch einmal grundlegende Zeichen:
@@ -248,3 +337,17 @@ Versteht ihr, was ausgewählt wurde?
 - in anderen Kontexten umgeben Klammern ( ) immer eine Sinneinheit. D. h. bei der Erstellung eines Diagramms, dass die Informationen, die zu aes gehören in Klammern hinter aes geschrieben werden, sie dürfen nicht hinter die schließende Klammer rutschen. Passiert manchmal.
 
 - Eckige Klammern []: Mit ihnen kann Zeilen, Spalten und Felder eines Datensatzes anwählen.
+
+- die Pipe %>%: Ist ein besonderes Zeichen im R-Dialekt "tidyverse" und gibt den Inhalt davor an die nächste Zeile weiter.
+
+
+### trouble shoot infos
+
+1. Tippfehler
+
+Es gibt eine große Onlinecommunity zu R, man findet eigentlich zu jeder Frage eine Antwort. Vieles ist aber tatsächlich auf englisch, deswegen ist es eine gute Idee, auch mal auf englisch zu googeln.
+Beim googeln sollte man übrigens immer neben R auch den Paketnamen zu der eigentlichen Frage / Stichworten eingeben. 
+
+Wenn man eine Antwort nicht versteht, nicht verwirren lassen: Häufig gibt es mehrere Lösungswege. Wie in einer normalen Sprache, gibt es auch in Programmiersprachen unterschiedliche Wege um das gleiche auszudrücken. Sollte immer der gleiche Lösungsweg vorgeschlagen werden und man versteht ihn nicht, dann versucht euch über die R-Hilfe die einzelnen Schritte des Lösungsweges anzuschauen. Oder fragt jemanden, manchmal reicht schon ein zweites Paar Augen, um ein Problem zu lösen.
+
+
