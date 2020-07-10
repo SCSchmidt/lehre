@@ -1,0 +1,118 @@
+---
+title: "Wahrscheinlichkeitsfunktionen"
+author: "Sophie C. Schmidt"
+date: "10 Juli 2020"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE)
+
+#install.packages("bookdown") # Achtung. install.packages-Befehle können in einem RMD-Dokument nicht ausgeführt werden. Deswegen werden sie auskommentiert!
+library(bookdown) # bookdown wird im output-Befehl ganz oben gebraucht. Deswegen bitte installieren!
+
+#install.packages("knitr")
+library(knitr)
+
+```
+
+
+Normal, Student’s, Poisson, Binomial, Logistic, Lognormal, etc.
+
+## Standardnormalverteilung
+
+Wenn eine normalverteilte Variable ganz bestimmten Parametern folgt, ist sie **standardnormalverteilt**. 
+
+
+## z-transformation
+
+
+## Poissonverteilung
+
+## Konfidenzintervalle
+
+
+Neben der Normalverteilung gibt es auch andere Verteilungsarten, die wichtig für die Statistik sind. Eine jetzt, andere später
+
+
+## Binomialverteilung
+
+
+
+## Binomialtest
+
+Den ersten Test, den wir heute kennenlernen, ist der Binomialtest. Er testet die Häufigkeit eines Auftretens zweier **nominalen** Werte gegenüber einer angenommenen theoretischen Verteilung. Unser Beispiel sieht so aus:
+
+In einem Gräberfeld wurden 200 Bestattungen ausgegraben, davon konnten alle exakt als männlich oder weiblich bestimmt werden und es sind 75 Frauen und 125 Männer. 
+
+Wir stellen deshalb eine Hypothese auf: Der Frauen- und Männeranteil der Gemeinschaft war genau wie bei unserer 50:50 (biologisch gut begründet vermutbar). Strukturell werden Frauen also weniger häufig bestattet als Männer.
+
+Daraus entwickeln wir die statistischen Hypothesen:
+
+- H0 =  Die Stichprobe lässt keinen Rückschluss auf die Grundgesamtheit zu und es kann keine strukturelle Benachteilung festgestellt werden
+
+- H1 = ungerichtet: Es gibt Unterschiede in der Häufigkeit der Bestattung nach Geschlecht; gerichtet: Männer werden häufiger bestattet als Frauen
+
+Der Binomialtest ist in R base umgesetzt und sehr leicht ausführbar:
+
+```{r binomial Bsp}
+# Das ist die allgemeine Syntax binom.test(nsuccesses, ntrials, p, alternative="greater")
+# unser Bsp sieht so aus:
+
+binom.test(125, 200, 0.5, alternative="greater")
+
+# es lässt sich auch anders herum formulieren:
+
+binom.test(75, 200, 0.5, alternative = "less") # jetzt zählen wir die 75 Frauengräber als "successes" und müssen folglich auch die Richtung des Tests mit alternative "umdrehen"
+
+# oder wir sagen: keine Ahnung, in welche Richtung das Ungleichgewicht geht:
+
+binom.test(75, 200, 0.5, alternative = "two.sided")
+```
+Easy no?
+
+Dann setzen wir das doch einmal mit einem echten archäolgischen Datensatz um. Am einfachsten ist es, wir nehmen genau die gleiche Fragestellung mit dem Gräberfeld Ernest Witte in Texas:
+
+```{r data sets}
+data(EWBurials)
+# am besten ihr schaut ihn euch einmal an. Wie wär es mit View oder ?
+```
+
+So, jetzt wissen wir, wie die Spalte heißt, auf die wir uns beziehen möchten. Was wir jetzt machen können, ist eine Verschachtelung von Anfragen. Zuerst fragen wir danach, wie viele Einträge es denn in der Spalte Sex des Datensatzes EWBurials gibt, die "Male" heißen. Das zählen übernimmt die praktische kleine Funktion "nrow" (n bedeutet die Größe eine Stichprobe und wir zählen rows, also Zeilen). 
+
+Wir fragen also gleich wie viele gibt es im Datensatz EWBurials, wo die Spalte des Datensatzes EWBurials namens "Sex" den Eintrag "Male" hat. Die Einschränkung, welche Zeilen gezählt werden sollen (die mit "male") kommt in eckigen Klammern hinter den Datensatz. Das KOMMA dahinter darf nicht vergessen werden! Weil die Ansprache in eckigen Klammern ja immer mit [Zeile,Spalte] organisiert ist, müssen wir den Spaltenhinweisplatz in der Formel kreiieren, auch wenn wir ihn frei lassen:
+
+```{r EWBurials binomial}
+# erst einmal Trockenübung:
+# wir fragen, wie viele Zeilen gibt es denn überhaupt?
+nrow(EWBurials)
+# cool! Und jetzt nur die, die männlich sind?
+nrow(EWBurials[EWBurials$Sex == "Male",])
+# klappt oder?
+
+
+#Dann fügen wir das doch in den binom-Test ein:
+
+binom.test(nrow(EWBurials[EWBurials$Sex == "Male",]), nrow(EWBurials), 0.5, alternative = "two.sided")
+```
+
+Wie können wir das Ergebnis interpretieren?
+
+Der p-Wert ist 1! 
+
+Es gibt also eine 100%ige Wahrscheinlichkeit, dass wir uns irren, wenn wir die Alternativhypothese akzeptieren... oh... ups...
+
+Dann müssen wir wohl davon ausgehen, dass es hier eine Gleichverteilung von Männern und Frauen gibt. 
+
+Keine große Überraschung für die, die sich die Zahlen vorher angeschaut haben. ;-) 
+
+Herzlichen Glückwunsch! 
+
+So einfach ist ein Binomialtest! 
+
+
+
+## sind meine Daten normalverteilt?
+
