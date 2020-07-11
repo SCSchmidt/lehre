@@ -343,11 +343,24 @@ chinstraps <- penguins %>%
 
 ### trouble shoot infos
 
-1. Tippfehler
+1. Tippfehler. Meistens klappt etwas nicht, weil man sich vertippt hat. Ein Komma zu wenig, eine Klammer zu viel, ein Buchstabe verdreht. Der Computer ist dumm und versteht nicht, was man gemeint hat. 
 
-Es gibt eine große Onlinecommunity zu R, man findet eigentlich zu jeder Frage eine Antwort. Vieles ist aber tatsächlich auf englisch, deswegen ist es eine gute Idee, auch mal auf englisch zu googeln.
-Beim googeln sollte man übrigens immer neben R auch den Paketnamen zu der eigentlichen Frage / Stichworten eingeben. 
+2. Fehlermeldung lesen! Häufig sagt R, was das Problem ist.
 
-Wenn man eine Antwort nicht versteht, nicht verwirren lassen: Häufig gibt es mehrere Lösungswege. Wie in einer normalen Sprache, gibt es auch in Programmiersprachen unterschiedliche Wege um das gleiche auszudrücken. Sollte immer der gleiche Lösungsweg vorgeschlagen werden und man versteht ihn nicht, dann versucht euch über die R-Hilfe die einzelnen Schritte des Lösungsweges anzuschauen. Oder fragt jemanden, manchmal reicht schon ein zweites Paar Augen, um ein Problem zu lösen.
+3. Andere drüber lesen lassen, die dann den Tippfehler finden.
 
+4. Schauen, ob man nicht irgendwo die Reihenfolge verdreht hat und einen alten Datensatz überschrieben hat, auf den man dann zugreift. In der Environment schauen, ob die Variablen noch stimmen und/oder wenn man ein Skript komplett laufen lässt noch einmal von oben nach unten gehen und gucken, ob sich da ein Fehler eingeschlichen hat.
+
+5. Überprüfen, ob alle Pakete, die man braucht, geladen sind.
+
+6. Die R-Hilfe. Mit ?Befehl oder rechts unten unter dem Reiter Help kann man nach einzelnen Funktionen suchen und noch einmal gucken, ob man die Funktion richtig benutzt.
+
+7. Diese Tippfehler, ne... lest noch einmal gnaz gneau drüberr. 
+
+8. Es gibt eine große Onlinecommunity zu R, man findet eigentlich zu jeder Frage eine Antwort. Vieles ist aber tatsächlich auf englisch, deswegen ist es eine gute Idee, auch mal auf englisch zu googeln.
+Beim googeln sollte man immer neben R auch den Paketnamen zu der eigentlichen Frage / dem Stichworten eingeben. 
+
+9. Wenn man eine Antwort nicht versteht, nicht verwirren lassen: Häufig gibt es mehrere Lösungswege. Wie in einer normalen Sprache, gibt es auch in Programmiersprachen unterschiedliche Wege um das gleiche auszudrücken. Sollte immer der gleiche Lösungsweg vorgeschlagen werden und man versteht ihn nicht, dann versucht euch über die R-Hilfe die einzelnen Schritte des Lösungsweges anzuschauen. Oder fragt jemanden, manchmal reicht schon ein zweites Paar Augen, um ein Problem zu lösen.
+
+10. Keine Panik! Mancht 'ne Pause, geht für 5min weg vom Rechner, manchmal braucht man nur einen frischen Blick auf das Problem, und dann löst man es.
 

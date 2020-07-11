@@ -1,12 +1,12 @@
 Package: lehre
-Title: What the Package Does (One Line, Title Case)
+Title: In diesem Paket wird Lehrmaterial zu Statistischen Methoden zur Verfügung gestellt.
 Version: 0.0.0.9000
 Authors@R:
-    person(given = "First",
-           family = "Last",
+    person(given = "Sophie C.",
+           family = "Schmidt",
            role = c("aut", "cre"),
-           email = "first.last@example.com")
-Description: What the package does (one paragraph)
+           email = "s.c.schmidt@uni-koeln.de")
+Description: Verschiedene Rmd-Dateien mit Hinweisen zu ggplot, statistischen Tests, reproduzierbarer Wissenschaft in Archäologie und Biologie.
 License: What license it uses
 ByteCompile: true
 Encoding: UTF-8

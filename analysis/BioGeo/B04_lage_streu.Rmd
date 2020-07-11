@@ -104,7 +104,9 @@ Die Normalverteilung ist wichtig, da ihr bestimmte biologische Merkmale folgen. 
 Erst einmal: Wir bauen uns in R selber eine Normalverteilung. R hat dafür eine Funktion `rnorm`. In ihr muss man noch angeben, wie viele Werte ich kreiieren möchte (`n = `), welchen Mittelwert (`mean = `) und welche Standardabweichung (`sd = `) die Daten haben sollen:
 
 ```{r}
-normal <- rnorm(100, mean=5, sd=2)
+normal <- rnorm(100, 
+                mean=5, 
+                sd=2)
 ```
 
 
