@@ -157,6 +157,13 @@ Links lassen sich auch einfügen, und zwar als [Hyperlink im Text](https://rmark
 
 oder einfach so: <https://rmarkdown.rstudio.com/authoring_quick_tour.html>. 
 
+### Kommentare
+
+Auch in Markdown-Text kann man Kommentare abgeben, die nicht mehr sichtbar sind, wenn das Dokument in eine html/docx oder pdf umgewandelt wird. Sie werden im "html-style" geschrieben: Mit \<!-- hier steht das Kommentar -->  
+
+Schaut einmal in mein Rmd-Dokument um zu sehen, was ich unter dieser Zeile kommentiert habe.
+
+<!-- Haha. Das hier ist unsichtbar -->
 
 ### Zusammenfassung
 

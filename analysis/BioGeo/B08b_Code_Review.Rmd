@@ -1,0 +1,46 @@
+---
+title: "Übung Code Review Anleitung"
+author: "Sophie C. Schmidt"
+date: "11 Juli 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Code Review ist eine gängige Praxis, um die eigenen Analysen zu verbessern und die Lesbarkeit des Codes zu gewährleisten. Letztendlich ist es nichts weiter, als seine Arbeit gegenlesen zu lassen. Da ich in dieser Woche nicht in der Lage bin, euch einzeln Feedback zu geben, macht ihr das bitte untereinander.
+
+Ich schicke euch in Break-Out-Groups. Bitte tauscht eure Rmd-Dokumente so aus, dass sie jemand in der Hand hat, der nicht in eurer Kleingruppe ist. Zum Bsp über WhatsApp / E-mail / Telegram / ... wie auch immer. 
+
+Dann achtet bitte auf die folgenden Fragen:
+
+1. Ist das Markdown-Dokument vollständig (YAML-Header? Titel & Autor genannt? Überschriften?)
+
+2. Steht der Code in Code-Chunks? 
+
+3. Ist der Code gut lesbar (mithilfe von Leerzeichen, Abständen, Zeilenumbrüchen)?
+
+4. Ist der Code kommentiert wo es notwendig ist?
+
+5. Beantwortet der Code die Fragen?
+
+6. Sind die Interpretationen richtig?
+
+Schreibt eure Kommentare im Kommentarstyle in das Rmarkdown-Dokument. 
+
+\<!-- hier steht das Kommentar --> 
+
+
+**Bitte seid nett zueinander! Gebt konstruktives Feedback!** 
+
+
+Das heißt: 
+
+1. Feedback-Sandwich: Immer erst eine positive Sache nennen, dann einen Kritikpunkt, dann wieder eine positive Sache.
+
+2. Gebt konkrete Verbesserungsvorschläge. 
+
+3. Betont, was ihr gut findet.
+
+Diskutiert in der Kleingruppe, wenn ihr euch nicht sicher seid, ob etwas verbessert werden könnte oder nicht. 
