@@ -8,7 +8,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      message = FALSE)
+                      message = FALSE,
+                      eval = FALSE)
 
 #install.packages("bookdown") # Achtung. install.packages-Befehle können in einem RMD-Dokument nicht ausgeführt werden. Deswegen werden sie auskommentiert!
 library(bookdown) # bookdown wird im output-Befehl ganz oben gebraucht. Deswegen bitte installieren!
@@ -16,103 +17,240 @@ library(bookdown) # bookdown wird im output-Befehl ganz oben gebraucht. Deswegen
 #install.packages("knitr")
 library(knitr)
 
+library(palmerpenguins)
+data("penguins")
 ```
 
 
-Normal, Student’s, Poisson, Binomial, Logistic, Lognormal, etc.
 
 ## Standardnormalverteilung
 
 Wenn eine normalverteilte Variable ganz bestimmten Parametern folgt, ist sie **standardnormalverteilt**. 
 
+Daten lassen sich von einer Normalverteilung in die Standardnormalverteilung überführen. Die sogenannte z-Tranformation geht auch in R ganz einfach. Schauen wir uns zuerst einmal die Gewichtsdaten von nur einer Spezies Pinguine in einem Histogramm an:
 
-## z-transformation
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+chinstraps <- penguins %>%
+  filter(species == "Chinstrap")
 
 
-## Poissonverteilung
+ggplot()+
+  geom_histogram(data = chinstraps, aes(x = body_mass_g), na.rm = TRUE)
+```
 
-## Konfidenzintervalle
+Das sieht relativ normalverteilt aus, mit ein paar Lücken. 
+
+Jetzt können wir die funktion `scales` nutzen, um "body_mass_g" der Chinstraps-Pinguine in eine standardnormalverteilte Zahlenreihe zu bringen:
+
+```{r}
+chinstraps$body_mass_g_z <- scale(chinstraps$body_mass_g)
+```
+
+Schauen wir uns jetzt das noch einmal an:
+
+```{r}
+
+ggplot()+
+  geom_histogram(data = chinstraps, aes(x = body_mass_g_z), na.rm = TRUE)
+
+```
+
+Tada! Auf der x-Achse sehen wir, dass die Zahlenwerte sich verändert haben. 
+
+Wir können ja mal ausrechnen, wie viele der Werte zwischen -1 und 1 liegen:
+
+```{r}
+
+chinstraps_1s <- chinstraps %>% #neuen datensatz kreiieren
+  filter(body_mass_g_z >= -1 & body_mass_g_z <= 1) # in dem die chinstraps liegen, deren z-transformiertes Gewicht zwischen -1 und 1 liegt
+
+```
+
+Eigentlich müssten das jetzt etwa 68% sein. Rechnen wir also aus, wie viele 68 % derChinstrap-Pinguine sind. Dazu nutzen wir die praktische kleine Funktion `nrow`, die die Zeilen in einem Datensatz zählt und damit bei uns die Anzahl der Pinguine in dem Datensatz. Das multiplizieren wir mit 68 und teilen durch 100. nrow nutzen wir auch, um den Datensazu chinstraps_1s auszuzählen: 
+
+```{r}
+theorie_1s_chinstraps <- nrow(chinstraps)*68/100
+
+nrow_chinstraps_1s <- nrow(chinstraps_1s)
+```
+
+Und die beiden Zahlen vergleichen wir einfach dadurch, dass wir sie voneinander abziehen:
+
+```{r}
+theorie_1s_chinstraps - nrow_chinstraps_1s
+```
+Der Unterschied liegt nur bei 3-4 Individuen. Das ist eine total akzeptable Abweichung bei einer Stichprobengröße von 68 Chinstraps-Pinguinen!
+
+Aber hmh. Kann ich das nicht testen?
+
+Yes, we can!
+
+Es gibt für jedes Skalenniveau Tests, die prüfen, ob Daten normalverteilt sind. 
 
 
-Neben der Normalverteilung gibt es auch andere Verteilungsarten, die wichtig für die Statistik sind. Eine jetzt, andere später
+
+# sind meine Daten normalverteilt?
+
+## metrischen Daten: optisch und mit shapiro-wilk
+
+### Q-Q-plot
+
+Optisch die Normalverteilung abzuschätzen ist sinnvoll, dann hat man schon einmal eine Idee. 
+
+Nehmen wir also unseren Datensatz der Chinstrap-Pinguine und deren Gewicht. ein Q-Q-plot ist ein "Quantil-Quantil-Plot": Die Beobachtungswerte eines Merkmals werden der Größe nach geordnet und abgetragen. Als Vergleich dienen die Quantile der Normalverteilung (theoretische Verteilung), diese werden als Linie abgetragen. Wenn die abgetragene Messwertreihe normalverteilt ist, stimmen die empirischen und die theoretischen Quantile annähernd überein, d. h. die Werte liegen auf einer Diagonalen.
+
+Große systematische Abweichungen von dieser Diagonalen geben einen Hinweis darauf, die Messwerte doch nicht normalverteilt sind. Das Quantil-Quantil-Diagramm kann keinen Verteilungstest ersetzen. 
+
+Das Paket, in dem Q-Q-plots für R umgesetzt wurden, heißt `ggpubr`, installieren wir es also:
+
+```{r,eval = FALSE}
+install.packages("ggpubr")
+```
+
+Und wenden es an:
+
+```{r Q-Q-Plot}
+library(ggpubr)
+ggqqplot(chinstraps$body_mass_g)
+```
+Man sieht: auf der x-Achse wird die theoretische Verteilung abgetragen und auf der y-Achse die unserer Stichprobe (sample). Die Linie zeigt den Idealverlauf an.
+
+Fast alle Punkte liegen in der grauen Zone, die das Konfidenzintervall von 95% darstellt. Das sieht also nicht ganz schlecht aus (wenn auch nicht so ganz exakt).
+
+
+### Kerndichtefunktion (KDE)
+Schauen wir deshalb doch mit der Visualisierung als Kerndichtefunktion (engl. *kernel-density estimation*) weiter. 
+
+Die Dichtefunktion ist eine Abstraktion eines Histogramms. Man stelle sich vor, dass jeder Datenpunkt auf der x-Achse abgetragen wird. Über jeden Punkt wird eine kleine Gaußsche Glockenkurve gemalt. Die Werte dieser Kurven werden übereinander addiert. Logisch ist, da wo viele Punkte nah beieinander liegen, werden ganz viele Werte zusammenaddiert, weil die Glockenkurven sich überlappen. Die Addition der Kurven wird aufgezeichnet und dann lässt sich anhand der daraus resultierenden Kerndichtefunktion zeigen, an welchen Stellen, viele Werte liegen und an welchen wenige. Die y-Achse zeigt allerdings nicht mehr die absolute Häufigkeit, wie bei einem Histogramm, sondern einen relativ abstrakten Dichtewert. (Mehr Infos unter: http://archaeoinformatics.net/kernel-density-estimation-visualised-in-r/). 
+
+In ggplot ist die Funktion dafür `geom_density`.
+
+
+```{r density visualisierung BACups}
+ggplot(chinstraps) +
+  geom_density(aes(x = body_mass_g)) 
+```
+Wenn ich mir das anschaue, sieht das der Normalverteilung recht ähnlich. 
+
+Aber ganz sicher bin ich mir nicht.
+
+Testen wir also die protoappeninen Gefäße jetzt mit dem richtigen Test: Shapiro, los geht's!
+
+
+```{r test BAcups}
+  shapiro.test(chinstraps$body_mass_g)
+```
+
+Ok, ok, was ist hier passiert? 
+
+Der Shapiro-Wilk Test testet, ob es einen signifikanten Unterschied zwischen der Normalverteilung und den z-transformierten Daten der eigenen Messwertreihe gibt. Da der Test die Daten selber transformiert, müssen wir ihm nicht die z-transformierten Werte geben. 
+
+Nehmen wir das Ergebnis einmal auseinander.
+
+R sagt:
+
+```
+	Shapiro-Wilk normality test
+
+data:  chinstraps$body_mass_g
+W = 0.98449, p-value = 0.5605
+```
+
+ - In der ersten Zeile noch einmal, welchen Test wir angewandt haben
+ - in der zweiten Zeile, auf welchen Datensatz
+ - und die dritte Zeile wird spannend. Da steht
+  - W = 0,98499
+  - p = 0,5605
+
+_W_ ist die in der Vorlesung erwähnte Testgröße, die mit einer theoretischen Verteilung im Bezug auf die Wahrscheinlichkeit abgeglichen wird, dass dieser Wert entsteht.
+
+_p_ ist die Wahrscheinlichkeit, dass wir uns irren, wenn wir die H_0 - Hypothese ablehnen.
+
+Was war H_0 noch einmal? 
+
+H_0 ist: Es gibt keinen signifikatanten Unterschied zwischen der Normalverteilung und meiner Messwertreihe.
+
+Wir irren uns also mit einer Chance von 56 %, wenn wir das ablehnen und behaupten würden, es gäbe einen Unterschied zwischen der Normalverteilung und der Messwertreihe.
+
+Applaus, das bedeutet, wir können davon ausgehen, dass unsere Daten normalverteilt sind! Die Chinstrap-Pinguine sind in ihrem Gewicht normalverteilt! 
+
+Ist das mit den anderen Pinguinarten auch so?
+
+**Aufgabe: Erstellt ein QQ-plot, eine Kerndichteschätzung und macht einen Shapiro-Wilk-Test für das Gewicht der Adelie - und der Gentoo-Pinguine!**
+
+
+Neben der Normalverteilung gibt es auch andere Verteilungsarten, die wichtig für die Statistik sind, z. B. die Binomialverteilung
 
 
 ## Binomialverteilung
 
-
+Die Binomialverteilung kommt von "bi – nomen" → eine Verteilung zweier nominaler Werte einer Variablen. Es darf nur diese zwei Ausprägungen geben, die zusammengerechnet 100% des Datenstzes ausmachen. Manche haben eine theoretische Verteilung, z. B. in menschlichen Gruppen sind in der Regel 52% der geborenen Kinder weiblich und 48% männlich. Intersexualität ist natürlich bekannt, deshalb ist das Beispiel nicht ganz richtig, aber es wird noch immer häufig zitiert. Manchmal werden Anwesenheits- Abwesenheitsmerkmale noch genannt. Denn wenn eine Variable nur "anwesend" und "abwesend" kodiert (dichotom oder binär), dann entsteht immer automatisch eine Binomialverteilung.
 
 ## Binomialtest
 
-Den ersten Test, den wir heute kennenlernen, ist der Binomialtest. Er testet die Häufigkeit eines Auftretens zweier **nominalen** Werte gegenüber einer angenommenen theoretischen Verteilung. Unser Beispiel sieht so aus:
+Der Binomialtest testet die Häufigkeit eines Auftretens zweier **nominalen** Werte gegenüber einer angenommenen theoretischen Verteilung. Unser Beispiel sieht so aus:
 
-In einem Gräberfeld wurden 200 Bestattungen ausgegraben, davon konnten alle exakt als männlich oder weiblich bestimmt werden und es sind 75 Frauen und 125 Männer. 
+Bei den Pinguinen gibt es männliche und weibliche. Wir testen, ob es dort eine Ungleichverteilung gibt.
 
-Wir stellen deshalb eine Hypothese auf: Der Frauen- und Männeranteil der Gemeinschaft war genau wie bei unserer 50:50 (biologisch gut begründet vermutbar). Strukturell werden Frauen also weniger häufig bestattet als Männer.
+Wir stellen deshalb eine Hypothese auf: Der Weibchen- und Männchenanteil der Pinguine ist genau 52:48. 
 
 Daraus entwickeln wir die statistischen Hypothesen:
 
-- H0 =  Die Stichprobe lässt keinen Rückschluss auf die Grundgesamtheit zu und es kann keine strukturelle Benachteilung festgestellt werden
+- H_0 =  Die Stichprobe lässt keinen Rückschluss auf die Grundgesamtheit zu und es kann keine Überrepräsentation von Männchen oder Weibchen im Datensatz festgestellt werden
 
-- H1 = ungerichtet: Es gibt Unterschiede in der Häufigkeit der Bestattung nach Geschlecht; gerichtet: Männer werden häufiger bestattet als Frauen
+- H_1 = ungerichtet: Es gibt Unterschiede in der Häufigkeit des Auftretens nach Geschlecht; gerichtet: es gibt mehr Männchen oder mehr Weibchen im Datensatz
 
-Der Binomialtest ist in R base umgesetzt und sehr leicht ausführbar:
+Der Binomialtest ist in R base umgesetzt und sehr leicht ausführbar. Zuerst zählen wir aus, wie viele Männchen und Weibchen wir haben. Dafür gibt es einen einfachen Trick: Wir lassen R zählen, wie häufig `penguins$sex == "male"` wahr ist (TRUE) und dadurch, dass wir das wie eine Zahl behandelt und die Funktion `sum` (aufsummieren) darauf ausführen, wandelt er alle TRUE in "1" um. Das gleiche noch einmal für Frauen, daran denken, dass in manchen Datensätzen nichts steht (`na.rm = TRUE`) und voilà
+
+```{r}
+m <- sum(penguins$sex == "male", na.rm = TRUE)
+w <- sum(penguins$sex == "female", na.rm = TRUE)
+```
+
+Wir haben die beiden Zahlen.
 
 ```{r binomial Bsp}
-# Das ist die allgemeine Syntax binom.test(nsuccesses, ntrials, p, alternative="greater")
-# unser Bsp sieht so aus:
+# Das ist die allgemeine Syntax binom.test(nsuccesses, ntrials, p, alternative="two.sided" OR "greater" OR "lesser")
 
-binom.test(125, 200, 0.5, alternative="greater")
+# wir sagen: keine Ahnung, in welche Richtung das Ungleichgewicht geht:
 
-# es lässt sich auch anders herum formulieren:
-
-binom.test(75, 200, 0.5, alternative = "less") # jetzt zählen wir die 75 Frauengräber als "successes" und müssen folglich auch die Richtung des Tests mit alternative "umdrehen"
-
-# oder wir sagen: keine Ahnung, in welche Richtung das Ungleichgewicht geht:
-
-binom.test(75, 200, 0.5, alternative = "two.sided")
-```
-Easy no?
-
-Dann setzen wir das doch einmal mit einem echten archäolgischen Datensatz um. Am einfachsten ist es, wir nehmen genau die gleiche Fragestellung mit dem Gräberfeld Ernest Witte in Texas:
-
-```{r data sets}
-data(EWBurials)
-# am besten ihr schaut ihn euch einmal an. Wie wär es mit View oder ?
+binom.test(m, (m + w), 0.48, alternative = "two.sided")
 ```
 
-So, jetzt wissen wir, wie die Spalte heißt, auf die wir uns beziehen möchten. Was wir jetzt machen können, ist eine Verschachtelung von Anfragen. Zuerst fragen wir danach, wie viele Einträge es denn in der Spalte Sex des Datensatzes EWBurials gibt, die "Male" heißen. Das zählen übernimmt die praktische kleine Funktion "nrow" (n bedeutet die Größe eine Stichprobe und wir zählen rows, also Zeilen). 
+Der Output sagt:
 
-Wir fragen also gleich wie viele gibt es im Datensatz EWBurials, wo die Spalte des Datensatzes EWBurials namens "Sex" den Eintrag "Male" hat. Die Einschränkung, welche Zeilen gezählt werden sollen (die mit "male") kommt in eckigen Klammern hinter den Datensatz. Das KOMMA dahinter darf nicht vergessen werden! Weil die Ansprache in eckigen Klammern ja immer mit [Zeile,Spalte] organisiert ist, müssen wir den Spaltenhinweisplatz in der Formel kreiieren, auch wenn wir ihn frei lassen:
-
-```{r EWBurials binomial}
-# erst einmal Trockenübung:
-# wir fragen, wie viele Zeilen gibt es denn überhaupt?
-nrow(EWBurials)
-# cool! Und jetzt nur die, die männlich sind?
-nrow(EWBurials[EWBurials$Sex == "Male",])
-# klappt oder?
-
-
-#Dann fügen wir das doch in den binom-Test ein:
-
-binom.test(nrow(EWBurials[EWBurials$Sex == "Male",]), nrow(EWBurials), 0.5, alternative = "two.sided")
 ```
+	Exact binomial test
 
-Wie können wir das Ergebnis interpretieren?
+data:  m and (m + w)
+number of successes = 168, number of trials = 333, p-value = 0.3805
+alternative hypothesis: true probability of success is not equal to 0.48
+95 percent confidence interval:
+ 0.4494698 0.5594584
+sample estimates:
+probability of success 
+             0.5045045 
+``` 
 
-Der p-Wert ist 1! 
+Am Anfang, welchen Test wir gemacht haben `Exact binomial test` und was unsere beiden Datensätze waren `data:  m and (m + w)`. Die Anzahl von "Erfolgen" (Männchen), die Anzahl der "Versuche" (alle betrachteten Pinguine) und einen `p-Wert` von 0,38. 
 
-Es gibt also eine 100%ige Wahrscheinlichkeit, dass wir uns irren, wenn wir die Alternativhypothese akzeptieren... oh... ups...
+Die Alternativhypothese wird noch einmal genannt: "Die wahre Wahrscheinlichkeit, dass man ein Männchen "zieht" ist nicht gleich 48%." 
 
-Dann müssen wir wohl davon ausgehen, dass es hier eine Gleichverteilung von Männern und Frauen gibt. 
+Es wird das 95%-Konfidenzintervall angegeben. Hier sehen wir, dass mit einer Wahrscheinlichkeit von 95% der "wahre" Chance, zufällig ein Männchen aus unseren Pinguinen zu ziehen zwischen 44,9% und 55,9% liegt. Das sample-estimate gibt einem eine Chance von 50,5%, ein Männchen zu erwischen. 
 
-Keine große Überraschung für die, die sich die Zahlen vorher angeschaut haben. ;-) 
-
-Herzlichen Glückwunsch! 
-
-So einfach ist ein Binomialtest! 
+Das heißt: In unserer Stichprobe sind 50,5% Männchen. Die Chance, dass wir uns irren, wenn wir behaupten, dass in der Grundgesamtheit nicht 48% Männchen sind, ist 38%. Deswegen weisen wir die Nullhypothese nicht zurück. Es gibt keine signifikante Abweichung von der angenommenen Verteilung.
 
 
+**Aufgabe: Schaut noch einmal im Piratendatensatz, ist dort die Verteilung der Männchen und Weibchen auch annähernd gleich? **
 
-## sind meine Daten normalverteilt?
+Denkt daran:
+```
+library(yarrr)
+data("pirates")
+
+```
 

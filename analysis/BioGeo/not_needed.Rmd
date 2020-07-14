@@ -1,0 +1,85 @@
+---
+title: "rausgeschmissen"
+author: "Sophie C. Schmidt"
+date: "14 7 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ordinale Daten
+### K-S-Test
+
+Der K-S-Test benötigt mindestens ordinal skalierte Daten, man kann ihn als Anpassungstest verwenden (und damit den Datensatz auf normalverteilung testen) und als Zweichstichproben-Test nutzen.
+
+
+Zuerst als Anpassungstest. Nehmen wir eine ordinale Variable, ... und stellen wir fest, dass wir in dem Pinguin-Datensatz keine ordinale Variable haben. Nagut. Dann erstellen wir aus dem metrischen Datensatz "flipper_length_mm" eine ordinale Variable, in dem wir die Daten klassizieren.
+
+#### Exkurs: Klassifikation von Daten in R
+
+
+
+Als erste erstellen wir einen neue Spalte in unserem Chinstrap-Pinguin-Datensatz, in dem wir die Klassen dann ablegen werden. Das ist super einfach, wir sagen einfach "hier liegt jetzt überall `NA`": 
+
+```{r}
+chinstraps$class_flipper_length <- NA
+```
+
+Wenn ihr euch den Datensatz jetzt anschaut, ist eine neue Spalte "class_flipper_length" entstanden, in der nur NA steht.
+
+Jezt müssen wir entscheiden, wie wir die Klassen aufteilen. Für das Anlegen von Klassen gibt es sogar ein paar sinnvolle Regeln!
+
+ - Klassen müssen eindeutig definiert sein und sich gegenseitig ausschließen, d. h. es darf keine Überlappungen geben.
+ - Klassen müssen erschöpfend sein, also alle möglichen Ausprägungen des Wertes erfassen. Kein Wert darf außerhalb einer Klasse bleiben.
+ - Klassen sollten gleich breite Intervalle bilden. Häufig werden runde Werte als Mitte oder Grenzen der Klasse definiert. Computergestützte Klassenbildung bieten noch unterschiedliche rechnerische Verfahren, in denen z. B. die Klassengrenzen dort gesetzt werden, wo besonders wenig Werte liegen. 
+ - Offene Klassen („weniger als...” oder „mehr als...”) sollten vermieden werden, da mit ihnen nicht mehr gerechnet werden kann. Das bedeutet, dass immer Unter- und Obergrenzen angegeben werden sollten. Aus ihnen lassen sich mittlere Werte errechnen, mit denen weitergearbeitet werden kann.
+ - Als Faustregel für die Anzahl der Klassen finden sich folgende Tips: 2*k < n , wobei n die Anzahl der Werte beschreibt und k die Anzahl der Klassen. Anders ausgedrückt: Es sollte weniger als halb so viele Klassen wie aufgenommene Werte geben. Eine andere Faustregel besagt, die Anzahl der Klassen möge die Quadratwurzel aus der Stichprobengröße sein: $$k = \sqrt{n}.$$ Logisch ist, je weniger Klassen gewählt werden, desto breiter sind sie.
+
+In welchem Bereich müssen die Klassen denn angelegt werden? Was genau ist der größte und der kleinste Wert?
+
+```{r}
+range(chinstraps$flipper_length_mm)
+```
+
+Wir brauchen also Klassen von 178 bis 212 mm. 
+
+Man könnte also 4 Klassen bestimmen, die in 10er Schritten vorangehen. 176-185, 186-195, 196-205, 206-215. Tun wir das doch einmal. Wir nehmen die `cut`-Funktion, die genau dafür gemacht wurde. Wir "zerschneiden" den Datensatz an den angegebenen Zahlen. Das Ergebnis wird einer Variablen zugewiesen, die wir dann in unseren Datensatz in die Spalte `chinstraps$class_flipper_length` zuweisen können. 
+
+```{r}
+# zerschneiden des Datensatzes chinstraps$flipper_length_mm an den angegebenen Stellen, als Labels geben wir die Klassengröße an
+groups <- cut(chinstraps$flipper_length_mm, 
+              c(175,185, 195, 205, 215), # "Schnittstellen"
+              labels = c("176-185", "186-195", "196-205", "206-215")) 
+
+# der Spalte in dem Datensatz zuweisen
+chinstraps$class_flipper_length <- as.factor(groups)
+```
+
+So. Jetzt haben wir einen Datensatz, der zwar als `factor` abgespeichert ist, dessen `levels` jedoch in einer sinnvollen Ordnung vorliegen: `r levels(chinstraps$class_flipper_length)`
+
+Schauen wir doch jetzt endlich, ob diese Klassen sich mit der Normalverteilung vergleichen lassen!
+
+Als erstes Zählen wir aus, wie viele Pinguine in welcher Klasse liegen:
+
+```{r}
+
+
+per <- table(chinstraps$class_flipper_length) # dann zähl ich die Häufigkeiten
+
+ks.test(per, "pnorm" ) # und vergleiche die Häufigkeiten mit der Normalverteilung "pnorm"
+```
+Der p-Wert ist sehr sehr klein, das heißt? 
+
+Daran denken: Die Nullhypothese ist, dass die beiden Verteilungen gleich sind. Wir testen in die "andere Richtung", wenn p > 0.05 sind die Daten normalverteilt.
+
+Schauen wir uns doch die Daten noch einmal kurz an, um zu überprüfen, ob wir das richtig verstanden haben:
+
+```{r optische überprüfung}
+barplot(per) # das ist der base-R-Befehl um ein Säulendiagramm zu erstellen. Nicht schön, aber schnell und wenig zu tippen. 
+```
+
+Alles klar?
+
+Dann weiter mit 
