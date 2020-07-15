@@ -26,37 +26,170 @@ Parametrisch bedeutet, dass die Daten **normalverteilt sein müssen**, damit man
 
 
 ## F-Test
-Der F-Test vergleicht die Varianzen von metrischen Variablen. Schauen wir uns doch noch einmal die :
+Der F-Test vergleicht die Varianzen von metrischen Variablen. Schauen wir uns doch noch einmal die Flossenlänge unserer Pinguine an und differenzieren sie nach Geschlecht. 
+
 ```{r}
-var.test(x = BACups_p$H,
-         y = BACups_s$H,
+# zwei Datensätze nach Geschlecht trennen:
+
+penguins_f <- subset(penguins, penguins$sex == "female")
+penguins_m <- subset(penguins, penguins$sex == "male")
+
+```
+
+Der F-Test ist in `base` R vorprogrammiert und die Funktion heißt `var.test`. 
+
+```{r}
+var.test(x = penguins_f$flipper_length_mm,
+         y = penguins_m$flipper_length_mm,
          alternative = "two.sided")
 ```
 Die Alternativhypothese ist, dass das Verhältnis der beiden Varianzen zueinander nicht 1 entspricht -- sie also unterschiedlich sind.
 
-Allerdings lässt der p-Wert keine Annahme der Alternativhypothese zu... 
+Der p-Wert "kratzt" mit 0,052 an der Grenze zur Signifikanz. Wenn wir die Signifikanzniveaus also nicht als trennscharf sonder eher "Richtlinien" verstehen, können wir hier sagen, dass es hier vielleicht doch signifikante Unterschiede zwischen den zwei Gruppen gibt.
+
+Wir wissen ja, was ein Problem sein wird: Wir haben mehrere Pinguinarten in unserer Stichprobe. Vllt nehmen wir deshalb doch mal lieber nur die Pinguine einer Art.
+
+```{r}
+gentoo <- subset(penguins, penguins$species == "Gentoo") 
+```
+
+So kann ich auch gleich noch eine zweite Art und weise demonstrieren, wie der Code der Funktion auch aussehen kann:
+
+```{r}
+var.test(flipper_length_mm ~ sex, na.rm = TRUE, data = gentoo)
+```
+
+Dieser p-Wert ist sehr klein. Wir können also sicher davon ausgehen, dass die Varianz der beiden Gruppen nicht gleich ist.
+
+Schauen wir uns das doch noch einmal visualisiert an, das hilft meistens bei der Intepretation. Ein Boxplot zeichnet ja immer das 1. und 3. Quartil ab und kann deshalb als Annäherung an die Standardabweichung bezeichnet werden. :
+
+```{r}
+library(ggplot2)
+
+ggplot()+
+geom_boxplot(data = gentoo, 
+               aes(y=flipper_length_mm, 
+                   x = sex))
+```
+Ja, die beiden "boxes" sind doch deutlich unterschiedlich groß.
+
+Ein anderes Beispiel muss her, damit wir nachher noch den t-Test und nicht nur den Welch-Test machen können!
+
+Nehmen wir das Gewicht, das war doch schon einmal eine Aufgabe.
+
+Ach ja, trennen wir mal die Geschlechter vorher, schließlich heißt die Voraussetzung, dass der gemessene Parameter in beiden Gruppen normalverteilt sein soll. 
+
+Also: 1. Ein subset nach dem Geschlecht der Tiere machen und 2. dann den Shapiro-Wilk-Test für die beiden Gruppen. 
+
+```{r}
+
+gentoo_f  <- subset(gentoo, gentoo$sex == "female")
+gentoo_m  <- subset(gentoo, gentoo$sex == "male")
+
+
+shapiro.test(gentoo_f$body_mass_g)
+shapiro.test(gentoo_m$body_mass_g)
+
+```
+
+Sehr gut, diese beiden Variablen sind normalverteilt. Jetzt der F-Test:
+
+```{r}
+var.test(data = gentoo, body_mass_g ~ sex, na.rm = TRUE)
+```
+
+Der p-Wert ist relativ groß. Das bedeutet, die Varianz der beiden Gruppen ist recht sicher gleich.
+
+Machen wir also mit diesem Bsp jetzt den t-Test:
+
+http://www.sthda.com/english/wiki/f-test-compare-two-variances-in-r 
 
 
 ## t-test
 
+http://www.sthda.com/english/wiki/unpaired-two-samples-t-test-in-r
+
 Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass wir von zwei unterschiedlichen Gruppen ausgehen können:
 ```{r}
-t.test(x = BACups_p$H,
-         y = BACups_s$H,
+t.test(data = gentoo, body_mass_g ~ sex, na.rm = TRUE,
          alternative = "two.sided")
 ```
-Es wurde ein Welch-Test durchgeführt, weil die Varianzen nicht gleich sind (auch wenn wir oben die Alternativhypothese nicht annehmen konnten, war das Ergebnis auch nicht eindeutig so, dass das Varianzverhältnis 1 entspricht).
+Es wurde ein Welch-Test durchgeführt, weil für R die Varianzen wohl doch nicht gleich sind.
 
-Der p-Wert erlaubt es uns wieder nicht, die Alternativhypothese sicher anzunehmen.
+Der p-Wert erlaubt es uns, die Alternativhypothese sicher anzunehmen.
+
+Jetzt erweitern wir das Spektrum der Gruppen. Durch einen Faktor getrennt, der aber mehr als nur 2 Ausprägungenannehmen kann, können zB durch den Faktor "species" drei Gruppen entstehen. Bevor wir diese jedoch auf ihren Mittelwertsunterschied testen können, müssen wir auch hier die Varianzgleichheit untersuchen:
+
+## Levene-Test
+https://www.bjoernwalther.com/levene-test-in-r-berechnen-und-interpretieren/
+
+Der Levene-Test ist im Paket "car" umgesetzt.
+
+```{r}
+install.packages("car")
+
+library (car)
+```
+
+```{r}
 
 
-Tcha. Das passiert manchmal.
+leveneTest(data = penguins, body_mass_g ~ species, na.rm = TRUE)
+```
+Ein sehr kleiner p-Wert sagt: Ja. Diese Gruppen haben alle die gleiche Varianz.
 
-Tatsächlich haben wir in der Archäologie selten normalverteilte Daten. Deswegen sind der Mann-Whitney-Test und der K-S-Test wichtiger für uns.
-
+Weiter damit zur einfaktoriellen ANOVA!
 
 
 ## einfaktorielle ANOVA
+http://www.sthda.com/english/wiki/one-way-anova-test-in-r
+
+Aus irgendwelchen Gründen wir bei der ANOVA das Ergebnis nicht gleich angezeigt (Also der p-Wert). Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben
+```{r}
+# eigentliche ANOVAberechnung
+res.aov <- aov(body_mass_g ~ species, data = penguins)
+
+# Zusammenfassung des Ergebnisses
+summary(res.aov)
+
+```
+
+Höchstsignifikant! Das bedeutet? Die Art hat einen Einfluss auf das Gewicht der Pinguine. 
+
+Wer hätte es gedacht. ;-)
 
 ## mehrfaktorielle ANOVA
+
+https://www.datanovia.com/en/lessons/anova-in-r/
+
+https://sites.ualberta.ca/~lkgray/uploads/7/3/6/2/7362679/12c_-_multi-way_anova.pdf 
+
+
+
+HAHA! 
+
+## MULTIVARIATE ANOVA = MANOVA!
+
+```{r}
+sepl <- iris$Sepal.Length
+petl <- iris$Petal.Length
+# MANOVA test
+res.man <- manova(cbind(Sepal.Length, Petal.Length) ~ Species, data = iris)
+
+
+
+
+```
+
+
+
+
+
+```{r}
+sepl <- iris$Sepal.Length
+petl <- iris$Petal.Length
+# MANOVA test
+res.man <- manova(cbind(Sepal.Length, Petal.Length) ~ Species, data = iris)
+summary(res.man)
+```
 
