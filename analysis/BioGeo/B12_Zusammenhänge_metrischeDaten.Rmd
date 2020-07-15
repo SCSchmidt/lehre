@@ -1,0 +1,62 @@
+---
+title: "Zusammenhänge ordinaler Daten"
+author: "Sophie C. Schmidt"
+date: "14 7 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = FALSE)
+
+library(palmerpenguins)
+data(penguins)
+
+```
+
+
+
+# Vergleich zweier Gruppen
+
+Hier geht es darum, zwei Gruppen zu vergleichen und zu schauen, ob sie eventuell aus der gleichen Grundgesamtheit stammen könnten oder ob die Unterschiede signifikant sind. 
+
+# parametrische Verfahren
+
+Parametrisch bedeutet, dass die Daten **normalverteilt sein müssen**, damit man den Test darauf anwenden kann und die Daten ein metrisches Skalenniveau haben müssen.
+
+
+## F-Test
+Der F-Test vergleicht die Varianzen von metrischen Variablen. Schauen wir uns doch noch einmal die :
+```{r}
+var.test(x = BACups_p$H,
+         y = BACups_s$H,
+         alternative = "two.sided")
+```
+Die Alternativhypothese ist, dass das Verhältnis der beiden Varianzen zueinander nicht 1 entspricht -- sie also unterschiedlich sind.
+
+Allerdings lässt der p-Wert keine Annahme der Alternativhypothese zu... 
+
+
+## t-test
+
+Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass wir von zwei unterschiedlichen Gruppen ausgehen können:
+```{r}
+t.test(x = BACups_p$H,
+         y = BACups_s$H,
+         alternative = "two.sided")
+```
+Es wurde ein Welch-Test durchgeführt, weil die Varianzen nicht gleich sind (auch wenn wir oben die Alternativhypothese nicht annehmen konnten, war das Ergebnis auch nicht eindeutig so, dass das Varianzverhältnis 1 entspricht).
+
+Der p-Wert erlaubt es uns wieder nicht, die Alternativhypothese sicher anzunehmen.
+
+
+Tcha. Das passiert manchmal.
+
+Tatsächlich haben wir in der Archäologie selten normalverteilte Daten. Deswegen sind der Mann-Whitney-Test und der K-S-Test wichtiger für uns.
+
+
+
+## einfaktorielle ANOVA
+
+## mehrfaktorielle ANOVA
+
