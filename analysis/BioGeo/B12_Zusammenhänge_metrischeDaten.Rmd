@@ -22,7 +22,7 @@ Hier geht es darum, zwei Gruppen zu vergleichen und zu schauen, ob sie eventuell
 
 # parametrische Verfahren
 
-Parametrisch bedeutet, dass die Daten **normalverteilt sein müssen**, damit man den Test darauf anwenden kann und die Daten ein metrisches Skalenniveau haben müssen.
+Parametrisch bedeutet, dass die Daten  ein metrisches Skalenniveau haben und **normalverteilt sein müssen**, damit man den Test darauf anwenden kann.
 
 
 ## F-Test
@@ -61,7 +61,7 @@ var.test(flipper_length_mm ~ sex, na.rm = TRUE, data = gentoo)
 
 Dieser p-Wert ist sehr klein. Wir können also sicher davon ausgehen, dass die Varianz der beiden Gruppen nicht gleich ist.
 
-Schauen wir uns das doch noch einmal visualisiert an, das hilft meistens bei der Intepretation. Ein Boxplot zeichnet ja immer das 1. und 3. Quartil ab und kann deshalb als Annäherung an die Standardabweichung bezeichnet werden. :
+Schauen wir uns das doch noch einmal visualisiert an, das hilft meistens bei der Intepretation. Ein Boxplot zeichnet ja immer das 1. und 3. Quartil ab und kann deshalb als Annäherung an die Standardabweichung bezeichnet werden:
 
 ```{r}
 library(ggplot2)
@@ -73,9 +73,7 @@ geom_boxplot(data = gentoo,
 ```
 Ja, die beiden "boxes" sind doch deutlich unterschiedlich groß.
 
-Ein anderes Beispiel muss her, damit wir nachher noch den t-Test und nicht nur den Welch-Test machen können!
-
-Nehmen wir das Gewicht, das war doch schon einmal eine Aufgabe.
+Nehmen wir noch einmal ein anderes Beispiel: Das Gewicht, das war doch schon einmal eine Aufgabe.
 
 Ach ja, trennen wir mal die Geschlechter vorher, schließlich heißt die Voraussetzung, dass der gemessene Parameter in beiden Gruppen normalverteilt sein soll. 
 
@@ -102,9 +100,6 @@ Der p-Wert ist relativ groß. Das bedeutet, die Varianz der beiden Gruppen ist r
 
 Machen wir also mit diesem Bsp jetzt den t-Test:
 
-http://www.sthda.com/english/wiki/f-test-compare-two-variances-in-r 
-
-
 ## t-test
 
 http://www.sthda.com/english/wiki/unpaired-two-samples-t-test-in-r
@@ -114,7 +109,8 @@ Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass wir von zw
 t.test(data = gentoo, body_mass_g ~ sex, na.rm = TRUE,
          alternative = "two.sided")
 ```
-Es wurde ein Welch-Test durchgeführt, weil für R die Varianzen wohl doch nicht gleich sind.
+
+Es wurde ein Welch-Test durchgeführt, weil R die Varianz der Grundgesamtheit noch aus der Varianz der Stichproben errechnet.
 
 Der p-Wert erlaubt es uns, die Alternativhypothese sicher anzunehmen.
 
@@ -132,8 +128,6 @@ library (car)
 ```
 
 ```{r}
-
-
 leveneTest(data = penguins, body_mass_g ~ species, na.rm = TRUE)
 ```
 Ein sehr kleiner p-Wert sagt: Ja. Diese Gruppen haben alle die gleiche Varianz.
@@ -142,9 +136,11 @@ Weiter damit zur einfaktoriellen ANOVA!
 
 
 ## einfaktorielle ANOVA
-http://www.sthda.com/english/wiki/one-way-anova-test-in-r
+
+Die ANOVA ist bereits in `base` umgesetzt, mit der Funktion `aov`.
 
 Aus irgendwelchen Gründen wir bei der ANOVA das Ergebnis nicht gleich angezeigt (Also der p-Wert). Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben
+
 ```{r}
 # eigentliche ANOVAberechnung
 res.aov <- aov(body_mass_g ~ species, data = penguins)
@@ -160,36 +156,69 @@ Wer hätte es gedacht. ;-)
 
 ## mehrfaktorielle ANOVA
 
-https://www.datanovia.com/en/lessons/anova-in-r/
+Eine mehrfaktorielle ANOVA ist in R relativ aufwändig. 
 
-https://sites.ualberta.ca/~lkgray/uploads/7/3/6/2/7362679/12c_-_multi-way_anova.pdf 
+Wir rechnen hier deshalb nur eine zwei-faktorielle ANOVA. Wer mehr wissen will, schaue hier, das ist eine super Anleitung, wie man ANOVAs in R berechnet: <https://www.datanovia.com/en/lessons/anova-in-r/>
 
+Wir könnten untersuchen, ob bei den Piraten die Größe von Geschlecht und dem College abhängt.
 
+Als erstes checken wir alle Voraussetzungen: 1. Sind die Daten in den jeweiligen Gruppen normalverteilt?
 
-HAHA! 
-
-## MULTIVARIATE ANOVA = MANOVA!
+Machen wir hier also ein QQ-plot für alle Werte gleichzeitig:
 
 ```{r}
-sepl <- iris$Sepal.Length
-petl <- iris$Petal.Length
-# MANOVA test
-res.man <- manova(cbind(Sepal.Length, Petal.Length) ~ Species, data = iris)
+library(ggpubr)
 
+ggqqplot(pirates, "height", ggtheme = theme_bw()) +
+  facet_grid(college ~ sex)
+```
 
+Ja, das sieht doch ganz gut aus insgesamt.
 
+Testen wir also als nächstes, ob die Varianz in den Gruppen gleich ist. Dafür nehmen wir den leveneTest aus dem Paket `car`. Wir stellen die abhängige metrische Variablen den beiden kategorialen Faktoren gegenüber:
+
+```{r}
+library(car)
+
+# leveneTest(abhängige Variable ~ Faktor1*Faktor2, data = df)
+leveneTest(height ~ sex*college, data = pirates)
 
 ```
 
+Die Wahrscheinlichkeit steht unter `Pr(>F)` und liegt deutlich über 0,05. Wir können also von einer Varianzgleichheit ausgehen.
 
-
-
+Dann also jetzt die ANOVA. Wie oben geben wir die Berechnung erst in eine Variable und lassen uns das Ergebnis dann zusammengefasst ausgeben:
 
 ```{r}
-sepl <- iris$Sepal.Length
-petl <- iris$Petal.Length
-# MANOVA test
-res.man <- manova(cbind(Sepal.Length, Petal.Length) ~ Species, data = iris)
-summary(res.man)
+res.aov <- aov(height ~ sex * college, data = pirates)
+summary(res.aov)
 ```
 
+Interpretieren wir das Ergebnis: 
+
+```
+             Df Sum Sq Mean Sq F value Pr(>F)    
+sex           2  46298   23149 215.290 <2e-16 ***
+college       1     69      69   0.638  0.425    
+sex:college   2     26      13   0.119  0.887    
+Residuals   994 106879     108                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1      2         1           2       994
+```
+Wir sehen hier in der ersten Spalte die Faktoren, in der zweiten die "degrees of freedom", die Freiheitsgrade, in der dritten die "Sum of Squares" -- erinnert euch an die Vorlesung, das war die Abweichung der Messungen zum Gesamtmittelwert, die "mittlere sum of squares", den F-Wert und die Wahrscheinlichkeit, dass dieser Faktor einen Einfluss hat.
+Ganz klar: Das Geschlecht hat einen großen Einfluss, aber das College nicht. 
+
+Schauen wir uns das einmal an, plotten wir doch einfach die Körpergröße der Piraten in einem Boxplot nach College und Geschlecht:
+
+```{r}
+ggplot(data = pirates)+
+  geom_boxplot(aes(x = college,
+                   col = sex,#
+                   y = height))
+```
+Ja. Die Unterschiede zwischen den Colleges sind sehr viel  kleiner als zwischen den Geschlechtern.
+
+
+Sehr gut! Wir haben in diesem Kapitel untersucht, wie metrische Variablen eventuell von gruppierenden Faktoren abhängig sein können und wie wir das testen. 
+
+**Aufgabe: Als Übung versucht doch das gleiche noch einmal herauszufinden für das Gewicht der Piraten.**

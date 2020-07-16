@@ -6,7 +6,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = FALSE)
+
+library(palmerpenguins)
+data(penguins)
 ```
 
 
@@ -19,56 +23,119 @@ Hier geht es darum, zwei Gruppen zu vergleichen und zu schauen, ob sie eventuell
 
 Nicht-parametrisch bedeutet, dass die Daten nicht normalverteilt sein müssen, damit man den Test darauf anwenden kann. Es reicht außerdem, wenn die Daten ordinal skaliert sind. 
 
-## U-Test
+## U-Test nach Mann-Whitney
 
 Der U-Test ist geeignet für ordinale und metrische Variablen. 
 
-Nehmen wir die das Gewicht der Pinguine und schauen, ob Männchen oder Weibchen unterschiedlich schwer sind. 
+Nehmen wir als erstes Beispiel das Gewicht der Pinguine und schauen, ob Männchen oder Weibchen einer Art unterschiedlich schwer sind. 
 
+Der Test in R benutzt eine recht "alte" Syntax, die manchmal vorkommt. Mithilfe der Tilde "~" beschreibt er, welche zwei Variablen gegeneinander getestet werden sollen. `paired = FALSE` stellt sicher, dass wir hier den U-Test und nicht den Wilcoxon-Test berechnen.
 
 ```{r}
-m_penguins <- subset(penguins, sex == "male" )
-w_penguins <- subset(penguins, sex == "female" )
+# zuerst einen neuen Datensatz nur mit der Art "Adelie" ersellen 
+adelie <- subset(penguins, species = "Adelie")
 
-wilcox.test(m_penguins$body_mass_g, w_penguins$body_mass_g)
+# Testberechnung: wilcox.test(data = df, ordinale od. metrische Variable ~ gruppierender Faktor, paired = FALSE):
+
+wilcox.test(data = adelie, body_mass_g ~ sex, paired = FALSE)
 ```
 
-Dass da `Wilcoxon rank sum test with continuity correction` steht, bedeutet, dass R erkannt hat, dass die Datensätze normalverteilt sind. Dann geht er im Hintergrund leicht anders damit um. Weitere Infos hier: <https://data.library.virginia.edu/the-wilcoxon-rank-sum-test/>. 
+Dass da `Wilcoxon rank sum test with continuity correction` steht, bedeutet, dass R erkannt hat, dass die Datensätze stetig (also metrisch) sind. Dann geht er im Hintergrund leicht anders damit um. Weitere Infos hier: <https://data.library.virginia.edu/the-wilcoxon-rank-sum-test/>. 
 
 Der p-Wert ist wieder super klein, das heißt, die beiden Gruppen sind signifikant unterschiedlich!
 Schauen wir uns das einmal an:
 
 ```{r}
-ggplot(data = penguins)+
-  geom_boxplot(aes(y = body_mass_g, x = sex, col = sex), na.rm=TRUE)
+library(ggplot2)
+
+ggplot()+
+  geom_boxplot(data = subset(adelie, !is.na(sex)), # Trick: Ich filtere bei "data" alle Datensätze raus, in denen in der Spalte "sex" NA steht
+               aes(y = body_mass_g, 
+                   x = sex, 
+                   col = sex))
   
 ```
 Ich bin überzeugt. Das können wir wirklich stichhaltig interpretieren!
 
+Ein anderes Beispiel, jetzt eins mit einer diskreten Variable.
 
-### K-S-Test mit zwei Verteilungen:
+Nehmen wir dafür den Piraten-Datensatz:
+
+```{r}
+library(yarrr)
+
+data(pirates)
+```
+
+Die Piraten haben eine Anzahl von Tatoos. Das ist nun eine eindeutig diskrete Variable, denn es wird wohl kaum jemand mit einem halben Tatoo herumlaufen. Trotzdem ist sie als `numeric` abgelegt, was gut ist, da der `wilcox.test` als Datentyp einen numerischen Vektor braucht.
+
+Wir können jetzt schauen, ob die Zahl der Tatoos bei Piraten mit und ohne Bandana (`headband`) unterschiedlich ist. Das heißt:
+
+```{r}
+wilcox.test(data = pirates, tattoos ~ headband, paired = FALSE)
+```
+
+Wir haben einen sehr kleine p-Wert, schauen wir uns das doch noch einmal als Balkendiagramm an:
+
+```{r}
+ggplot()+
+  geom_bar(data = pirates, 
+           aes(x = tattoos,
+               fill = headband)) # mit fill gebe ich den Balken unterschiedliche Farben, sie werden dann "übereinander gestapelt"
+
+```
+
+Das sieht doch fast wie ein Histogramm aus.
+
+Aber Vorsicht! Es ist keins! Auf der x-Achse befindet sich eine diskrete Variable, diese sollte nicht als Histogramm dargestellt werden!
+
+### Wilcoxon-Test
+
+Wir haben in unserem Datensatz kein Beispiel für abhängige Daten. Deshalb hier nur kurz der Code, solltet ihr solche Daten einmal bekommen. Eigentlich ganz einfach, der einzige Unterschied zum Mann-Whitney-Test ist die Angabe von `paired = TRUE`:
+
+```
+wilcox.test(data = df, metrische Variable ~ gruppierende, paired = TRUE)
+```
+
+
+### Kolmogorov-Smirnov-Test mit zwei Verteilungen:
 
 
 Kriegen wir das gleiche Ergebnis mit dem K-S-Test?
 
 Auch der K-S-Test ist geeignet für ordinale und metrische Verfahren.
 
+Im Gegensatz zum wilcox-Test sieht die Syntax so aus:
+
+```
+ks.test(x = Werte der Gruppe 1, y = Werte der Gruppe 2)
+```
+Das heißt wir müssen noch einmal schnell die beiden Gruppen definieren:
+
 ```{r}
-ks.test(m_penguins$body_mass_g, w_penguins$body_mass_g)
+adelie_f <- subset(adelie, sex == "female")
+adelie_m <- subset(adelie, sex == "male")
+```
+
+Jetzt können wir den Test machen:
+```{r}
+
+ks.test(adelie_m$body_mass_g, adelie_f$body_mass_g)
 
 ```
 
-Ja! Klasse! 
+Ja! Klasse!  Ein winziger p-Wert.
 
-Und zwar, obwohl sich in unserem Datensatz mehrere Spezies von Pinguinen verstecken. 
+Da steht zwar `im Falle von Bindungen sind die p-Werte approximativ` , was ein Warnhinweis ist, weil manche Werte mehrmals vorkommen, aber das ist bei einer großen Stichprobe recht häufig und kein Problem. Bei kleineren Stichproben sollte man mit dem Ergebnis dann vorsichtiger sein.
 
-Dann schauen wir doch einmal, ob wir auch Unterschiede zwischen den Spezies finden. Da dies drei Gruppen sind, können wir nicht mehr den K-S oder U-Test nehmen, sondern brauchen: 
+
+Dann schauen wir doch einmal, ob wir auch Gewichtsunterschiede zwischen den Spezies finden. Da dies drei Gruppen sind, können wir nicht mehr den K-S oder U-Test nehmen, sondern brauchen: 
 
 ### Kruskal-Wallis
 
-Der Kurskal-Wallis-Test in R benutzt eine recht "alte" Syntax, die manchmal vorkommt. Mithilfe der Tilde "~" beschreibt er, welche zwei Variablen gegeneinander getestet werden sollen.
+Die Syntax des Tests kennen wir schon vom `wilcox.test`
 
-```{r}
+```
 kruskal.test(weight ~ group, data = my_data)
 ```
 
@@ -96,38 +163,12 @@ Visualisieren wir das kurz als Boxplot, können wir das auch besser einschätzen
 ggplot()+
   geom_boxplot(data = penguins, aes(x = species, y = body_mass_g), na.rm = TRUE)
 ```
+
 Ja, Adelie und Chinstrap sehen ziemlich gleich schwer aus.
 
 
-# Parametrische Verfahren
+Herzlichen Glückwunsch, das war es auch schon zu den ordinalen Testverfahren!
 
+**Aufgabe: Findet heraus, ob die drei Pinguin-spezies sich auch in ihrer "Flipper length" unterscheiden.**
 
-## F-Test
-Der F-Test vergleicht die Varianzen von metrischen Variablen. Schauen wir uns doch noch einmal die Höhe der BACups an:
-```{r}
-var.test(x = BACups_p$H,
-         y = BACups_s$H,
-         alternative = "two.sided")
-```
-Die Alternativhypothese ist, dass das Verhältnis der beiden Varianzen zueinander nicht 1 entspricht -- sie also unterschiedlich sind.
-
-Allerdings lässt der p-Wert keine Annahme der Alternativhypothese zu... 
-
-
-## t-test
-
-Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass wir von zwei unterschiedlichen Gruppen ausgehen können:
-```{r}
-t.test(x = BACups_p$H,
-         y = BACups_s$H,
-         alternative = "two.sided")
-```
-Es wurde ein Welch-Test durchgeführt, weil die Varianzen nicht gleich sind (auch wenn wir oben die Alternativhypothese nicht annehmen konnten, war das Ergebnis auch nicht eindeutig so, dass das Varianzverhältnis 1 entspricht).
-
-Der p-Wert erlaubt es uns wieder nicht, die Alternativhypothese sicher anzunehmen.
-
-
-Tcha. Das passiert manchmal.
-
-Tatsächlich haben wir in der Archäologie selten normalverteilte Daten. Deswegen sind der Mann-Whitney-Test und der K-S-Test wichtiger für uns.
-
+**Nehmt den Kolmomogorov-Smirnov-Test, um herauszufinden, ob das Alter der Piraten sich unterscheidet, je nachdem auf welchem College sie waren**
