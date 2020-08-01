@@ -1,0 +1,96 @@
+---
+title: "Logistische Regression"
+author:
+  - Schmidt, Sophie C.
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+    bookdown::word_document2:
+      fig_caption: yes
+      reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+bibliography: references.bib
+csl: "../templates/journal-of-archaeological-science.csl" # Insert path for the bib-style
+---
+
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  echo = TRUE,
+  comment = "#>",
+  fig.path = "../figures/",
+  fig.width=6, 
+  fig.height=6
+)
+```
+
+
+## Logistische Regression
+
+Wie in der Vorlesung erläutert, ist eine logistische Regression dazu da, einzuschätzen, welche Faktoren zu der Wahrscheinlichkeit des Auftretens einer binären abhängigen Variablen beitragen.
+
+Dafür brauchen wir also eine binäre Variable.
+In dem Piratendatensatz gibt es die Variable "headband", also Kopftuch. Wir können also untersuchen, ob z. B. das Geschlecht, das College und das Tragen von Tattoos Einfluss darauf haben, ob ein Pirat ein Kopftuch trägt oder nicht. All das könnte logisch sein: Vielleicht finden nur Frauen Kopftücher schick, eventuell gab es da eine Mode in einem College oder es ist etwas, das v.a. Leute, die schon Tattoos haben tragen. Who knows? 
+
+Wir. gleich. ;-)
+
+Laden wir die Daten:
+
+```{r Pakete}
+library(yarrr)
+data(pirates)
+```
+
+Als erste müssen wir die headband-Variablen in 0 und 1 umformen, damit R das auch als binäre Daten erkennt:
+```{r}
+pirates$headband[pirates$headband == "yes"] <- 1 # schreibe in pirates$headband, da wo in der Spalte headband "yes" steht, eine 1 hin
+pirates$headband[pirates$headband == "no"] <- 0 # schreibe in pirates$headband, da wo in der Spalte headband "no" steht, eine 0 hin
+
+# in einen "numerischen" Vektor umwandeln (ist noch als character markiert)
+pirates$headband <- as.numeric(pirates$headband)
+```
+
+Jetzt funktioniert die Berechnung der regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial"
+
+```{r}
+mylogit <- glm(headband ~  college + tattoos + sex, data = pirates, family = "binomial")
+```
+
+Wie vorhin, schauen wir uns das Ergebnis jetzt mit `summary` an:
+
+```{r}
+summary(mylogit)
+```
+
+Als erstes sehen wir wieder, was genau wir berechnet haben. 
+
+Als nächstes steht da "deviance residuals", also "Abweichung vom Idealwert". Diese sind ein Maß dafür, wie gut unser Modell auf die Daten passt, ähnlich wie die Residuen bei der linearen Regression.
+
+Dann werden die Coefficients aufgeschlüsselt, also die unabhängigen Variablen, ihr Einfluss auf das Tragen eines Kopftuchs (odds hier in der Spalte estimate), die Standardabweichung, der z-Wert (auch Wald z-Wert, ein Art Normalverteilungstest) und die dazugehörigen p-Werte. Mit Sternchen sind wieder die Werte markiert, die statistisch relevant sind, an dieser Stelle nur sexother und tattoos.
+
+ - Dass man auf dem College JDDFP war, verkleinert die Chance, dass man ein Kopftuch trägt, um 0,5. Das ist allerdings leider keine signifikante Erkenntnis, da der p-Wert über 0.05 liegt. Da es aber relativ nahe dran ist, wird es angezeigt.
+ 
+ - Für jedes Tattoo mehr das man hat, steigt die Chance, dass man ein Kopftuch trägt um 0,67 und das ist tatsächlich ein hochsignifikantes Ergebnis!
+ 
+ - Wenn man männlich ist, steigt die Chance, ein Kopftuch zu tragen um 0.37, aber auch das ist nicht signifikant und
+ 
+ - wenn man ein "anderes" Geschlecht hat, sinkt die Chance ein Kopftuch zu tragen um 1,69 und das ist hochsignifikant.
+ 
+ Das mit "dispersion" können wir hier ignorieren.
+
+Darunter finden wir weitere Hinweise auf, wie gut das Modell passt. 
+
+ - Residual deviance: Maß für die Abweichung insgesamt
+ 
+ - Null deviance: Maß für ein reduziertes Modell, in dem nur der y-Achsenabschnitt vorkommt.
+ 
+ - AIC: Ebenfalls ein Güßtemaß, kann genutzt werden, um die Güte verschiedener Modelle miteinander zu vergleichen.
+ 
+Der Hinweis auf die Fisher scoring iterations hat etwas damit zu tun, wie das Modell geschätzt wurde (hier wurden 7 verschiedene Modelle ausprobiert, bis entschieden wurde, dass es so am besten passt).
+
+
+
+https://stats.idre.ucla.edu/r/dae/logit-regression/ 
+
+https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression

@@ -33,7 +33,7 @@ library(rrtools) # wir laden das Paket und alles was zum Thema git kommt, ignori
 ```{r rrtools anwenden, eval=FALSE}
 rrtools::use_compendium("C:/Hier/kommt/ein/Pfadname/pkgname") # wir definieren wo unser Paket liegt und wie es heißen wird "pkgname"
 ```
-Jetzt muss sich einfach so ein neues Projekt / Paket in Rstudio geöffnet haben. Oben rechts seht ihr den Namen eures Pakets.
+Jetzt muss sich einfach so ein neues Projekt / Paket in Rstudio geöffnet haben. Oben rechts seht ihr den Namen eures Pakets. Oder ihr navigiert zu dem Pfad, in dem ihr eben das neue Projekt angelegt habt und öffnet es. 
 
 rrtools erstellt die Struktur eines "normalen" R-Pakets, wie man es von CRAN herunterladen und bei sich installieren kann. Wenn ihr jetzt rechts unter "Files" schaut, seht ihr eine DESCRIPTION-Datei. Hier kann man jetzt ein paar Metadaten zu dem Paket editieren:
 

@@ -25,19 +25,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-Pakete für heute:
 ```{r Pakete}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-
-
 
 if (!require("lsr")) install.packages("lsr")
 library(lsr)
-
-if (!require("ggpmisc")) install.packages("ggpmisc")
-library(ggpmisc)
 
 ```
 
@@ -62,7 +53,7 @@ Als Beispiel stellen wir uns vor, wir hätten eine Wiese und untersuchen, ob zwe
 
 Wir erstellen einmal eine kleine Stichprobe, zwei Test-Quadranten und zählen aus: 
 
-Gras 1 in der Sonne: 27, Gras 2 in der Sonne 21, Gras 1 nicht in der Sonne 15, Gras 2 nicht in der Sonne 41.
+Gras 1 in der Sonne: 27 Halme, Gras 2 in der Sonne 21 Halme, Gras 1 nicht in der Sonne 15 Halme, Gras 2 nicht in der Sonne 41 Halme.
 
 Daraus bauen wir einen Datensatz:
 ```{r}
@@ -99,6 +90,7 @@ table(pirates$headband, pirates$college)
 
 e <- chisq.test(table(pirates$headband, pirates$sword.type))
 
+e
 ```
 
 
@@ -140,7 +132,7 @@ Jetzt geben wir diese in die Korrelationstestfunktion ein. R wählt automatisch 
 Sieh an, ich hab mich nicht verrechnet. :-) 
 
 
-Wenn man sehr viele Daten hat (sehr lange Vektoren), die man testen möchte, kann die Berechnung sehr lange dauern (da ja jedes Paar gegeneinander getestet werden muss).  Dann informiert euch über Spearmans Rho (<https://www.crashkurs-statistik.de/spearman-korrelation-rangkorrelation/>), der ist eigentlich wie der folgende (Pearson und Bravais r), aber an Rängen wie Kendalls Tau. Er gilt als "weniger genau", aber für große Datensätze besser geeignet.
+Wenn man sehr viele Daten hat (sehr lange Vektoren), die man testen möchte, kann die Berechnung sehr lange dauern (da ja jedes Paar gegeneinander getestet werden muss). Dann informiert euch über Spearmans Rho (<https://www.crashkurs-statistik.de/spearman-korrelation-rangkorrelation/>), der ist eigentlich wie der folgende (Pearson und Bravais r), aber an Rängen wie Kendalls Tau. Er gilt als "weniger genau", aber für große Datensätze besser geeignet.
 
  Der Code ist simpel:
 ```{r}
@@ -176,4 +168,10 @@ Applaus!
 
 **Aufgabe: Ist das bei den Pinguinen genauso? Gibt es einen Zusammenhang zwischen der Schnabellänge und Schnabeldicke?**
 
+
+LÖsung (to do remove)
+```{r}
+ cor.test(penguins$bill_depth_mm, penguins$bill_length_mm, method = "pearson", alternative = "two.sided")
+
+```
 
