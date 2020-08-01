@@ -51,6 +51,18 @@ pirates$headband[pirates$headband == "no"] <- 0 # schreibe in pirates$headband, 
 pirates$headband <- as.numeric(pirates$headband)
 ```
 
+Kategorie Geschlecht noch umformen, da zur Zeit männl, weibl, other gibt. Sagen wir doch einfach, dass binäre Menschen und nicht-binäre ("other") getrennt werden:
+
+```{r}
+pirates$sex[pirates$sex == "other"] <- 1
+pirates$sex[pirates$sex != "1"] <- 0
+
+pirates$sex <- as.numeric(pirates$sex)
+
+```
+
+
+
 Jetzt funktioniert die Berechnung der regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial"
 
 ```{r}
@@ -69,13 +81,15 @@ Als nächstes steht da "deviance residuals", also "Abweichung vom Idealwert". Di
 
 Dann werden die Coefficients aufgeschlüsselt, also die unabhängigen Variablen, ihr Einfluss auf das Tragen eines Kopftuchs (odds hier in der Spalte estimate), die Standardabweichung, der z-Wert (auch Wald z-Wert, ein Art Normalverteilungstest) und die dazugehörigen p-Werte. Mit Sternchen sind wieder die Werte markiert, die statistisch relevant sind, an dieser Stelle nur sexother und tattoos.
 
- - Dass man auf dem College JDDFP war, verkleinert die Chance, dass man ein Kopftuch trägt, um 0,5. Das ist allerdings leider keine signifikante Erkenntnis, da der p-Wert über 0.05 liegt. Da es aber relativ nahe dran ist, wird es angezeigt.
+Anders als bei der linearen Regression können die Koeffizienten nicht direkt interpretiert werden. Die Koeffizientengeben uns einzig die Richtung des Zusammenhangs an. 
+
+ - Dass man auf dem College JDDFP war, verkleinert die Chance, dass man ein Kopftuch trägt. Das ist allerdings leider keine signifikante Erkenntnis, da der p-Wert über 0.05 liegt.
  
- - Für jedes Tattoo mehr das man hat, steigt die Chance, dass man ein Kopftuch trägt um 0,67 und das ist tatsächlich ein hochsignifikantes Ergebnis!
+ - Für jedes Tattoo mehr das man hat, steigt die Chance, dass man ein Kopftuch trägt und das ist tatsächlich ein hochsignifikantes Ergebnis!
  
- - Wenn man männlich ist, steigt die Chance, ein Kopftuch zu tragen um 0.37, aber auch das ist nicht signifikant und
+ - Wenn man männlich ist, steigt die Chance, ein Kopftuch zu tragen, aber auch das ist nicht signifikant und
  
- - wenn man ein "anderes" Geschlecht hat, sinkt die Chance ein Kopftuch zu tragen um 1,69 und das ist hochsignifikant.
+ - wenn man ein "anderes" Geschlecht hat, sinkt die Chance ein Kopftuch zu tragen und das ist hochsignifikant.
  
  Das mit "dispersion" können wir hier ignorieren.
 
@@ -85,12 +99,27 @@ Darunter finden wir weitere Hinweise auf, wie gut das Modell passt.
  
  - Null deviance: Maß für ein reduziertes Modell, in dem nur der y-Achsenabschnitt vorkommt.
  
- - AIC: Ebenfalls ein Güßtemaß, kann genutzt werden, um die Güte verschiedener Modelle miteinander zu vergleichen.
+ - AIC (Akaikes Informationskriterium): Ebenfalls ein Güßtemaß, kann genutzt werden, um die Güte verschiedener Modelle miteinander zu vergleichen.
  
 Der Hinweis auf die Fisher scoring iterations hat etwas damit zu tun, wie das Modell geschätzt wurde (hier wurden 7 verschiedene Modelle ausprobiert, bis entschieden wurde, dass es so am besten passt).
 
-
+http://www.dwoll.de/r/gddmr_ed2/08_glm.pdf 
 
 https://stats.idre.ucla.edu/r/dae/logit-regression/ 
 
 https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression
+
+#### Odds Ratio
+
+Die für uns besser interpretierbaren werte sind die Odds Ratio, wir erinnern uns, ist die odds-ratio über 1, steigt die Chance, dass die abhängige Variable 1 ist mit jedem Schritt, der unabhängigen Variable. Ist die odds-ratio kleiner als 1, singt die Chance.
+
+```{r}
+exp(coef(mylogit))
+
+```
+
+Eine Person mit Tattoos hat eine 1,95-fach höhere Chance ein Kopftuch zu tragen als eine Person ohne.
+
+https://www.politikwissenschaften.ch/pdf.php?id=9s
+
+

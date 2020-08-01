@@ -225,7 +225,7 @@ Hier sollten die Punkte gleichmäßig in beide Richtungen der roten Linie streue
 Ein gutes und ein schlechtes Beispiel wären diese:
 
 ![](homoskedastizitaet_R.jpg)
-Das gute links, halbwegs gleichmäßig verteilte Residuen und das schlechte rechts, wo die Residuen in der linken Ecke deutlicih näher an der roten Linie liegen als weiter rechts, wo sie mehr streuen (Bildquelle und empfehlenswerte Anleitung: <https://rpubs.com/iabrady/residual-analysis> ).
+Das gute links, halbwegs gleichmäßig verteilte Residuen und das schlechte rechts, wo die Residuen in der linken Ecke deutliich näher an der roten Linie liegen als weiter rechts, wo sie mehr streuen (Bildquelle und empfehlenswerte Anleitung: <https://rpubs.com/iabrady/residual-analysis> ).
 
 
 ### Residuen gegen Ausreißer
