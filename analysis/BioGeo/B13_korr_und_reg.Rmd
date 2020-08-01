@@ -1,5 +1,5 @@
 ---
-title: "Korrelation und Regression"
+title: "Korrelation"
 author:
   - Schmidt, Sophie C.
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -40,6 +40,10 @@ if (!require("ggpmisc")) install.packages("ggpmisc")
 library(ggpmisc)
 
 ```
+
+
+todo! das mit den Paketen da oben klären!
+
 
 ## Korrelation
 Um Zusammenhänge zu erfassen, gibt es für jedes Skalenniveau unterschiedliche Methoden:
@@ -171,69 +175,5 @@ Wir haben also einen sehr sicheren und sehr starken Zusammenhang zwischen der Gr
 Applaus!
 
 **Aufgabe: Ist das bei den Pinguinen genauso? Gibt es einen Zusammenhang zwischen der Schnabellänge und Schnabeldicke?**
-
-
-
-
-Jetzt erstellen wir noch eine Linare Regression daraus:
-
-## Lineare Regression
-
-Die lineare Regression legt eine "best-fit"-Linie zwischen die Punkte. Sie soll möglichst gut den Punktverlauf abbilden.
-
-In R ist das ziemlich einfach, in dem ich einem Streudiagramm den geom_smooth-Befehl mit der Methode "lm" (linear model) hinzufüge. Der Befehl "se = FALSE" sagt aus, dass ich jetzt gern *kein* Konfidenzintervall (standard error) dazu visualisieren möchte.
-
-```{r lin reg}
-ggplot(data = BACups)+
-  geom_point(aes(x = RD, y = ND))+
-  geom_smooth( aes(x = RD, y = ND), method = "lm",
-              se = FALSE)
-```
-
-Einfach oder?
-
-Dieses Diagramm können wir jetzt noch ein bisschen verbessern. Wir könnten 
-
-1. doch das Konfidenzintervall angeben
-
-2. dazuschreiben, wie diese Linie mathematisch beschrieben werden kann und angeben, wie der R²-Wert der Linie aussieht.
-
-Also, fangen wir an mit 1.:
-
-```{r lin reg + se}
-ggplot(data = BACups)+
-  geom_point(aes(x = RD, y = ND))+
-  geom_smooth( aes(x = RD, y = ND), method = "lm",
-              se = TRUE)
-```
-Denkbar einfach. Das Konfidenzintervall ist sehr schmal, was für eine gute Anpassung der Linie an die Punkte spricht.
-
-Schauen wir uns doch einmal an, wie diese Linie mathematisch beschrieben werden und zusammen mit dem R²-Wert dem plot hinzugefügt werden kann.
-
-Wir brauchen dafür das Paket "ggpmisc".
-
-Dann fügen wir dem  bisherigen Plot (am besten ihr kopiert das bisherige einfach mit strg+c und strg+v) den Befehl "stat_poly_eq" hinzu. "Stat_poly_eq" kann die Statistik der equation (Formel) einfügen. Dafür braucht es erst einmal noch die  Eingabewerte der Regression (x =  und y = ), dann die Information, welcher Text als "label" in den Graphen hinzugefügt werden soll: Paste (füge ein) die Formel (..eq.label..,) und den R²-Wert (..adj.rr.label..) und separiere die beiden mit vier Leerzeichen (symbolisiert durch die Tilde). Formula  sind eine bestimmte Art von Objekten in R. An dieser Stelle sagt man mit  "formula = y~x", dass y  die abhängige Variable sein soll.  "parse = TRUE" bedeutet "ja bitte schreib es hin" und "size" gibt die Schriftgröße an. "label.y.npc"  platziert die Schrift und zwar auf der y-Achse nach Prozent (also in diesem Fall bei 70% der Y-Achse).
-
-
-```{r lin reg + formel}
-
-ggplot(data = BACups)+
-  geom_point(aes(x = RD, y = ND))+
-  geom_smooth( aes(x = RD, y = ND), method = "lm",
-              se = TRUE)+
-  stat_poly_eq(aes(x = RD, y = ND, label =  paste(..eq.label.., 
-                                  ..adj.rr.label..,
-                                  sep = "~~~~")),
-               formula = y~x, # y sei die abhängige Variable
-               parse = TRUE,
-               size = 3,
-               label.y.npc = 0.7)
-
-```
-
-Cool oder?
-
-Wenn man diese Grafik noch mit Titel und schöner Achsenbeschriftung versieht, hat man echt eine publikationswürdige Grafik. 
-
 
 
