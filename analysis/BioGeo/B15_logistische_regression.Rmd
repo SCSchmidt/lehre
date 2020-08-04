@@ -51,7 +51,7 @@ pirates$headband[pirates$headband == "no"] <- 0 # schreibe in pirates$headband, 
 pirates$headband <- as.numeric(pirates$headband)
 ```
 
-Kategorie Geschlecht noch umformen, da zur Zeit männl, weibl, other gibt. Sagen wir doch einfach, dass binäre Menschen und nicht-binäre ("other") getrennt werden:
+Kategorie Geschlecht müssen wir auch noch umformen, da es zur Zeit männl, weibl, other gibt. Sagen wir doch einfach, dass binäre Menschen und nicht-binäre ("other") getrennt werden:
 
 ```{r}
 pirates$sex[pirates$sex == "other"] <- 1
@@ -63,7 +63,7 @@ pirates$sex <- as.numeric(pirates$sex)
 
 
 
-Jetzt funktioniert die Berechnung der regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial"
+Jetzt funktioniert die Berechnung der regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial".
 
 ```{r}
 mylogit <- glm(headband ~  college + tattoos + sex, data = pirates, family = "binomial")
@@ -79,17 +79,15 @@ Als erstes sehen wir wieder, was genau wir berechnet haben.
 
 Als nächstes steht da "deviance residuals", also "Abweichung vom Idealwert". Diese sind ein Maß dafür, wie gut unser Modell auf die Daten passt, ähnlich wie die Residuen bei der linearen Regression.
 
-Dann werden die Coefficients aufgeschlüsselt, also die unabhängigen Variablen, ihr Einfluss auf das Tragen eines Kopftuchs (odds hier in der Spalte estimate), die Standardabweichung, der z-Wert (auch Wald z-Wert, ein Art Normalverteilungstest) und die dazugehörigen p-Werte. Mit Sternchen sind wieder die Werte markiert, die statistisch relevant sind, an dieser Stelle nur sexother und tattoos.
+Dann werden die Coefficients (Regressionskoeffizienten) der unabhängigen Variablen dargestellt, ihr Einfluss auf das Tragen eines Kopftuchs (estimate), die Standardabweichung, der z-Wert (auch Wald z-Wert, ein Art Normalverteilungstest) und die dazugehörigen p-Werte. Mit Sternchen sind wieder die Werte markiert, die statistisch relevant sind, an dieser Stelle nur sexother und tattoos.
 
 Anders als bei der linearen Regression können die Koeffizienten nicht direkt interpretiert werden. Die Koeffizientengeben uns einzig die Richtung des Zusammenhangs an. 
 
- - Dass man auf dem College JDDFP war, verkleinert die Chance, dass man ein Kopftuch trägt. Das ist allerdings leider keine signifikante Erkenntnis, da der p-Wert über 0.05 liegt.
+ - Dass man auf dem College JSSFP war, verkleinert die Chance, dass man ein Kopftuch trägt. Das ist signifkant (1 Sternchen).
  
- - Für jedes Tattoo mehr das man hat, steigt die Chance, dass man ein Kopftuch trägt und das ist tatsächlich ein hochsignifikantes Ergebnis!
+ - Für jedes Tattoo mehr das man hat, steigt die Chance, dass man ein Kopftuch trägt und das ist tatsächlich ein höchstsignifikantes Ergebnis!
  
- - Wenn man männlich ist, steigt die Chance, ein Kopftuch zu tragen, aber auch das ist nicht signifikant und
- 
- - wenn man ein "anderes" Geschlecht hat, sinkt die Chance ein Kopftuch zu tragen und das ist hochsignifikant.
+ - Ist das Geschlecht 1 ("other"), sinkt die Chance ein Kopftuch zu tragen und das ist hochsignifikant.
  
  Das mit "dispersion" können wir hier ignorieren.
 
@@ -99,7 +97,7 @@ Darunter finden wir weitere Hinweise auf, wie gut das Modell passt.
  
  - Null deviance: Maß für ein reduziertes Modell, in dem nur der y-Achsenabschnitt vorkommt.
  
- - AIC (Akaikes Informationskriterium): Ebenfalls ein Güßtemaß, kann genutzt werden, um die Güte verschiedener Modelle miteinander zu vergleichen.
+ - AIC (Akaikes Informationskriterium): Ebenfalls ein Güßtemaß, kann genutzt werden, um die Güte verschiedener Modelle miteinander zu vergleichen (je kleiner, desto besser).
  
 Der Hinweis auf die Fisher scoring iterations hat etwas damit zu tun, wie das Modell geschätzt wurde (hier wurden 7 verschiedene Modelle ausprobiert, bis entschieden wurde, dass es so am besten passt).
 
@@ -118,7 +116,7 @@ exp(coef(mylogit))
 
 ```
 
-Eine Person mit Tattoos hat eine 1,95-fach höhere Chance ein Kopftuch zu tragen als eine Person ohne.
+Eine Person mit Tattoos hat mit jedem Tattoo eine 1,94-fach höhere Chance ein Kopftuch zu tragen als eine Person ohne.
 
 https://www.politikwissenschaften.ch/pdf.php?id=9s
 
