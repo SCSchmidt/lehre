@@ -61,6 +61,17 @@ pirates$sex <- as.numeric(pirates$sex)
 
 ```
 
+Diese Umwandlung machen wir jetzt auch noch mit der Collegeangabe:
+CCCC sei 1, das andere College sei 0:
+```{r}
+pirates$college[pirates$college == "CCCC"] <- 1
+pirates$college[pirates$college != "1"] <- 0
+
+pirates$college <- as.numeric(pirates$college)
+
+```
+
+
 
 
 Jetzt funktioniert die Berechnung der regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial".
@@ -81,9 +92,9 @@ Als nächstes steht da "deviance residuals", also "Abweichung vom Idealwert". Di
 
 Dann werden die Coefficients (Regressionskoeffizienten) der unabhängigen Variablen dargestellt, ihr Einfluss auf das Tragen eines Kopftuchs (estimate), die Standardabweichung, der z-Wert (auch Wald z-Wert, ein Art Normalverteilungstest) und die dazugehörigen p-Werte. Mit Sternchen sind wieder die Werte markiert, die statistisch relevant sind, an dieser Stelle nur sexother und tattoos.
 
-Anders als bei der linearen Regression können die Koeffizienten nicht direkt interpretiert werden. Die Koeffizientengeben uns einzig die Richtung des Zusammenhangs an. 
+Anders als bei der linearen Regression können die Koeffizienten nicht direkt interpretiert werden. Die Koeffizientengeben uns einzig die Richtung des Zusammenhangs an, nicht die Stärke! 
 
- - Dass man auf dem College JSSFP war, verkleinert die Chance, dass man ein Kopftuch trägt. Das ist signifkant (1 Sternchen).
+ - Dass man auf dem College 1 (CCCC) war, vergrößert die Chance, dass man ein Kopftuch trägt. Das ist signifkant (1 Sternchen).
  
  - Für jedes Tattoo mehr das man hat, steigt die Chance, dass man ein Kopftuch trägt und das ist tatsächlich ein höchstsignifikantes Ergebnis!
  
@@ -107,17 +118,64 @@ https://stats.idre.ucla.edu/r/dae/logit-regression/
 
 https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression
 
+### Vorhersage
+Können wir jetzt herausfinden, welcher Wert vorhergesagt wird, wenn wir bestimmte Parameter haben? Am praktischsten wäre es doch, gleich einen Parameter sich verändern zu lassen und dann zu schauen, wie sich die Chancen verändern, dass der Pirat ein Kopftuch trägt.
+
+Dazu brauchen wir ein neues Paket namens `glm.predict`, das wir installieren:
+```{r}
+install.packages("glm.predict") 
+```
+
+Nun können wir die Funktion `predicts` nutzen, um uns Vorhersagen und wie sie sich mit einer diskreten Veränderung verschieben, anzeigen zu lassen. Der erste Wert ist immer unser Modell (`mylogit`), danach müssen wir in der Reihenfolge wie im Modell angegeben, in Hochkommas und mit Semikolon getrennt die Werte angeben. Das Modell war `headband ~ college + tattoos + sex`, also müssen wir jetzt als erstes das College, dann den Wert für Tattoos und den Wert für das Geschlecht angeben, für die wir die Vorhersage haben möchten. Einer der Werte muss sich dabei als "veränderbar" gekennzeichnet werden und diese Veränderung muss in diskreten Schritten passieren.  
+
+Sagen wir doch einmal, wir schauen auf einen Piraten, der 6 Tattoos hat und sich als "other" definiert, und schauen, wie sich die Vorhersage verändert, wenn sich das College ändert. 
+```{r}
+library(glm.predict)
+
+predicts(model = mylogit, values = "0-1,1;6;1", position = 1) # position = 1 bedeutet der erste Wert wird verändert
+
+```
+Die diskrete Änderung wird für die erste Variable durchgeführt, weshalb esdort immer min. zwei Werte braucht (position = 1). Die Funktion gibt ein data.frame zurück.
+
+Dieser data.frame hat zwei Zeilen für die beiden Colleges und gibt uns mit mean den Mittelwert der Vorhersage, lower und upper markieren das 95%-Konfidenzintervall. Wenn man sich das anschaut, sieht man, dass die Konfidenzintervalle ganz schön doll überlappen, was die Sicherheit der errechmeten Mittelwerte schmälert. 
+
+Wir hatten ja oben gesehn, dass die Anzahl der Tattoos von Bedeutung zu gewesen scheint. Nehmen wir also die Tattoos als sich verändernden Wert. 
+
+```{r}
+predicts(model = mylogit, values = "1;0-19,5;1", position = 2) 
+
+```
+
+Interpretation.
+
+
 #### Odds Ratio
 
-Die für uns besser interpretierbaren werte sind die Odds Ratio, wir erinnern uns, ist die odds-ratio über 1, steigt die Chance, dass die abhängige Variable 1 ist mit jedem Schritt, der unabhängigen Variable. Ist die odds-ratio kleiner als 1, singt die Chance.
+Die für uns besser interpretierbaren Werte sind die Odds Ratio, wir erinnern uns, ist die odds-ratio über 1, steigt die Chance, dass die abhängige Variable 1 ist mit jedem Schritt, der unabhängigen Variable. Ist die odds-ratio kleiner als 1, singt die Chance mit jeder Iteration.
 
 ```{r}
 exp(coef(mylogit))
 
 ```
 
-Eine Person mit Tattoos hat mit jedem Tattoo eine 1,94-fach höhere Chance ein Kopftuch zu tragen als eine Person ohne.
+Eine Person mit Tattoos hat mit jedem Tattoo eine 1,94-fach höhere Chance ein Kopftuch zu tragen als eine Person ohne und wenn eine Person auf das College CCCC geht, steigt die Chance ebenfalls um das 1,9fache. Das sind doch schon Erkenntnisse!
 
-https://www.politikwissenschaften.ch/pdf.php?id=9s
+https://www.politikwissenschaften.ch/pdf.php?id=9
+
+
+Pinguine.
+species ist nicht binär
+
+```{r}
+library(palmerpenguins)
+data("penguins")
+
+mylogit <- glm(sex ~  species + body_mass_g + flipper_length_mm, data = penguins, family = "binomial")
+
+summary(mylogit)
+
+predicts(model = mylogit, values = "F;mean;mean", position = 1) 
+
+```
 
 
