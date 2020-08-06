@@ -40,7 +40,7 @@ data(pirates)
 
 Die lineare Regression legt eine "best-fit"-Linie zwischen die Punkte. Sie soll möglichst gut den Punktverlauf abbilden.
 
-Die Berechnung in R erfolgt sehr einfach mit dem Befehl `lm`. So ein Modell wird häufig "fit" genannt ("Passung").
+Die Berechnung in R erfolgt sehr einfach mit dem Befehl `lm` (= "linear model"). So ein Modell wird häufig "fit" genannt ("Passung").
 
 ```{r}
 fit <- lm(weight ~ height, data = pirates) # Berechnung: 1. Variable ist die abhängige Variable, 2. Variable die "vorhersagende" Variable
@@ -252,6 +252,9 @@ data("penguins")
 library(magrittr)
 library(tidyr)
 library(dplyr)
+library(ggplot2)
+library(ggpmisc)
+
 
 penguins %>%
   filter(species == "Chinstrap") %>%
@@ -267,7 +270,7 @@ ggplot()+
                parse = TRUE,
                size = 3,
                label.y.npc = 0.7)+
-    stat_fit_glance(.,         # p-value 
+    stat_fit_glance(         # p-value 
                   aes(x = bill_depth_mm, 
                       y = bill_length_mm,
                       label = paste("p-value: ",
