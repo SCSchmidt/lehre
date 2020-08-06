@@ -61,6 +61,17 @@ pirates$sex <- as.numeric(pirates$sex)
 
 ```
 
+Diese Umwandlung machen wir jetzt auch noch mit der Collegeangabe:
+CCCC sei 1, das andere College sei 0:
+```{r}
+pirates$college[pirates$college == "CCCC"] <- 1
+pirates$college[pirates$college != "1"] <- 0
+
+pirates$college <- as.numeric(pirates$college)
+
+```
+
+
 
 
 Jetzt funktioniert die Berechnung der regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial".
@@ -81,9 +92,11 @@ Als nächstes steht da "deviance residuals", also "Abweichung vom Idealwert". Di
 
 Dann werden die Coefficients (Regressionskoeffizienten) der unabhängigen Variablen dargestellt, ihr Einfluss auf das Tragen eines Kopftuchs (estimate), die Standardabweichung, der z-Wert (auch Wald z-Wert, ein Art Normalverteilungstest) und die dazugehörigen p-Werte. Mit Sternchen sind wieder die Werte markiert, die statistisch relevant sind, an dieser Stelle nur sexother und tattoos.
 
-Anders als bei der linearen Regression können die Koeffizienten nicht direkt interpretiert werden. Die Koeffizientengeben uns einzig die Richtung des Zusammenhangs an. 
+Anders als bei der linearen Regression können die Koeffizienten nicht direkt interpretiert werden. Die Koeffizientengeben uns einzig die Richtung des Zusammenhangs an, nicht die Stärke! 
 
- - Dass man auf dem College JSSFP war, verkleinert die Chance, dass man ein Kopftuch trägt. Das ist signifkant (1 Sternchen).
+- "Intercept" ist lediglich der Y-Achsenabschnitt.
+
+ - Dass man auf dem College 1 (CCCC) war, vergrößert die Chance, dass man ein Kopftuch trägt. Das ist signifkant (1 Sternchen).
  
  - Für jedes Tattoo mehr das man hat, steigt die Chance, dass man ein Kopftuch trägt und das ist tatsächlich ein höchstsignifikantes Ergebnis!
  
@@ -107,17 +120,137 @@ https://stats.idre.ucla.edu/r/dae/logit-regression/
 
 https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression
 
+### Vorhersage
+Können wir jetzt herausfinden, welcher Wert vorhergesagt wird, wenn wir bestimmte Parameter haben? Am praktischsten wäre es doch, gleich einen Parameter sich verändern zu lassen und dann zu schauen, wie sich die Chancen verändern, dass der Pirat ein Kopftuch trägt.
+
+Dazu brauchen wir ein neues Paket namens `glm.predict`, das wir installieren:
+```{r}
+install.packages("glm.predict") 
+```
+
+Nun können wir die Funktion `predicts` nutzen, um uns Vorhersagen und wie sie sich mit einer diskreten Veränderung verschieben, anzeigen zu lassen. Der erste Wert ist immer unser Modell (`mylogit`), danach müssen wir in der Reihenfolge wie im Modell angegeben, in Hochkommas und mit Semikolon getrennt die Werte angeben. Das Modell war `headband ~ college + tattoos + sex`, also müssen wir jetzt als erstes das College, dann den Wert für Tattoos und den Wert für das Geschlecht angeben, für die wir die Vorhersage haben möchten. Einer der Werte muss sich dabei als "veränderbar" gekennzeichnet werden und diese Veränderung muss in diskreten Schritten passieren.  
+
+Sagen wir doch einmal, wir schauen auf einen Piraten, der 6 Tattoos hat und sich als "other" definiert, und schauen, wie sich die Vorhersage verändert, wenn sich das College ändert. 
+Achtet auf den Unterschied zwischen Semikolon und Komma im Code! 
+
+```{r}
+library(glm.predict)
+
+predicts(model = mylogit, values = "0-1,1;6;1", position = 1) # position = 1 bedeutet der erste Wert wird verändert
+
+# 0-1,1 -- beschreibt den ersten Parameter also college. Dabei sind die colleges ja mit numerical 0 und 1 kodiert worden, deshalb hier mit 0-1 angegeben, in 1er-Schritten -- das ist der sich verändernde Parameter
+
+# 6 legt die 6 Tattoos fest
+
+# 1 legt das Geschlecht als "other" fest
+
+```
+Die diskrete Änderung wird für die erste Variable durchgeführt, weshalb esdort immer min. zwei Werte braucht (position = 1). Die Funktion gibt ein data.frame zurück.
+
+Dieser data.frame hat zwei Zeilen für die beiden Colleges und gibt uns mit mean den Mittelwert der Vorhersage, lower und upper markieren das 95%-Konfidenzintervall. Wenn man sich das anschaut, sieht man, dass die Konfidenzintervalle für val 1 (kein Kopftuch) und val 2 (ein Kopftuch) ganz schön doll überlappen, was die Sicherheit der errechmeten Mittelwerte schmälert. 
+
+Wir hatten ja oben gesehn, dass die Anzahl der Tattoos von Bedeutung zu gewesen scheint. Nehmen wir also die Tattoos als sich verändernden Wert. 
+
+```{r}
+predicts(model = mylogit, values = "1;0-20,5;1", position = 2) 
+
+# 1 -- bedeutet diesmal, dass nur das College, das wir mit 1 kodiert haben, also CCCC, betrachten (der Wert verändert sich nicht)
+
+# 0-20,5 -- bedeutet wir teilen den Datensatz der Anzahl Tattoos in 5-er Schritte auf. 0-5, 5-10, 10-15, 15-20 
+
+# 1 legt das Geschlecht als "other" fest
+
+# position = 2 sagt dem Algorithmus, dass der zweite Wert der ist, der sich verändert
+```
+
+Hier sieht man die vorhergesagten Wahrscheinlichkeiten abhängig von der Anzahl der Tattoos, dem College und dem Geschlecht, wobei sich in den unterschiedlichen Zeilen nur die Anzahl der Tattoos ändert und davon abhängig die vorhergesagten Wahrscheinlichkeiten (Mittelwert des 1. Wertes (also 0 -- kein Kopftuch) mit lower und upper Konfidenzintervallgrenze, Mittelwert d. 2. Wertes (also 1 -- ja Kopftuch) und dc gibt "difference of coefficients" (Mittelwertsunterschied, obere Konfidenzintervall- und unter Konfidenzintervallgrenze). 
+Wir sehen also, das der 1. Mittelwert (val1_mean) massiv ansteigt, wenn die Anzahl der Tattoos auf über 10 steigt (Gruppe zwei tattoos_val1 = 10, tattoos_val2 = 15):
+
+
 #### Odds Ratio
 
-Die für uns besser interpretierbaren werte sind die Odds Ratio, wir erinnern uns, ist die odds-ratio über 1, steigt die Chance, dass die abhängige Variable 1 ist mit jedem Schritt, der unabhängigen Variable. Ist die odds-ratio kleiner als 1, singt die Chance.
+Die für uns besser interpretierbaren Werte sind die Odds Ratio, wir erinnern uns, ist die odds-ratio über 1, steigt die Chance, dass die abhängige Variable 1 ist mit jedem Schritt, der unabhängigen Variable. Ist die odds-ratio kleiner als 1, singt die Chance mit jeder Iteration.
 
 ```{r}
 exp(coef(mylogit))
 
 ```
 
-Eine Person mit Tattoos hat mit jedem Tattoo eine 1,94-fach höhere Chance ein Kopftuch zu tragen als eine Person ohne.
+Eine Person mit Tattoos hat mit jedem Tattoo eine 1,94-fach höhere Chance ein Kopftuch zu tragen als eine Person ohne und wenn eine Person auf das College CCCC geht, steigt die Chance ebenfalls um das 1,9fache. Allerdings sinkt die Chance, wenn sich der Pirat als "other" definiert. Das sind doch schon Erkenntnisse!
 
-https://www.politikwissenschaften.ch/pdf.php?id=9s
+https://www.politikwissenschaften.ch/pdf.php?id=9
 
+
+## Visualisierung
+
+Wir können das Ergebnis natürlich auch visualisieren.
+
+
+```{r}
+library(tidyverse)
+
+  ggplot(data = pirates, 
+         aes(college + tattoos + sex , # logit-modell unabhängige Variablen
+             headband)) + # abhängige variable
+  geom_point(alpha = 0.2) + # Transparenz
+  geom_smooth(method = "glm", # Methode
+              method.args = list(family = "binomial")) + # binomial angeben
+  labs(title = "Logistic Regression Model",  # Beschriftungen
+       x = "College + Anzahl Tattoos + Geschlecht", 
+       y = "Chance ein Kopftuch zu tragen")
+
+
+```
+
+
+### noch einmal
+Pinguine. Versuchen wir das noch einmal mit dem Pinguindatensatz. Können wir vllt das Geschlecht vorhersagen (binär), indem wir uns das Gewich und die Länge der Flossen anschauen (beide metrisch)?
+
+1. Daten einladen:
+
+```{r}
+library(palmerpenguins)
+data("penguins")
+
+```
+
+1a)
+Schaut euch die levels von `penguin$sex` an, um herauszufinden, was als 0 (der erste Wert) und was als 1 kodiert sein wird:
+```{r}
+levels(penguins$sex)
+```
+
+
+2. Logit berechnen: **Aufgabe** Füllt diese Syntax aus!
+```
+
+mylogit <- glm(___ ~  __________ + ________, data = penguins, family = ________)
+
+```
+3. Die Summary-Statistik des Logit auswerfen lassen:
+```{r}
+summary(mylogit)
+
+```
+4. **Aufgabe** Diskutiert die Ergebnisse in eurer Gruppe!
+Was sagt das Estimate? Wie signifikant sind die Ergebnisse? 
+
+5. Berechnet die Veränderung der Chance, wenn das Gewicht zwischen 3000-4000 oder 4000 - 5000 liegt, die Länge der Flossen aber der Mittelwert bleibt ?
+
+Denkt daran, die Syntax von values trennt die Werte der beiden Parameter mit Semikolon, aber die Spezifizierung der Schritte der Werte des ersten Parameter muss mit Komma von dem Parameterwerten getrennt werden. Es gibt die Möglichkeit, den Mittelwert eines Parameters festzulegen, indem an seine Stelle `mean` schreibt: `values = "Spannbreite d. 1. Parameters den ich betrachten möchte,Schritte für Gruppenbildung;Mittelwert 2. Parameters"`
+
+```{r}
+library(glm.predict)
+predicts(model = mylogit, values = "3000-5000,1000;mean", position = 1) 
+
+```
+
+Wie kann man dieses Ergebnis diskutieren?
+
+Jetzt berechnet noch die odds Ratio 
+
+```{r}
+exp(coef(mylogit))
+
+```
 
