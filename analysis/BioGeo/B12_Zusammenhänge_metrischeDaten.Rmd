@@ -71,7 +71,7 @@ geom_boxplot(data = gentoo,
                aes(y=flipper_length_mm, 
                    x = sex))
 ```
-Ja, die beiden "boxes" sind doch deutlich unterschiedlich groß.
+Ja, die beiden "boxes" sind doch deutlich unterschiedlich groß und stark voneinander verschoben.
 
 Nehmen wir noch einmal ein anderes Beispiel: Das Gewicht, das war doch schon einmal eine Aufgabe.
 
@@ -139,7 +139,7 @@ Weiter damit zur einfaktoriellen ANOVA!
 
 Die ANOVA ist bereits in `base` umgesetzt, mit der Funktion `aov`.
 
-Aus irgendwelchen Gründen wir bei der ANOVA das Ergebnis nicht gleich angezeigt (Also der p-Wert). Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben
+Aus irgendwelchen Gründen wir bei der ANOVA das Ergebnis nicht gleich angezeigt (Also der p-Wert). Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben:
 
 ```{r}
 # eigentliche ANOVAberechnung
@@ -221,4 +221,38 @@ Ja. Die Unterschiede zwischen den Colleges sind sehr viel  kleiner als zwischen 
 
 Sehr gut! Wir haben in diesem Kapitel untersucht, wie metrische Variablen eventuell von gruppierenden Faktoren abhängig sein können und wie wir das testen. 
 
-**Aufgabe: Als Übung versucht doch das gleiche noch einmal herauszufinden für das Gewicht der Piraten.**
+**Aufgabe: Als Übung versucht doch das gleiche noch einmal herauszufinden für das Gewicht der Piraten. Hängt das Gewicht vom College oder dem Geschlecht ab? **
+
+## multivariate Analysis of Variance
+
+Jetzt schauen wir, wie mehrere abhängige Variablen gleichtzeitig untersucht werden können.
+
+Hängen Größe und Gewicht von dem Geschlecht ab?
+
+Dazu benutzen wir die Funktion `manova`, so wird die multivariate Varianzanalyse auch meistens abgekürzt.
+
+wir fügen beide Variablen mit einem cbind (column bind) zusammen und setzen diese mit der Tilde gegenüber den Faktor Geschlecht. Wie auch vorhin wird das Ergebnis einer Variablen zugewiesen und dann mit `summary` ausgegeben. 
+```{r}
+library(yarrr)
+data(pirates)
+
+res.man <- manova(cbind(height, weight) ~ sex, data = pirates)
+
+summary(res.man)
+```
+Wir haben eine hochsignifikanten Zusammenhang! 
+
+Mit einem speziellen summary-Befehl können wir uns die Details ansehen:
+
+
+```{r}
+summary.aov(res.man)
+```
+Erst wird uns "response height", also die Ergebnisse für die Größe und dann "response weight", die Ergebnisse für das Gewicht angezeigt. Wir sehen unterschiede in den absoluten Werten, aber hochsignifikant sind beide.
+
+Wie ist das mit der Spezies, den Pinguinen, ihrer Flipper-Length und dem Gewicht?
+
+**Aufgabe: Berechnet und interpretiert eine multivariate ANOVA für das Gewicht der Pinguine und ihrer Flossenlänge in Abhängigkeit von der Spezies!**
+
+
+
