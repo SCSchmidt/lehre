@@ -167,7 +167,7 @@ Hier benenne ich den Legendentitel mit "name = " um.
 
 "breaks" bezeichnet die Werte in meiner Spalte, die dann mit den "labels" in der nächsten Zeile umbenannt werden.
 
-Das gleiche kann ich mit der Legende für die FORM der Punkte machen: scale_shape_discrete, aber die Arten brauche ich ja nicht umbenennen.
+Das gleiche kann ich mit der Legende für die FORM der Punkte machen: `scale_shape_discrete`, aber die Arten brauche ich ja nicht umbenennen.
 
 Voll gut! 
 
