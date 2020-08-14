@@ -1,0 +1,40 @@
+---
+title: "Diskriminanzanalyse"
+author:
+  - Schmidt, Sophie C.
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+    bookdown::word_document2:
+      fig_caption: yes
+      reference_docx: "../templates/template.docx" # Insert path for the DOCX 
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  eval = FALSE,
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  echo = TRUE,
+  comment = "#>",
+  fig.path = "../figures/",
+  fig.width=10, 
+  fig.height=10
+)
+```
+
+Die Diskriminanzanalyse ist jetzt schon etwas, das manche Leute als "Machine Learning" bezeichnen. 
+
+Faaaancy.
+
+Oder zumindest klingt es so. Aber ein Witz unter Statistikern geht ungefähr so "Steht Machine Learning drauf, ist aber Lineare Regression drin". Und das bei vielen anderen auch: "Steht MANOVA drauf, ist aber lineare Regression drin"... 
+
+![https://media.makeameme.org/created/when-you-advertise-f81897f53a.jpg]()
+
+In dem wir einen Trainingsdatensatz und einen Test-Datensatz benutzen können wir schauen, ob die berechnete Diskriminanzfunktion eine ordentliche Vorhersage unserer Gruppen macht. 
+
+```{r}
+
+```
+
