@@ -1,0 +1,183 @@
+---
+title: "multidimensionale_Skalierung"
+author: "Sophie C. Schmidt"
+date: "16 August 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Klassische Multidimensionale Skalierung
+
+Wie in der Vorlesung besprochen, ist die multidimensionale Skalierung ein weiteres Verfahren zur Dimensionsreduzierung. Die klassische MDS zielt darauf ab, die Abstände der Daten zueinander in einer möglichst "realistischen" Weise anzupassen, so dass Punkte, die nahe beieinander sind, auch eine Ähnlichkeit" zueinander aufweisen.
+
+Als Datensatz nehmen wir den Piratendatensatz, aber wir verkleinern ihn drastisch, da die Ergebnisse sonst schlecht zu erkennen sind. D. h. wir ziehen zuerst eine Zufallsstichprobe von 1/10 des Datensatzes (es bleiben also noch 100 Piraten drin):
+
+```{r}
+#load pirates
+
+library(yarrr)
+data("pirates")
+
+# Zufallsstichprobe von Zahlen erstellen
+
+sample <- sample(nrow(pirates), size = 0.1*nrow(pirates)) 
+
+# Zufallsstichprobe ziehen
+pir <- as.data.frame(pirates[sample,])
+
+```
+
+und als zweites reduzieren wir diesen Datensatz auf die metrischen Variablen.
+
+```{r}
+# auf metrische Daten reduzieren
+
+pir_metric <- pir[,c(3:5,14:15)]
+```
+
+Als allererstes müssen wir jetzt eine Distanzmatrix berechnen. Dies bedeutet, die "Entfernung" aller Piraten zu allen Piraten wird berechnet. Die `dist()`-Funktion nutzt als Standard dafür die euklidische Distanz. Wir können uns die euklidische Distanz immer besonders gut im 2- und 3-Dimensionalen Raum vorstellen, wo man zu ihrer Berechnung den Satz des Pythagoras (a² + b² = c²) nutzen kann. Im multidimensionalen Raum geht das ebenso. 
+
+Die eigentliche multidimensionale Skalierung passiert dann mit der Funktion `cmdscale`. Als Standardeinstellung ist hier vorgesehen, dass die Daten auf den zweidimensionalen Raum reduziert werden. `as_tibble` ist eine "Schnellumwandlung" der Ergebnisses in einen data.frame (eigentlich das gleiche, geht aber schneller als as.data.frame). Die Spalten sollten wir noch in Dimension 1 (Dim.1) und Dimension 2 (Dim.2) umbenennen.
+
+```{r}
+
+# Load required packages
+library(magrittr)
+library(dplyr)
+
+mds <- pir_metric %>%
+  dist() %>%         # calculate euclidean distance 
+  cmdscale()  %>%    # mds berechnung
+  as_tibble()        # Umformung in einen data.frame
+
+colnames(mds) <- c("Dim.1", "Dim.2") # benennt die beiden Spalten
+```
+
+Wir haben mit mds jetzt einen Data.frame, in dem die "neuen Koordinaten" stehen. Das lässt sich wunderbar mit ggplot visualisieren:
+
+```{r}
+library(ggplot2)
+
+ggplot(data =  mds)+
+  geom_point(aes(x = Dim.1,
+                 y = Dim.2))
+```
+
+Das sind die 100 Piraten, und ihre Ähnlichkeit zueinander. Nicht sonderlich spektakulär irgendwie. Es wäre doch jetzt aber hochinteressant zu sehen, ob sich dahinter bestimmte Gruppen verbergen.
+
+Dazu müssen wir die neuen Koordinaten mit dem alten Datensatz zusammenführen. Da die Reihenfolge der Daten durch die MDS nicht verändert wurde (das könnt ihr gerne prüfen mit `rownames(pir) == rownames(mds)`), können wir einfach mit einem `cbind()` den ersten zufallsgenerierten Piratendatensatz `pir` wieder mit `mds` zusammenführen: 
+
+```{r}
+mds_sp <- cbind(mds, pir)
+```
+
+Jetzt können wir schauen, ob diese Verteilung zB mit dem Geschlecht zusammenhängt:
+
+```{r}
+ggplot(data =  mds_sp)+
+  geom_point(aes(x = Dim.1,
+             y = Dim.2,
+             col = sex))
+```
+
+Aha! Dachten wir uns das doch. ;-) 
+
+Manchmal sieht man in diesem Scatter-Plot Punkte und würde gerne wissen, "wer" sie genau sind, also welchen Datensatz sie repräsentieren:
+
+Wir können das herausfinden, indem wir die Punkte labeln, am einfachsten mit `ggscatter` in dem Paket `ggpubr`:
+
+```{r}
+library(ggpubr)
+
+ggscatter(mds_sp, x = "Dim.1", y = "Dim.2", 
+          label = rownames(mds_sp),
+          size = 1,
+          repel = TRUE)
+
+```
+
+
+
+
+**Aufgabe:** Wiederholt die Berechnung mit den Pinguinen, Gewicht, Schnabelmaßen und Flossenmaß. Visualisiert das Ergebnis und färbt die Punkte nach Spezies ein.
+
+```{r}
+
+
+library(palmerpenguins)
+data("penguins")
+
+pen <- na.omit(penguins)
+
+pen_m <- pen[,c(3:6)]
+
+
+
+
+# Cmpute MDS
+mds <- pen_m %>%
+  dist() %>%          
+  cmdscale() %>%
+  as_tibble()
+colnames(mds) <- c("Dim.1", "Dim.2")
+
+
+# Plot MDS
+
+mds_sp <- cbind(mds, pen)
+
+
+
+library(ggplot2)
+
+ggplot(data =  mds_sp)+
+  geom_point(aes(x = Dim.1,
+             y = Dim.2,
+             col = species))
+
+```
+
+
+```{r}
+
+clust <- kmeans(mds, 3)$cluster %>%
+  as.factor()
+mds_c <- mds %>%
+  mutate(groups = clust)
+
+
+ggscatter(mds_c, x = "Dim.1", y = "Dim.2", 
+          color = "groups",
+          palette = "jco",
+          size = 1, 
+          ellipse = TRUE,
+          ellipse.type = "convex",
+          repel = TRUE)
+
+
+```
+
+## Non-metrische MDS
+
+Für die non-metrische MDS benötigen wir das Paket `MASS`, welches die Funktion `isoMDS()` , die Kruskal’s non-metrische MDS benutzt und die Funktion `sammon()` für "Sammon’s non-linear mapping", enthält.
+
+```{r}
+
+# Cmpute MDS
+library(MASS)
+mds <- pen_m %>%
+  dist() %>%          
+  isoMDS() %>%
+  .$points %>%
+  as_tibble()
+colnames(mds) <- c("Dim.1", "Dim.2")
+# Plot MDS
+ggscatter(mds, x = "Dim.1", y = "Dim.2", 
+          size = 1,
+          repel = TRUE)
+
+```
+
