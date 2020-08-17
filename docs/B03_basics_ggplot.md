@@ -321,39 +321,11 @@ können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt
         title = element_text(size = 25),
         legend.title = element_text(color = "blue", size = 20),
         legend.text = element_text(color = "red", size = 16))+
-    scale_fill_discrete(name = "Pinguinart")
+    scale_fill_discrete(name = "Pinguinart")+
+  coord_flip()
 ```
 
 ![](/figures/unnamed-chunk-15-1.png)
-
-``` r
-  coord_flip()
-#> <ggproto object: Class CoordFlip, CoordCartesian, Coord, gg>
-#>     aspect: function
-#>     backtransform_range: function
-#>     clip: on
-#>     default: FALSE
-#>     distance: function
-#>     expand: TRUE
-#>     is_free: function
-#>     is_linear: function
-#>     labels: function
-#>     limits: list
-#>     modify_scales: function
-#>     range: function
-#>     render_axis_h: function
-#>     render_axis_v: function
-#>     render_bg: function
-#>     render_fg: function
-#>     setup_data: function
-#>     setup_layout: function
-#>     setup_panel_guides: function
-#>     setup_panel_params: function
-#>     setup_params: function
-#>     train_panel_guides: function
-#>     transform: function
-#>     super:  <ggproto object: Class CoordFlip, CoordCartesian, Coord, gg>
-```
 
 Bilder sichern
 ==============
