@@ -1,9 +1,21 @@
 ---
 title: "Einführung in die Grundlagen R"
-author: "Sophie C. Schmidt"
-date: "3 7 2020"
-output: html_document
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = FALSE)
+```
+
 # R basics 
 
 Hier geht es um ganz grundlegende Dinge zu R und Rstudio. 
@@ -15,12 +27,6 @@ Ein *Skript* ist eine Text-Datei, in der Code steht. Eine neue Skript-Datei legt
 Die *Konsole* ist das Panel unten und ist der Link zum "eigentlichen R". Code wird hier neben dem ">" hin kopiert (zB durch das markieren und Strg+Enter oder "per Hand") oder eingetippt und mit Enter abgeschickt. "Antworten" von R erscheinen ebenfalls in der Konsole, neben einer kleinen Zahl in eckigen Klammern ( [1] ), die die Zeile der Antwort angibt.
 
 Achtung! R ist die Sprache eines dummen Computers, der nicht damit klarkommen, wenn wir etwas "falsch" sagen. Das kann bedeuten, dass ein Komma oder ein Klammer fehlt und R es nicht mehr versteht. Deshalb achtet darauf, alles genau so abzutippen. 
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      eval = FALSE)
-```
 
 
 ### Taschenrechner
@@ -187,6 +193,10 @@ Aber eigentlich wollen wir echte biologische Daten für den Workshop benutzen. W
 
 Pakete sind "Erweiterungen" für `base R`. `base R` ist das zugrunde liegende "einfache" R, das mit der Standardinstallation geladen wird. Es kann schon sehr sehr viel. Die vielfältige Community um R herum und auch einige professionelle Entwickler denken sich aber ständig neue Funktionalitäten (Funktionen, Möglichkeiten) aus und implementieren sie in Paketen (*packages*). Wenn ich also eine bestimmte Funktion nutzen möchte, muss ich das Paket installieren, in dem sie eingebaut wurde und in meine R-session laden. Pakete liegen meistens auf dem "Comprehensive R Archive Network" (*CRAN*), können aber auch woanders zur Verfügung gestellt werden. So ist es mit dem Daten-Paket, was wir brauchen, es liegt auf github.com, einem unter Software-Entwicklern beliebten versionskontrollierten Repositorium für Code. 
 
+In Rstudio Cloud habe ich alle Pakete vorinstalliert, die in diesem Kurs von Bedeutung sind. Deswegen gilt der folgende Teil der Anleitung nur für diejenigen, die nicht in Rstudio Cloud, sondern mit der Installation von Rstudio auf ihren Heimrechnern arbeiten!
+
+#### nur für Rstudio NICHT in der Cloud relevant!
+
 Allerdings: Um Pakete von github herunterladen zu können, brauche ich eine weitere bestimmte Funktion. Sie liegt in dem Paket `devtools`, kurz für "developer tools" und dieses Paket liegt auf CRAN. Um Pakete von CRAN zu installieren, nutzt man `install.packages("Paketname")`. 
 
 Folglich machen wir erst einmal das:
@@ -208,11 +218,15 @@ devtools::install_github("allisonhorst/palmerpenguins")
 
 Achtung! "allisonhorst/palmerpenguins" muss in Hochkommas, damit R nicht denkt, dass es ein Objekt ist, dass es in der Environment finden muss.
 
+
+#### hier weiter für alle
+
+
 Nach erfolgreicher Installation (roter Text heißt in R nicht, dass Fehler passiert sind!), müssen wir das Paket noch in unsere Sitzung ("R-session") laden, damit wir damit umgehen können:
 
 ```{r}
 library(palmerpenguins)
-# Daten einladen
+# Paketen einladen
 ```
 
 Pakete müssen nur EINMAL installiert, aber in jeder Sitzung / nach jedem Neustart des Programms neu "geladen" werden. Die Befehle fürs Laden heißen entweder "library" oder "require", beides funktioniert gleich gut. In der Regel schreibt man die Ladebefehle für die Pakete, die man in einem Skript braucht, ganz nach oben, damit andere gleich am Anfang sehen, was sie vielleicht nach-installieren müssen. Wenn ich ein Skript nur für mich schreibe, setze ich es gern direkt vor die Funktion, für die ich das Paket brauche, damit ich weiß, aus welchem Paket die Funktion stammte. Meist erläutere ich das auch mit einem Kommentar.
@@ -220,6 +234,7 @@ Pakete müssen nur EINMAL installiert, aber in jeder Sitzung / nach jedem Neusta
 In dem Paket Palmerpenguins gibt es zwei Datensätze. Die rufen wir jetzt mit dem Befehl "data" auf und schauen uns den an.
 ```{r}
 data(penguins)
+# Daten laden
 ```
 
 Jetzt solltet ihr unter Environment zwei neue Einträge sehen: "penguins" und "penguins_raw". Dahinter steht "Promise", was bedeutet, sie sind vorgeladen, aber noch nicht komplett da. Das spart Ressourcen. Wenn wir uns den ersten Datensatz jetzt anschauen, werden sie vollends eingeladen.
@@ -307,11 +322,14 @@ mean(chinstraps$body_mass_g)
 
 Die Filter-Funktion gehört zum sogenannten "tidyverse". Das Tidyverse ist wie ein bestimmter Dialekt von R. Eine Reihe von Paketen folgt diesem Dialekt und diese Pakete arbeiten besonders gut miteinander. Da diese neuen Pakete auch einiges vereinfachen, erfreuen sie sich zunehmender Beliebtheit und wenn man nach Lösungen googelt, findet man Anleitungen, die "tidy" Lösungen erklären. Im Tidyverse gibt es eine Besonderheit, die man kennen sollte: Die sogenannte "*pipe*". Mit dem Befehl `%>%` wird das Ergebnis einer Zeile in die nächste überführt. Wir benötigen zwei Pakete als nächstes: "dplyr" und "magrittr", die mit *install.packages* installiert werden müssen.
 
+#### nur für nicht-Cloud-user!
 ```{r, eval = FALSE}
 install.packages("dplyr")
 install.packages("magrittr")
 ```
 (Das kann etwas dauern, die Pakete sind etwas größer.)
+
+#### weiter für alle
 
 Im Beispiel schicke ich damit den gesamten Datensatz penguins in den Filter, der in der nächsten Zeile beschrieben wird, "filtere" ihn und schick ihn gefiltert weiter in die nächste Zeile, in der ich die Spalte definiere und in die letzte, wo es dann um die Berechnung des Mittelwertes geht:
 
@@ -339,11 +357,12 @@ chinstraps <- penguins %>%
 
 - Es gibt Funktionen und Objekte. Eine Funktion "macht etwas" mit einem Objekt, berechnet zB den Mittelwert einer Zahlenreihe (Zahlenreihe = Vektor =  Objekt).
 
+- mithilfe von Zuweisungen werden Variablen definiert, mit denen weiter gearbeitet werden kann.
+
 - Die Installation von Paketen erweitert die Funktionalitäten in R. CRAN-Pakete werden mit "install.packages("Paketname")" installiert.
 
 - Ein Paket muss jede Sitzung neu geladen werden (einfach im Skript den library-Befehl reinschreiben)
 
-- mithilfe von Zuweisungen werden Variablen definiert, mit denen weiter gearbeitet werden kann.
 
 
 ### Zusammenfassend noch einmal grundlegende Zeichen:
@@ -361,7 +380,7 @@ chinstraps <- penguins %>%
 - die Pipe %>%: Ist ein besonderes Zeichen im R-Dialekt "tidyverse" und gibt den Inhalt davor an die nächste Zeile weiter.
 
 
-### trouble shoot infos
+### trouble shoot Tips
 
 1. Tippfehler. Meistens klappt etwas nicht, weil man sich vertippt hat. Ein Komma zu wenig, eine Klammer zu viel, ein Buchstabe verdreht. Der Computer ist dumm und versteht nicht, was man gemeint hat. 
 

@@ -36,6 +36,7 @@ Die LDA entwickelt eine Schätzfunktion anhand der sie die Daten mithilfe von me
 
 In dieser Aufgabe untersuchen wir, ob sich das Geschlecht der Piraten anhand aller metrischer Variablen in dem Datensatz vorhersagen lässt.
 Dafür reduzieren wir als erstes unseren Datensatz auf die benutzten Variablen:
+
 ```{r}
 library(yarrr)
 data("pirates")
@@ -247,53 +248,3 @@ https://www.statistik.tu-dortmund.de/fileadmin/user_upload/Lehrstuehle/Datenanal
 
 
 **Aufgabe** Berechnet eine LDA für die Vorhersagbarkeit der Pinguin-spezies anhand von Flügelmaß, der zwei Schnabelmaße und Gewicht. Bereinigt den Datensatz von NA - Werten und benutzt einen Trainingsdatensatz, in dem 70% der Daten enthalten sind.
-
-```{r}
-library(palmerpenguins)
-data("penguins")
-
-pen <- penguins[,c(1,3:6)]
-
-pen <-na.omit(pen)
-
-
-train <- sample(nrow(pen), size = 0.7*nrow(pen)) # so erstelle ich einen Vektor aus zufällig gewählte Zahlen von 0 bis der Anzahl von Datensätzen im Piratendatensatz in der Größe von von 75% aus der Anzahl von Datensätzen im Piratendatensatz. Ich bekomme also einen Vektor namens "train" mit 750 Zahlen, die zufällig aus dem Bereich von 0 bis 1000 ausgewählt wurden. 
-
-train_pen.df <- as.data.frame(pen[train, ]) # hiermit wähle ich mithilfe der Zufallswerte zufällige Zeilen aus dem Piratendatensatz aus
-
-test_pen.df <- as.data.frame(pen[-train, ]) # hiermit nehme ich die Zeilen aus dem Datensatz, die nicht mit dem Zufallsvektor angesprochen werden (-train)
-
-## train_pir.df + test_pir.df = pirates
-
-
-# die Parameter werden geschätzt
-preproc.param <- train_pen.df %>% 
-  preProcess(method = c("center", "scale"))
-
-# anhand der geschätzten Parameter werden die Daten transfomiert (Funktion "predict")
-# 1. der Trainingsdatensatz
-train.transformed <- preproc.param %>% 
-  predict(train_pen.df) 
-
-# 2. der Testdatensatz
-test.transformed <- preproc.param %>% 
-  predict(test_pen.df)
-
-model <- lda(species~., data = train.transformed)
-
-model
-```
-
-
-```{r}
-plot(model)
-
-
-# Vorhersage berechnen
-predictions_lda <- model %>% 
-  predict(test.transformed)
-
-# Model accuracy
-mean(predictions_lda$class == test.transformed$species)
-```
-
