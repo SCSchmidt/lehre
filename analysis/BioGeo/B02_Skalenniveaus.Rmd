@@ -1,12 +1,20 @@
 ---
 title: "Skalenniveaus in R"
-author: "Sophie C. Schmidt"
-date: "7 7 2020"
-output: html_document
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 ---
 
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = FALSE)
 ```
 
 
@@ -50,7 +58,6 @@ Der Output erzählt uns, dass es sich um eine Tabelle, einen `Data frame` handel
 
 Jetzt nehmen wir doch einmal nur eine Spalte der Tabelle, die erste, "species"
 ```{r}
-
 class(penguins$species)
 ```
 Ahja. Es ist ein Vektor mit factor - Daten, also mit Daten auf nominalem Skalenniveau. Finden wir doch einmal heraus, welche Werte in dieser Spalte stehen:
@@ -60,20 +67,20 @@ levels(penguins$species)
 ```
 Ok, es sind genau 3 unterschiedliche Werte, die in dieser Spalte vorkommen: "Adelie", "Chinstrap" und "Gentoo". Jetzt wissen wir schon, dass es nicht mehr als drei Spezies in dem Datensatz gibt.
 
-Aufgabe: Finde das gleiche zu der Spalte "island" heraus!
+**Aufgabe:** Finde das gleiche zu der Spalte "island" heraus!
 
 Wie gesagt, gibt es Unterschiede bei metrischen Daten. Schauen wir uns also einmal die Schnabellänge (bill_length_mm) und die Flügel-Flossenlänge (flipper_length_mm) an:
 
 ```{r}
-
 class(penguins$bill_length_mm)
 class(penguins$flipper_length_mm)
 
 ```
-Während die Schnabellänge eine `numeric` ist, ist die Flossenlänge nur `integer`. Woran könnte das liegen? Beide Angaben sind als in Millimeter.
+
+Während die Schnabellänge eine `numeric` ist, ist die Flossenlänge nur `integer`. Woran könnte das liegen? Beide Angaben sind in Millimeter angegeben.
 
 
-Ordinale Daten sind irgendwie logischerweise in R einfach `factor`-Daten, deren Werte (`level`) eine Ordnung zugewiesen bekommen haben. Das kann man recht einfach mit dem Befehl `ordered`. In dem Pinguin-Datensatz gibt es dafür leider keine geeignete Spalte. Wir spielen Das trotzdem mit einer der nominalen Informationen durch, da das für die Diagramm-Erstellung später durchaus sinnvoll sein kann.
+Ordinale Daten sind irgendwie logischerweise in R einfach `factor`-Daten, deren Werte (`level`) eine Ordnung zugewiesen bekommen haben. Das kann man recht einfach mit dem Befehl `ordered`. In dem Pinguin-Datensatz gibt es dafür leider keine geeignete Spalte. Wir spielen das trotzdem mit einer der nominalen Informationen durch, da das für die Diagramm-Erstellung später durchaus sinnvoll sein kann.
 
 Nehmen wir die Spalte "island":
 
@@ -136,7 +143,7 @@ Was passiert, wenn wir einfach die Daten noch einmal neu einladen?
 
 Also den data-Befehl noch einmal benutzen?
 
-Ha! Damit überschreiben wir die falschen Daten einfach wieder. Solange wir unsere Originaldaten irgendwo haben und diese NICHT ÜBERSCHREIBEN (deswegen legen wir sie immer in einem anderen Ordner ab als die Daten, die wir aus R hinaus wieder irgendwo abspeichern, nämlich im Ordner raw data). Die Originaldaten sind im Paket archdata unangetastet geblieben, weil wir sie nicht exportiert haben.
+Ha! Damit überschreiben wir die falschen Daten einfach wieder. Solange wir unsere Originaldaten irgendwo haben und diese NICHT ÜBERSCHREIBEN (deswegen legen wir sie immer in einem anderen Ordner ab als die Daten, die wir aus R hinaus wieder irgendwo abspeichern, nämlich im Ordner raw data, dazu später mehr). Die Originaldaten sind im Paket palmerpenguins unangetastet geblieben, weil wir sie nicht exportiert haben.
 
 Und man braucht das alles nicht neu zu schreiben oder so, nein, man scrollt in seinem Skript-Dokument einfach nach oben und wiederholt den Befehl, der da noch irgendwo steht.
 
