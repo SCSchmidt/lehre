@@ -1,0 +1,133 @@
+---
+title: "Lösungsskripte"
+author: "Sophie C. Schmidt"
+date: "17 8 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lösung Aufgabe Lineare Diskriminanzanalyse
+
+
+
+**Aufgabe** Berechnet eine LDA für die Vorhersagbarkeit der Pinguin-spezies anhand von Flügelmaß, der zwei Schnabelmaße und Gewicht. Bereinigt den Datensatz von NA - Werten und benutzt einen Trainingsdatensatz, in dem 70% der Daten enthalten sind.
+
+```{r}
+library(palmerpenguins)
+data("penguins")
+
+pen <- penguins[,c(1,3:6)]
+
+pen <-na.omit(pen)
+
+
+train <- sample(nrow(pen), size = 0.7*nrow(pen)) # so erstelle ich einen Vektor aus zufällig gewählte Zahlen von 0 bis der Anzahl von Datensätzen im Piratendatensatz in der Größe von von 75% aus der Anzahl von Datensätzen im Piratendatensatz. Ich bekomme also einen Vektor namens "train" mit 750 Zahlen, die zufällig aus dem Bereich von 0 bis 1000 ausgewählt wurden. 
+
+train_pen.df <- as.data.frame(pen[train, ]) # hiermit wähle ich mithilfe der Zufallswerte zufällige Zeilen aus dem Piratendatensatz aus
+
+test_pen.df <- as.data.frame(pen[-train, ]) # hiermit nehme ich die Zeilen aus dem Datensatz, die nicht mit dem Zufallsvektor angesprochen werden (-train)
+
+## train_pir.df + test_pir.df = pirates
+
+
+# die Parameter werden geschätzt
+preproc.param <- train_pen.df %>% 
+  preProcess(method = c("center", "scale"))
+
+# anhand der geschätzten Parameter werden die Daten transfomiert (Funktion "predict")
+# 1. der Trainingsdatensatz
+train.transformed <- preproc.param %>% 
+  predict(train_pen.df) 
+
+# 2. der Testdatensatz
+test.transformed <- preproc.param %>% 
+  predict(test_pen.df)
+
+model <- lda(species~., data = train.transformed)
+
+model
+```
+
+
+```{r}
+plot(model)
+
+
+# Vorhersage berechnen
+predictions_lda <- model %>% 
+  predict(test.transformed)
+
+# Model accuracy
+mean(predictions_lda$class == test.transformed$species)
+```
+
+
+
+
+## Lösung zu metrische multidimensionsale Skalierung
+
+**Aufgabe:** Wiederholt die Berechnung mit den Pinguinen, Gewicht, Schnabelmaßen und Flossenmaß. Visualisiert das Ergebnis und färbt die Punkte nach Spezies ein.
+
+
+```{r}
+
+
+library(palmerpenguins)
+data("penguins")
+
+pen <- na.omit(penguins)
+
+pen_m <- pen[,c(3:6)]
+
+
+# Cmpute MDS
+mds <- pen_m %>%
+  dist() %>%          
+  cmdscale() %>%
+  as_tibble()
+colnames(mds) <- c("Dim.1", "Dim.2")
+
+
+# Plot MDS
+
+mds_sp <- cbind(mds, pen)
+
+
+
+library(ggplot2)
+
+ggplot(data =  mds_sp)+
+  geom_point(aes(x = Dim.1,
+             y = Dim.2,
+             col = species))
+
+```
+
+**Zusatzaufgabe**: Berechnet k-means für k = 2 oder 3, je nachdem, was ihr für sinnvoll haltet und stellt das in einem anderen plot als dem ersten dar.
+
+
+
+```{r}
+clust <- kmeans(mds, 3)$cluster %>% # auf mds wird kmeans berechnet mit k = 2
+  as.factor() # und diese Clusterzuweisung wird als Faktor-Vektor gespeichert
+
+mds_c <- mds_sp %>%         # wir erstellen mds_c aus mds_pir
+  mutate(groups = clust)    # und weisen die Gruppen als eigene Spalte zu
+```
+
+
+Jetzt können wir folgendes machen: Die Punkte werden nach Dimension 1 und 2 geplottet, die Form der Punkte (shape) gibt das Geschlecht an und die Gruppen, wie sie von k-means erkannt wurden, werden farblich dargestellt und umrandet.
+
+```{r}
+ggscatter(mds_c, x = "Dim.1", y = "Dim.2",  #Punkte zeichnen
+          shape = "species",                    # Form der Punkte nach Geschlecht
+          color = "groups",              # Farbe nach Gruppen von k-means
+          palette = "jco",               # Farbauswahl
+          size = 1.5,                    # Größe der Punkte
+          ellipse = TRUE,               # wir zeichnen eine Ellipse
+          ellipse.type = "convex",     # konvex um die Gruppen herum
+          repel = TRUE)               # Punkte sollen sich nicht überlagern
+```

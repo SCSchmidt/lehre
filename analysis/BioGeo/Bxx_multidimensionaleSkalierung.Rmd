@@ -49,7 +49,7 @@ library(magrittr)
 library(dplyr)
 
 mds <- pir_metric %>%
-  dist() %>%         # calculate euclidean distance 
+  dist() %>%         # berechne euclidische Distanz
   cmdscale()  %>%    # mds berechnung
   as_tibble()        # Umformung in einen data.frame
 
@@ -71,15 +71,39 @@ Das sind die 100 Piraten, und ihre Ähnlichkeit zueinander. Es wäre doch jetzt 
 Dazu müssen wir die neuen Koordinaten mit dem alten Datensatz zusammenführen. Da die Reihenfolge der Daten durch die MDS nicht verändert wurde (das könnt ihr gerne prüfen mit `rownames(pir) == rownames(mds)`), können wir einfach mit einem `cbind()` den ersten zufallsgenerierten Piratendatensatz `pir` wieder mit `mds` zusammenführen: 
 
 ```{r}
-mds_sp <- cbind(mds, pir)
+mds_pir <- cbind(mds, pir)
 ```
 
-Man könnte diese Daten jetzt auch noch mit Clusteranalysen automatisch gruppieren lassen, aber das führt jetzt hier zu weit. Wen das interessiert, der kann sich gern hier weiterbilden: <http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/122-multidimensional-scaling-essentials-algorithms-and-r-code>
-
-Wir visualisieren einfach nur mal, ob diese Verteilung zB mit dem Geschlecht zusammenhängt:
+Man könnte diese Daten jetzt auch noch mit Clusteranalysen automatisch gruppieren lassen, dafür gibt es unterschiedliche Verfahren. Eine reißen wir hier ganz kurz an: k-means ist vermutlich das bekannteste Clusterverfahren, das es gibt. Es basiert auf einem iterativen Verfahren, bei dem die Distanzen der Clustermitglieder zu einem Cluster-Mittelpunkt reduziert werden. Bei k-means muss man k definieren, d.h., wie viele Cluster gebildet werden sollen. Dafür nutzen wir folgenden Code:
 
 ```{r}
-ggplot(data =  mds_sp)+
+clust <- kmeans(mds, 2)$cluster %>% # auf mds wird kmeans berechnet mit k = 2
+  as.factor() # und diese Clusterzuweisung wird als Faktor-Vektor gespeichert
+
+mds_c <- mds_pir %>%         # wir erstellen mds_c aus mds_pir
+  mutate(groups = clust)    # und weisen die Gruppen als eigene Spalte zu
+```
+
+
+Jetzt können wir folgendes machen: Die Punkte werden nach Dimension 1 und 2 geplottet, die Form der Punkte (shape) gibt das Geschlecht an und die Gruppen, wie sie von k-means erkannt wurden, werden farblich dargestellt und umrandet.
+
+```{r}
+ggscatter(mds_c, x = "Dim.1", y = "Dim.2",  #Punkte zeichnen
+          shape = "sex",                    # Form der Punkte nach Geschlecht
+          color = "groups",              # Farbe nach Gruppen von k-means
+          palette = "jco",               # Farbauswahl
+          size = 1.5,                    # Größe der Punkte
+          ellipse = TRUE,               # wir zeichnen eine Ellipse
+          ellipse.type = "convex",     # konvex um die Gruppen herum
+          repel = TRUE)               # Punkte sollen sich nicht überlagern
+```
+
+
+
+Etwas übersichtlicher ist es vllt, wenn man nur visualisiert, ob diese Verteilung zB mit dem Geschlecht zusammenhängt:
+
+```{r}
+ggplot(data =  mds_pir)+
   geom_point(aes(x = Dim.1,
              y = Dim.2,
              col = sex))
@@ -95,74 +119,14 @@ Wir können das herausfinden, indem wir die Punkte labeln, am einfachsten mit `g
 ```{r}
 library(ggpubr)
 
-ggscatter(mds_sp, x = "Dim.1", y = "Dim.2", 
-          label = rownames(mds_sp),
+ggscatter(mds_pir, x = "Dim.1", y = "Dim.2", 
+          label = rownames(mds_pir),
           size = 1,
           repel = TRUE)
 
 ```
 
 Praktisch!
-
-
-
-**Aufgabe:** Wiederholt die Berechnung mit den Pinguinen, Gewicht, Schnabelmaßen und Flossenmaß. Visualisiert das Ergebnis und färbt die Punkte nach Spezies ein.
-
-```{r}
-
-
-library(palmerpenguins)
-data("penguins")
-
-pen <- na.omit(penguins)
-
-pen_m <- pen[,c(3:6)]
-
-
-
-
-# Cmpute MDS
-mds <- pen_m %>%
-  dist() %>%          
-  cmdscale() %>%
-  as_tibble()
-colnames(mds) <- c("Dim.1", "Dim.2")
-
-
-# Plot MDS
-
-mds_sp <- cbind(mds, pen)
-
-
-
-library(ggplot2)
-
-ggplot(data =  mds_sp)+
-  geom_point(aes(x = Dim.1,
-             y = Dim.2,
-             col = species))
-
-```
-
-
-```{r}
-
-clust <- kmeans(mds, 3)$cluster %>%
-  as.factor()
-mds_c <- mds %>%
-  mutate(groups = clust)
-
-
-ggscatter(mds_c, x = "Dim.1", y = "Dim.2", 
-          color = "groups",
-          palette = "jco",
-          size = 1, 
-          ellipse = TRUE,
-          ellipse.type = "convex",
-          repel = TRUE)
-
-
-```
 
 
 
