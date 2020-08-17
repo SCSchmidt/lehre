@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Klassische Multidimensionale Skalierung
 
-Wie in der Vorlesung besprochen, ist die multidimensionale Skalierung ein weiteres Verfahren zur Dimensionsreduzierung. Die klassische MDS zielt darauf ab, die Abstände der Daten zueinander in einer möglichst "realistischen" Weise anzupassen, so dass Punkte, die nahe beieinander sind, auch eine Ähnlichkeit" zueinander aufweisen.
+Wie in der Vorlesung besprochen, ist die multidimensionale Skalierung ein weiteres Verfahren zur Dimensionsreduzierung. Die klassische MDS zielt darauf ab, die Abstände der Daten zueinander in einer möglichst "realistischen" Weise anzupassen, so dass Punkte, die nahe beieinander dargestellt werden auch eine "Ähnlichkeit" zueinander in den Originaldaten aufweisen.
 
 Als Datensatz nehmen wir den Piratendatensatz, aber wir verkleinern ihn drastisch, da die Ergebnisse sonst schlecht zu erkennen sind. D. h. wir ziehen zuerst eine Zufallsstichprobe von 1/10 des Datensatzes (es bleiben also noch 100 Piraten drin):
 
@@ -66,7 +66,7 @@ ggplot(data =  mds)+
                  y = Dim.2))
 ```
 
-Das sind die 100 Piraten, und ihre Ähnlichkeit zueinander. Nicht sonderlich spektakulär irgendwie. Es wäre doch jetzt aber hochinteressant zu sehen, ob sich dahinter bestimmte Gruppen verbergen.
+Das sind die 100 Piraten, und ihre Ähnlichkeit zueinander. Es wäre doch jetzt aber hochinteressant zu sehen, ob sich dahinter bestimmte Gruppen verbergen.
 
 Dazu müssen wir die neuen Koordinaten mit dem alten Datensatz zusammenführen. Da die Reihenfolge der Daten durch die MDS nicht verändert wurde (das könnt ihr gerne prüfen mit `rownames(pir) == rownames(mds)`), können wir einfach mit einem `cbind()` den ersten zufallsgenerierten Piratendatensatz `pir` wieder mit `mds` zusammenführen: 
 
@@ -74,7 +74,9 @@ Dazu müssen wir die neuen Koordinaten mit dem alten Datensatz zusammenführen. 
 mds_sp <- cbind(mds, pir)
 ```
 
-Jetzt können wir schauen, ob diese Verteilung zB mit dem Geschlecht zusammenhängt:
+Man könnte diese Daten jetzt auch noch mit Clusteranalysen automatisch gruppieren lassen, aber das führt jetzt hier zu weit. Wen das interessiert, der kann sich gern hier weiterbilden: <http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/122-multidimensional-scaling-essentials-algorithms-and-r-code>
+
+Wir visualisieren einfach nur mal, ob diese Verteilung zB mit dem Geschlecht zusammenhängt:
 
 ```{r}
 ggplot(data =  mds_sp)+
@@ -84,6 +86,7 @@ ggplot(data =  mds_sp)+
 ```
 
 Aha! Dachten wir uns das doch. ;-) 
+
 
 Manchmal sieht man in diesem Scatter-Plot Punkte und würde gerne wissen, "wer" sie genau sind, also welchen Datensatz sie repräsentieren:
 
@@ -99,6 +102,7 @@ ggscatter(mds_sp, x = "Dim.1", y = "Dim.2",
 
 ```
 
+Praktisch!
 
 
 
@@ -160,24 +164,105 @@ ggscatter(mds_c, x = "Dim.1", y = "Dim.2",
 
 ```
 
+
+
 ## Non-metrische MDS
 
-Für die non-metrische MDS benötigen wir das Paket `MASS`, welches die Funktion `isoMDS()` , die Kruskal’s non-metrische MDS benutzt und die Funktion `sammon()` für "Sammon’s non-linear mapping", enthält.
+Da die NMDS nur mit Rängen arbeitet, ist sie sehr flexibel und weiter anwendbar als die metrische MDS, z.B. mit Häufigkeitsangaben ("Häufigkeiten verschiedener Spezies in bestimmten Habitaten"). Wie gesagt, sind euklidische Distanzen nicht sehr dafür geeignet. 
+
+Zuerst kreiieren wir jedoch einen zufälligen Datensatz, eine Kreuztabelle: Spezies und Habitat. Wie häufig kommt eine Spezies darin vor?
+
+```{r}
+set.seed(2) # mit set.seed geben wir einen Anfangspunkt für die Zufallsvariablen
+
+habitat_matrix = matrix(                      # erstelle Matrix
+   sample(1:100,300,replace=T),               # Zufallsvariable mit zurücklegen, 300 Werte zwischen 1 und 100
+   nrow=10,                                   # organisiere sie in 10 Zeilen
+   dimnames=list(paste("habitat",1:10,sep=""), # nenne die Zeilen Habitat1-10
+                 paste("sp",1:30,sep="")))     #Nenne die Spalten sp1-30
+
+```
+Jetzt haben wir einen Beispieldatensatz "habitat_matrix".
+
+Wir nutzen das Paket `vegan` und darin die Funktion `metaMDS`.
+
+```{r}
+library(vegan)
+
+example_NMDS = metaMDS(habitat_matrix, # unsere matrix
+                     k=2) # Anzahl reduzierter Dimensionen
+```
+
+Wie R rechnet, wird uns angezeigt. Wie häufig er die Berechnung durchführt, kann man mit `trymax = ` als ARgument begrenzen.
+Wenn die Stress-Werte zu hoch bleiben, kann man auch k hochsetzen auf 3 (gemäß der Ansage: je mehr Dimensionen, desto geringer der Stress in der Regel).
+
+In `vegan` ist die Berechnung eines Shepard plot zur Darstellung des Stresses gleich implementiert:
+
+```{r}
+stressplot(example_NMDS)
+
+```
+
+Es wird in dieser Darstellung durch die Gegenüberstellung der beobachteten Unähnlichkeit (observed dissimilarity) gegenüber der angeordneten 2D-Distance (ordination distance) eine lineare Regression und eine nicht-metrische Regression berechnet. Wenn R² sehr groß wird, ist das Modell nicht sehr gelungen (die 2D-Darstellung stellt die "Originaldaten" nicht angemessen dar).
+
+Jetzt können wir die NMDS noch visualisieren:
+
+```{r}
+plot(example_NMDS)
+```
+
+Ich kann diese Darstellung auch in ggplot erreichen und dann noch andere Dinge damit machen. Dazu muss ich erst die Koordinaten aus der Berechnung example_NMDS herausziehen
 
 ```{r}
 
-# Cmpute MDS
-library(MASS)
-mds <- pen_m %>%
-  dist() %>%          
-  isoMDS() %>%
-  .$points %>%
-  as_tibble()
-colnames(mds) <- c("Dim.1", "Dim.2")
-# Plot MDS
-ggscatter(mds, x = "Dim.1", y = "Dim.2", 
-          size = 1,
-          repel = TRUE)
+example_points <- as_tibble(example_NMDS$points)
+example_species <- as_tibble(example_NMDS$species)
+
+library(ggplot2)
+ggplot()+
+  geom_point(data = example_points,
+             aes(x = MDS1,
+                 y = MDS2)) +
+  geom_point(data = example_species,
+              aes(x = MDS1,
+                 y = MDS2),
+             col = "red",
+             shape = "cross")
 
 ```
+
+Das ist nicht schlecht, aber gut wäre es doch zu wissen, welches Kreiz welche Spezies und welcher Punkt welches Habitat ist.
+
+Also müssen wir unseren herausgezogenen Datensatz noch mit Zeilennamen versehen:
+
+```{r}
+row.names(example_points) <- dimnames(example_NMDS$points)[[1]]
+row.names(example_species) <- dimnames(example_NMDS$species)[[1]]
+```
+In ggplot kann man statt `geom_point` `geom_text` eingeben und ein `label` spezifizieren und so die Punkte beschriften, ohne sie vorher zu "malen".
+
+
+```{r}
+ggplot()+
+  geom_text(data = example_points,
+             aes(x = MDS1,
+                 y = MDS2,
+             label=row.names(example_points)),
+            size = 5)+
+  geom_text(data = example_species,
+           aes(x = MDS1, 
+           y = MDS2, 
+          label = row.names(example_species)),
+          size = 4,
+          col = "red")+
+  theme_bw()+
+  ggtitle("Non-metrische Multidimensionale Skalierung")
+```
+
+Das ist ein gutes Ergebnis! Wir sehen, wie ähnlich sich die Habitate sind und welche Spezies v.a. dazu beitragen, sie zu definieren. 
+
+**Herzlichen Glückwunsch!** 
+
+Wer die non-metrische multidimensionale Skalierung noch einmal üben möchte, kann noch einmal diesem Skript folgen: <https://rpubs.com/CPEL/NMDS> 
+
 
