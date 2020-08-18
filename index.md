@@ -7,7 +7,7 @@
 5. [Weiter mit ggplot](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B05_ggplot_continued.md)
 6. [Grundlagen zu RMarkdown](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B06_rmarkdown.md)
 7. [Werkzeuge für Reproduzierbarkeit](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B07_rrtools.md)
-8. [Eine Reihe Übungen zu Erstellung von Grafiken](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B07_Daten_Grafiken_Aufgaben.md)
+8. [Eine Reihe Übungen zu Erstellung von Grafiken](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B08_Daten_Grafiken_Aufgaben.md)
 9. [Wahrscheinlichkeitsfunktionen](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B09_Wahrscheinlichkeitsfunktion.md)
 10. [Chi Quadrat Test](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B10_Chi-Quadrat.md)
 
