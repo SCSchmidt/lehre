@@ -1,16 +1,22 @@
 ---
 title: "Chi Quadrat Test"
-author: "Sophie C. Schmidt"
-date: "14 7 2020"
-output: html_document
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       eval=FALSE)
 ```
+# Der Chi-Quadrat-Test
 
-### Chi-Quadrat-Test
 
 Die erste Anwendung für den Chi-Quadrat-Test, die wir benutzen wollen, ist ähnlich wieder Binomialtest. ABER ich kann sie für deutlich mehr Werte anwenden als nur zwei. Aus Einfachheitsgründen machen wir das aber hier nochmal mit zwei Werten und einer einfachen Verteilung. Ich überprüfe, ob die beobachteten Werte von Wallnussbäumen, der Verteilung der Fläche auf Ebene und Hang entsprechen:
 
@@ -33,14 +39,13 @@ chi <- chisq.test(wn_b, p = Vert_fl)
 chi$expected
 chi$p.value
 ```
-Ich kann v.a. auch coolerweise innerhalb meines R-markdown-Dokumentes den P-Wert aufrufen. Wenn ich \` r chi\$p.value \` schreibe, bekomme ich:  `r chi$p.value`.
 
 
 Machen wir weiter mit etwas komplizierterem. Wie wär es wenn es mal mehr als nur zwei Ausprägungen der Variable geben dürfte? Ist doch langweilig, immer nur nach der Verteilung einer Variable zu schauen...
 
 Damit ändert sich auch unsere Fragestellung. Wir untersuchen jetzt, ob es einen Zusammenhang gibt zwischen zwei nominalen Variablen!
 
-### Chi Quadrat mit zwei oder mehr Variablen!
+## Chi Quadrat mit zwei oder mehr Variablen!
 
 Also wie wär es, wenn wir schauen, ob in unserem Pinguindatensatz bestimmte Arten auf bestimmten Inseln leben?
 
@@ -61,6 +66,29 @@ Oh oh. Das ist aber ein komisch hoher Chi-Wert. Ich bin ein bisschen skeptisch. 
 
 Da fällt doch was auf! Ja, einige Felder sind mit 0 belegt. Das geht in einem Chi-Quadrat-Test so gar nicht. Wir können ihn für diese Fragestellung nicht anwenden. Wenn ein Datensatz die Voraussetzungen für einen Test nicht erfüllt, kann man ihn nicht anwenden. Allerdings, wenn man auf den Datensatz schaut, sind die Zusammenhänge auch so sonnenklar.
 
+## Exkurs: nested (verschachtelt) und crossed (gekreuzte) Modelle
+
+Bei der Auswahl, welchen Test man anwenden möchte, ist es wichtig zu wissen, wie die Daten strukturiert sind. Wenn ich zwei verschiedene Faktoren (z. B. Spezies und Insel) betrachte, gibt es folgende Möglichkeiten:
+
+1. Alle Pinguine einer Art kommen je genau auf nur einer Insel vor.
+2. Pinguine jeder Art kommen auf allen Inseln vor.
+3. Es gibt Inseln, auf denen kommen nur Pinguine einer Art vor und es gibt Inseln, auf denen kommen mehrere Arten vor.
+4. Alle Pinguinarten leben nur auf einer Insel. 
+5. Alle Pinguine wurden von Seelöwen gefressen (quatsch).
+
+Der erste Fall, Pinguine einer Art kommen nur auf je einer Insel vor, wird als verschachtelt (engl. nested) bezeichnet. Es bedeutet, dass ein Faktor-Wert (zB Gentoo-Pinguin) nur in einem bestimmten Wert des anderen 
+Faktors (zB Insel Biscoe) vorkommt. Damit haben wir keine gleichmäßige Verteilung der Kategorien mehr und wenn wir die Daten tabellarisch zusammenfassen, wie wir es hier getan haben, entstehen diese 0-Felder.
+
+Der zweite Fall: Alle Pinguinarten kommen auf allen Inseln vor, ist das perfekte Beispiel eines gekreuzten (crossed) Modells. Das heißt ich habe in der Kreuztabelle in jedem Feld mindestens eine 1.
+
+Manchmal gibt es Mischformen und das haben wir hier: Chinstrap- und Gentoo-Pinguine kommen nur auf jeweils einer Insel vor und Adelie-Pinguine hüpfen überall herum. 
+
+Weil dem so ist, können wir den Chi-Quadrat-Test nicht machen. Er funktioniert nur, wenn die Faktoren gekreuzt sind.
+
+Eine sehr ausführliche Erklärung des damit zusammenhängenden Codierungsproblems gibt es z. B. hier <https://qastack.com.de/stats/228800/crossed-vs-nested-random-effects-how-do-they-differ-and-how-are-they-specified>
+
+
+## Chi Quadrat: Auswahl treffen
 
 Dann gucken wir doch lieber, ob bei den Adelie-Pinguinen die Männchen oder Weibchen eine Insel bevorzugen:
 
@@ -129,11 +157,8 @@ Cramérs V kann Werte zwischen 0 und 1 annehmen. Ist V = 0, dann besteht kein Zu
 
 ## Herzlichen Glückwunsch!
 
-Wir haben mit dem binomial-Test geschaut, ob sich eine Variable einer bestimmten Verteilung entsprechend verhält und haben dafür einen Wahrscheinlichkeitswert errechnet.
 
-Wir haben den Chi-Quadrat-Test genutzt, um a) das gleiche wie mit dem binomial-Test zu überprüfen und b) die Abhängigkeit zweier Variablen zueinander zu untersuchen und auch dafür immer Warhscheinlichkeitswerte errechnet.
-
-Und wir haben jetzt die Stärke eines Zusammenhangs berechnet.
+Wir haben den Chi-Quadrat-Test genutzt, um die Abhängigkeit zweier Variablen zueinander zu untersuchen, nested und crossed designs kennengelernt und die Stärke eines Zusammenhangs berechnet.
 
 Super! 
 

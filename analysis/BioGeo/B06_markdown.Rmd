@@ -1,18 +1,22 @@
 ---
 title: "Rmarkdown"
-author: "Sophie C. Schmidt"
-date: "11.07.2020"
-output: html_document
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 ---
 
 ```{r setup {#header}, include=TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 
-library(ggplot2)
-library("palmerpenguins")
-data("penguins")
 
 ```
+# Hinweise zum "guten Schreiben" von Code
 
 ## Style guide
 
@@ -41,7 +45,9 @@ ggplot()+
                  na.rm = TRUE) # zwei NA-Sätze müssen entfernt werden
 
 ```
- -  lieber zu viel als zu wenig kommentieren.
+
+ -  Tipp: lieber zu viel als zu wenig kommentieren.
+
 
 5. Lasst ein bisschen Platz zwischen verschiedenen Sinneinheiten im Code. Eine Leerzeile zwischen `data("penguins")` und dem Kommentar im Bsp erleichtert das Lesen ungemein.
   
@@ -50,12 +56,13 @@ ggplot()+
 
 ## R Markdown
 
+#### wer nicht in der Cloud arbeitet:
 Als erstes: bitte Rmarkdown installiern:
 
 ```{r, eval = FALSE}
 install.packages("rmarkdown")
 ```
-
+#### weiter für alle
 
 Ein *Rmarkdown*-Dokument (Rmd) ist eigentlich nur ein txt-Dokument, also das simpelste an Textdatei was man sich vorstellen kann. In dem ich in dieser Textdatei einer bestimmten Syntax folge, kann ich die Datei von einem Programm im Hintergrund (namens pandoc) in hübsch formatierte Word-, html- oder PDF-Dateien umwandeln. Zum Bsp lassen sich Überschriften mit dem Rautensymbol markieren, Listen mit einem einfach Minus-Symbol und Text durch Unterstriche _kursiv_ und durch zwei Sternchensymbole **fett** drucken:
 
@@ -70,9 +77,9 @@ Fangen wir in einem Dokument von oben an. Ganz oben steht ein sogenannter "YAML-
  - Der Titel wird hinter `title:` in Hochkommas geschrieben
  - Hinter `author:` schreibt man seinen eigenen Namen in Hochkommas
  - `date:` ist nichr verpflichtend, aber das kann hilfreich sein
- - und mit `output:` wird spezifiziert, in was für eine Art Dokument das Rmarkdown-Dokument verwandelt werden soll. "html_document" wurde hier gewählt, es geht aber auch "word_document" oder "pdf_document" und tatsächlich noch eine R-Markdown spezifische Versionen, die hier nicht so wichtig sind.
+ - und mit `output:` wird spezifiziert, in was für eine Art Dokument das Rmarkdown-Dokument verwandelt werden soll. "html_document" wurde hier gewählt, es geht aber auch "word_document" oder "pdf_document" und tatsächlich noch einige andere Versionen, die hier nicht so wichtig sind.
 
-Wenn das Paket `knitr` installiert ist (bitte installiert es), gibt es oben den **Knit**-Knopf (englisch für stricken und das Symbol ist ein Wollknäul mit Stricknadeln), der das Dokument umwandelt. Wer faul ist wie ich, benutzt den Shortcut Strg+Umschalt+k.
+Wenn das Paket `knitr` installiert ist (wer nicht in der Cloud arbeitet: bitte installiert es), gibt es oben den **Knit**-Knopf (englisch für stricken und das Symbol ist ein Wollknäul mit Stricknadeln), der das Dokument umwandelt. Wer faul ist wie ich, benutzt den Shortcut Strg+Umschalt+k.
 
 Überschriften werden in einer einfachen Syntax gegliedert. Ein Hashtag (#) markiert die oberste Überschrift, zwei Hashtags (##) die zweite Rangordnung, drei Hashtags (###) die nächste. "Dokument-Struktur" ist eine Überschrift dritten Grades: `### Dokument-Struktur{#dokument-struktur}`. 
 
@@ -161,13 +168,13 @@ oder einfach so: <https://rmarkdown.rstudio.com/authoring_quick_tour.html>.
 
 Auch in Markdown-Text kann man Kommentare abgeben, die nicht mehr sichtbar sind, wenn das Dokument in eine html/docx oder pdf umgewandelt wird. Sie werden im "html-style" geschrieben: Mit \<!-- hier steht das Kommentar -->  
 
-Schaut einmal in mein Rmd-Dokument um zu sehen, was ich unter dieser Zeile kommentiert habe.
+Schaut einmal in mein Rmd-Dokument (unter <https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/analysis/BioGeo/B06_markdown.Rmd>) um zu sehen, was ich unter dieser Zeile kommentiert habe.
 
 <!-- Haha. Das hier ist unsichtbar -->
 
 ### Zusammenfassung
 
-RMarkdown verknüpft Markdown, eine Auszeichnungssprache mit Möglichkeiten R-Code auszuführen. Der große Vorteil eines RMarkdown-Dokumentes ist es, dass man seinen Code und den Text zur Interpretation beisammen hat. So lassen sich direkt Zeitschriftenartikel mit Berechnungen, Analysen, Grafiken etc in einem Dokument ablegen. Man kann in Markdown mit einem Literaturverwaltungsprogramm zusammenarbeiten und sich automatisch Literaturverzeichnisse generieren lassen, mehr dazu später.
+RMarkdown verknüpft Markdown, eine Auszeichnungssprache mit Möglichkeiten R-Code auszuführen. Der große Vorteil eines RMarkdown-Dokumentes ist es, dass man seinen Code und den Text zur Interpretation beisammen hat. So lassen sich direkt Zeitschriftenartikel mit Berechnungen, Analysen, Grafiken etc in einem Dokument ablegen. Man kann in Markdown mit einem Literaturverwaltungsprogramm zusammenarbeiten und sich automatisch Literaturverzeichnisse generieren lassen. Dazu später mehr.
 
 
 ### Links 

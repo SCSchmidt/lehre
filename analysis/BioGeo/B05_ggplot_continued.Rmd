@@ -12,7 +12,8 @@ always_allow_html: true
 
 ---
 
-# Metrische Daten
+
+# Visualisierung metrische Daten
 
 In der letzten Stunde haben wir vor allem mit nominalen Daten gearbeitet und sie dargestellt. Dafür eignen sich Balkendiagramme ganz hervorragend. Hier geht es aber um metrische Daten.
 

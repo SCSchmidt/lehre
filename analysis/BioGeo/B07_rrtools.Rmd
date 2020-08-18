@@ -1,8 +1,14 @@
 ---
-title: "RRtools"
-author: "Sophie C. Schmidt"
-date: "11 Juli 2020"
-output: html_document
+title: "RRtools - Tools für Reproduzierbare Wissenschaft"
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 bibliography: bsp_lit.bib
 csl: geobiology.csl
 ---
@@ -13,24 +19,30 @@ knitr::opts_chunk$set(echo = TRUE,
 
 library(bookdown)
 ```
+# RRtools - Tools für Reproduzierbare Wissenschaft
 
-rrtools ist von Ben Marwick et al entwickelt worden, um es einfach zu machen ein R-Paket zu erstellen, in dem man alle seine Daten, seine Analyse und sein "paper" zusammen ablegt. Dieses Paket kann man dann auch einfach anderen Menschen zur Verfügung stellen, damit diese die eigenen Analysen nachvollziehen können und es lassen sich unterschiedliche Versionen leicht über github kontrollieren: https://github.com/benmarwick/rrtools 
+rrtools ist von Ben Marwick et al entwickelt worden, um es einfach zu machen ein R-Paket zu erstellen, in dem man alle seine Daten, seine Analyse und sein "paper" zusammen ablegt. Dieses Paket kann man dann auch einfach anderen Menschen zur Verfügung stellen, damit diese die eigenen Analysen nachvollziehen können und es lassen sich unterschiedliche Versionen leicht über github kontrollieren: <https://github.com/benmarwick/rrtools> 
 
 Das Bereitstellen von Code und Daten (open access) ist wichtig für die Wissenschaftlichkeit einer Analyse, da sie so reproduzierbar wird (wenn jemand weder Code noch Daten hergibt, kann niemand jemals überprüfen, ob er/sie sich nicht doch verrechnet hat), aber auch für die Replizierbarkeit. Replizieren heißt, ich nehme die Methode der anderen und wende sie auf meine eigenen Daten an. Viele Artikel sind nicht sonderlich replizierbar, weil die Methode kaum im Detail beschrieben wird. Das ist frustrierend, wenn man die Methode und das Ergebnistoll fand und selber ausprobieren möchte.
 
 Deswegen ist Code teilen toll und wichtig. 
 
+#### für die nicht-Cloud nutzer:
 Also. Wir installieren rrtools. Weitere Infos dazu gibt es hier: https://github.com/benmarwick/rrtools. 
 
 ```{r rrtools installieren, eval = FALSE}
 
 devtools::install_github("benmarwick/rrtools") #devtools:: ruft das Paket devtools. ich brauch es nur einmal, deswegen habe ich es nicht mit library ins Boot geholt.
 
-library(rrtools) # wir laden das Paket und alles was zum Thema git kommt, ignorieren wir.
-# Wer Lust hat git kennen zu lernen, findet hier ein paar hilfreiche Links zu dem Thema: http://archaeoinformatics.net/git-how-not-to-learn-it/ 
 ```
 
+#### ab hier weiter für alle:
+
 ```{r rrtools anwenden, eval=FALSE}
+library(rrtools) # wir laden das Paket und alles was zum Thema git kommt, ignorieren wir.
+
+# Wer Lust hat git kennen zu lernen, findet hier ein paar hilfreiche Links zu dem Thema: http://archaeoinformatics.net/git-how-not-to-learn-it/ 
+
 rrtools::use_compendium("C:/Hier/kommt/ein/Pfadname/pkgname") # wir definieren wo unser Paket liegt und wie es heißen wird "pkgname"
 ```
 Jetzt muss sich einfach so ein neues Projekt / Paket in Rstudio geöffnet haben. Oben rechts seht ihr den Namen eures Pakets. Oder ihr navigiert zu dem Pfad, in dem ihr eben das neue Projekt angelegt habt und öffnet es. 
