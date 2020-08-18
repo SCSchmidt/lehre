@@ -9,7 +9,7 @@
 7. [07 Werkzeuge für Reproduzierbarkeit](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B07_rrtools.md)
 8. [08 Eine Reihe Übungen zu Erstellung von Grafiken](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B07_Daten_Grafiken_Aufgaben.md)
 9. [09 Wahrscheinlichkeitsfunktionen](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B09_Wahrscheinlichkeitsfunktionen.md)
-10.[Chi Quadrat Test](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B10_Chi-Quadrat.md)
+10. [Chi Quadrat Test](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B10_Chi-Quadrat.md)
 
 
 ![](https://cdn.pixabay.com/photo/2018/03/27/12/16/analytics-3265840_960_720.jpg)
