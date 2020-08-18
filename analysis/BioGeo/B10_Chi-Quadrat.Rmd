@@ -139,7 +139,7 @@ Um die **Stärke** eines Zusammenhangs zu messen, kann ich **nicht** den p-Wert 
 
 Dafür nehme ich am besten Cramér's V... oder Cramérs Index (CI) oder K...  manchmal bennenen Statistiker Sachen unterschiedlich und das ist voll nervig. Aber egal. Alles das gleiche.
 
-Es gibt mehrere Pakete, die man installieren kann, die diese Berechnungen anstellen, in base r ist das leider nicht umgesetzt. Wir installieren "lsr", das Paket for *Learning Statitics with R*.
+Es gibt mehrere Pakete, die man installieren kann, die diese Berechnungen anstellen, in base r ist das leider nicht umgesetzt. Wer nicht die Cloud-Lösung nutzt, installiere "lsr", das Paket for *Learning Statitics with R*, alle anderen laden es bitte nur.
 
 ```{r vcd, eval=FALSE}
 install.packages("lsr", dependencies = TRUE)

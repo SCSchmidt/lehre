@@ -95,10 +95,10 @@ Yes, we can!
 Es gibt für jedes Skalenniveau Tests, die prüfen, ob Daten
 normalverteilt sind.
 
-Sind meine Daten normalverteilt?
-================================
+Wie sind meine Daten verteilt??
+===============================
 
-metrischen Daten: optisch und mit shapiro-wilk
+Normalverteilung: optisch und mit shapiro-wilk
 ----------------------------------------------
 
 ### Q-Q-plot
@@ -120,7 +120,7 @@ Hinweis darauf, die Messwerte doch nicht normalverteilt sind. Das
 Quantil-Quantil-Diagramm kann keinen Verteilungstest ersetzen.
 
 Das Paket, in dem Q-Q-plots für R umgesetzt wurden, heißt `ggpubr`,
-installieren wir es also:
+installieren wir es also, falls wir nicht in der Cloud unterwegs sind:
 
 ``` r
 install.packages("ggpubr")
@@ -179,7 +179,7 @@ Wenn ich mir das anschaue, sieht das der Normalverteilung recht ähnlich.
 
 Aber ganz sicher bin ich mir nicht.
 
-Testen wir also die protoappeninen Gefäße jetzt mit dem richtigen Test:
+Testen wir also die Chinstrap-Gewichte jetzt mit dem richtigen Test:
 Shapiro, los geht’s!
 
 ``` r

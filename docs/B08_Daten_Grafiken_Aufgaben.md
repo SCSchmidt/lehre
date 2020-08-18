@@ -44,16 +44,30 @@ Menschen, die kein R haben.
 Für ersteres gibt es wie beim Einladen, so auch beim Schreiben von Daten
 zwei Wege.
 
-Um einen Datensatz namens `df` als komma-separierte csv-Tabelle zu
-schreiben, geht das folgendermaßen:
+Um einen Datensatz namens `df` als Semikolon-separierte csv-Tabelle zu
+schreiben, inder Kommas als Dezimaltrenner benutzt werden, geht
+folgendermaßen:
 
 ``` r
+write.table(pirates, 
+           "Pfad/zum/Ordner/name_des_datensatzes.csv", 
+           row.names = FALSE, 
+           sep = ";",
+           dec = ",",
+           fileEncoding = "UTF-8")
+
 write.csv2(df, "Pfad/zum/Ordner/name_des_datensatzes.csv", row.names = FALSE, sep = ",")
 ```
 
 `row.names = FALSE` spezifiziert, dass man keine Zeilennamen haben
 möchte, die R normalerweise automatisch erstellt. Manchmal möchte man
 sie aber abspeichern, dann sollte man das auf `TRUE` setzen.
+
+`fileEncoding = "UTF-8` ist immer eine gute Idee. So wird
+sichergestellt, dass “ä”, “ö”, “ü” etc richtig gespeichert werden. Wenn
+ich weiß, dass Daten in UTF-8 abgespeichert sind, kann ich das Argument
+`encoding = "UTF-8"` beim Einladen der Tabelle in R nutzen, um
+sicherzustellen, dass das alles klappt.
 
 Um eine Excel-Tabelle zu schreiben, nehmt ihr wieder das Paket
 `openxlsx`

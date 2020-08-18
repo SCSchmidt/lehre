@@ -72,7 +72,7 @@ ggplot()+
   geom_bar(data = penguins, aes(x = species)) 
 ```
 
-![](./figures/unnamed-chunk-2-1.png)
+![](./figures/erstes_saeulendiag-1.png)
 
 Das + am Ende jeder Zeile sagt R, dass der Befehl in der nächsten Zeile
 weiter geht, ähnlich wie bei der pipe.
@@ -93,7 +93,7 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/erstes%20Säulendiagramm%20mit%20Achsen-Titel-1.png)
+![](./figures/erstes_saeulendiag_achsen-1.png)
 
 Wir können auch die Säulen bunt einfärben. Der Befehl *fill* gibt den
 Balken unterschiedliche Farben, je nach den Angaben in der Spalte, die
@@ -107,7 +107,7 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/erstes%20Säulendiagramm%20und%20jetzt%20bunt!-1.png)
+![](./figures/erstes_saeulendiag_bunt-1.png)
 
 Vielleicht nervt euch auch, so wie mich, dass die Reihenfolge der Balken
 nicht nach Größe geordnet ist?
@@ -211,7 +211,7 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/unnamed-chunk-10-1.png)
+![](./figures/saeulendiag-1.png)
 
 “Aber ey!” werdet ihr sagen. Die Balken sind ja noch nicht in der
 richtigen Reihenfolge. Richtig. Aber jetzt können wir das machen, in dem
@@ -226,8 +226,8 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/unnamed-chunk-11-1.png) Die Ansage ist: Nimm als x species,
-aber geordnet nach der Größe von n. 
+![](./figures/ordnung-x-1.png) Die Ansage ist: Nimm als x species, aber
+geordnet nach der Größe von n. 
 
 Wunderbar.
 
@@ -255,7 +255,7 @@ ggplot()+
         title = element_text(size = 25))
 ```
 
-![](./figures/unnamed-chunk-12-1.png)
+![](./figures/achsenbeschriftung-1.png)
 
 Ach, werdet ihr sagen, aber diese blöde Legende da rechts. Die gefällt
 mir nicht, sie benutzt den englischen Begriff “species”, das ist doch
@@ -279,7 +279,7 @@ ggplot()+
   scale_fill_discrete(name = "Pinguinart")
 ```
 
-![](./figures/unnamed-chunk-13-1.png)
+![](./figures/legendenbeschriftung-1.png)
 
 Jetzt ist nur noch die Schrift in der Legende zu klein. Schrift gehört
 wieder zu den “theme”-Aspekten, also bauen wir das doch einfach da ein.
@@ -299,7 +299,7 @@ Und wir könnten die Farbe des Textes gleich nochmal ändern…:
     scale_fill_discrete(name = "Pinguinart")
 ```
 
-![](./figures/unnamed-chunk-14-1.png)
+![](./figures/schrift_aendern-1.png)
 
 Herzlichen Glückwunsch! Das sieht doch langsam nach einer publizierbaren
 Grafik aus.
@@ -325,7 +325,7 @@ können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt
   coord_flip()
 ```
 
-![](./figures/unnamed-chunk-15-1.png)
+![](./figures/flip_coord-1.png)
 
 Bilder sichern
 ==============

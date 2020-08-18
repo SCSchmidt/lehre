@@ -174,8 +174,9 @@ manchmal bennenen Statistiker Sachen unterschiedlich und das ist voll
 nervig. Aber egal. Alles das gleiche.
 
 Es gibt mehrere Pakete, die man installieren kann, die diese
-Berechnungen anstellen, in base r ist das leider nicht umgesetzt. Wir
-installieren “lsr”, das Paket for *Learning Statitics with R*.
+Berechnungen anstellen, in base r ist das leider nicht umgesetzt. Wer
+nicht die Cloud-Lösung nutzt, installiere “lsr”, das Paket for *Learning
+Statitics with R*, alle anderen laden es bitte nur.
 
 ``` r
 install.packages("lsr", dependencies = TRUE)

@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
   echo = TRUE,
   eval = TRUE,
   comment = "#>",
-  fig.path = "/figures/",
+  fig.path = "../figures/",
   fig.width=10, 
   fig.height=10)
 ```
@@ -71,7 +71,7 @@ Wie aber soll das Säulendiagramm (`geom_bar`) aussehen, welche Spalte des Daten
 
 Wir möchten jetzt also ein Säulendiagramm bauen, dass auf der x-Achse die verschiedenen Spezies des penguin-Datensatzes und die Häufigkeiten (wie viele Datensätze aus den verschiedenen Spezies gibt es) auf der y-Achse zeigt:
 
-```{r}
+```{r erstes_saeulendiag}
 ggplot()+ 
   geom_bar(data = penguins, aes(x = species)) 
 ```
@@ -83,7 +83,7 @@ Das ist doch schonmal was. Die Information die wir wollen, wird schnell und einf
 Aber schön ist es noch nicht.
 
 Geben wir den Achsen eine andere Beschriftung. Mit dem "labs"-Befehl lassen sich die Achsenbeschriftungen und die Überschriften ändern:
-```{r erstes Säulendiagramm mit Achsen-Titel}
+```{r erstes_saeulendiag_achsen}
 ggplot()+ 
   geom_bar(data = penguins, aes(x = species))+ 
   labs(y = "Anzahl",
@@ -93,7 +93,7 @@ ggplot()+
 
 Wir können auch die Säulen bunt einfärben. Der Befehl *fill* gibt den Balken unterschiedliche Farben, je nach den Angaben in der Spalte, die ich spezifiziere (hier wieder Spezies):
 
-```{r erstes Säulendiagramm und jetzt bunt!}
+```{r erstes_saeulendiag_bunt}
 ggplot()+ 
   geom_bar(data = penguins, aes(x = species, fill = species))+ 
   labs(y = "Anzahl",
@@ -164,7 +164,8 @@ Beide Wege führen zu dem Ergebnis, das wir haben wollen. Am Anfang schreibt man
 ### x nach Häufigkeiten sortieren
 
 Jetzt können wir endlich die Daten wieder visualisieren. Aber Achtung, wenn wir ggplot nicht selber die Häufigkeiten auszählen lassen wollen, sondern sie ihm "an die Hand geben", nehmen wir nicht `geom_bar` sondern `geom_col` und spezifizieren mit y die Höhe des Balkens.
-```{r}
+
+```{r saeulendiag}
 ggplot()+ 
   geom_col(data = species, aes(x = species, y = n, fill = species))+ 
   labs(y = "Anzahl",
@@ -174,7 +175,7 @@ ggplot()+
 
 "Aber ey!" werdet ihr sagen. Die Balken sind ja noch nicht in der richtigen Reihenfolge. Richtig. Aber jetzt können wir das machen, in dem wir eine ganz kleine Änderung einfügen: Wir ordnen x um, englisch "reorder". 
 
-```{r}
+```{r ordnung-x}
 ggplot()+ 
   geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
   labs(y = "Anzahl",
@@ -189,7 +190,7 @@ Wunderbar.
 
 Jetzt gefällt mir aber nicht, das die Beschriftung so klein ist. Ändern wir das doch einmal. Beschriftungsgröße ist etwas, das zu den "Verschönerungsoptionen" gehört und in einem "theme" abgehandelt wird. Wir öffnen also ein "theme", spezifizieren darin, dass wir über die beiden Achsen-Titel reden wollen (axis.title) und die Elemente des Textes ändern (element_text). Wir können dort angeben, dass der Text dickgedruckt werden soll (face = "bold") und die Größe (size = 20). Dann machen wir doch das gleiche noch mit der Beschriftung der Werte auf den Achsen (axis.text). Hier ändern wir vllt nur die Größe. Und am Ende noch den Titel von dem ganzen
 
-```{r}
+```{r achsenbeschriftung}
 ggplot()+ 
   geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
   labs(y = "Anzahl",
@@ -204,7 +205,7 @@ Ach, werdet ihr sagen, aber diese blöde Legende da rechts. Die gefällt mir nic
 
 Auch hierfür lässt sich leicht abhilfe schaffen. Die legende ist "scale" im englischen. Und wir wollen die Legende ansprechen, die sich mit der "Füllung" beschäftigt, dem was unter `fill = ` definiert wurde und da es sich um eine "diskrete Variable" handelt, ändern wir den Legendennamen mit "scale_fill_discrete".
 
-```{r}
+```{r legendenbeschriftung}
 ggplot()+ 
   geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
   labs(y = "Anzahl",
@@ -219,7 +220,7 @@ ggplot()+
 Jetzt ist nur noch die Schrift in der Legende zu klein. Schrift gehört wieder zu den "theme"-Aspekten, also bauen wir das doch einfach da ein. Und wir könnten die Farbe des Textes gleich nochmal ändern...:
 
 
-```{r}
+```{r schrift_aendern}
  ggplot()+ 
   geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
   labs(y = "Anzahl",
@@ -241,7 +242,7 @@ Herzlichen Glückwunsch! Das sieht doch langsam nach einer publizierbaren Grafik
 
 Wenn wir der Meinung sind, wir hätten lieber ein Balkendigramm, dann können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt `coord_flip()` und wird einfach mit einem + unten dran gehängt:
 
-```{r}
+```{r flip_coord}
  ggplot()+ 
   geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
   labs(y = "Anzahl",

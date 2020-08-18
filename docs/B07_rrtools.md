@@ -21,6 +21,9 @@ fand und selber ausprobieren möchte.
 
 Deswegen ist Code teilen toll und wichtig.
 
+**Für die Cloud-User ist es am einfachsten, ihr kopiert das
+Beispielpaket von mir! rrtools läuft nicht gut in der Cloud!**
+
 #### für die nicht-Cloud nutzer:
 
 Also. Wir installieren rrtools. Weitere Infos dazu gibt es hier:
@@ -29,8 +32,6 @@ Also. Wir installieren rrtools. Weitere Infos dazu gibt es hier:
 ``` r
 devtools::install_github("benmarwick/rrtools") #devtools:: ruft das Paket devtools. ich brauch es nur einmal, deswegen habe ich es nicht mit library ins Boot geholt.
 ```
-
-#### ab hier weiter für alle:
 
 ``` r
 library(rrtools) # wir laden das Paket und alles was zum Thema git kommt, ignorieren wir.
@@ -44,6 +45,8 @@ Jetzt muss sich einfach so ein neues Projekt / Paket in Rstudio geöffnet
 haben. Oben rechts seht ihr den Namen eures Pakets. Oder ihr navigiert
 zu dem Pfad, in dem ihr eben das neue Projekt angelegt habt und öffnet
 es.
+
+#### hier weiter für alle
 
 rrtools erstellt die Struktur eines “normalen” R-Pakets, wie man es von
 CRAN herunterladen und bei sich installieren kann. Wenn ihr jetzt rechts
@@ -80,7 +83,7 @@ Imports: bookdown
 
 Wenn wir jetzt mit rrtools weiter arbeiten wollen, müssen wir es noch
 einmal laden, weil wir in einem neuen Projekt unterwegs sind als ganz am
-Anfang. Deswegen:
+Anfang. Deswegen für die nicht-Cloud-User:
 
 ``` r
 library(rrtools)
@@ -214,6 +217,41 @@ Macht es einfacher, aber ist nicht unbedingt notwendig. Nach der
 Installation von citr muss Rstudio neu gestartet werden und dann findet
 man es unter “Addins” oben in der Leiste unterhalb
 “File”“,”Edit“,”Code“,”View“,”Plots"… in Rstudio.
+
+Toll ist auch, dass wenn ich R-Pakete zitieren möchte, ich mir die
+Informationen, wie sie zitiert werden sollen in einem Bibtex-Stil
+ausgeben lassen kann:
+
+``` r
+citation("ggplot2")
+```
+
+    ## 
+    ## To cite ggplot2 in publications, please use:
+    ## 
+    ##   H. Wickham. ggplot2: Elegant Graphics for Data Analysis.
+    ##   Springer-Verlag New York, 2016.
+    ## 
+    ## A BibTeX entry for LaTeX users is
+    ## 
+    ##   @Book{,
+    ##     author = {Hadley Wickham},
+    ##     title = {ggplot2: Elegant Graphics for Data Analysis},
+    ##     publisher = {Springer-Verlag New York},
+    ##     year = {2016},
+    ##     isbn = {978-3-319-24277-4},
+    ##     url = {https://ggplot2.tidyverse.org},
+    ##   }
+
+Das kann ich dann in meine bib-Datei kopieren und ihm dort eine eigene
+ID geben. Seht ihr, dass das was bei dem Beispiel oben “legendre\_2012”
+war, hier fehlt? Statt “Book{,” würde ich z. B. “Book{ggplot2,”
+schreiben und dann innerhalb meiner Texte immer auf mit (<span
+class="citeproc-not-found" data-reference-id="ggplot2">**???**</span>)
+das Paket zitieren können. Das ist besonders wichtig bei den Paketen,
+die man von anderen kostenlos herunterladen konnte. Wenn man die
+Programmierer schon nicht in Geld bezahlt, sollte man sie wenigstens mit
+Reputation bezahlen.
 
 Bibliographie
 =============
