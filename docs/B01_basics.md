@@ -369,7 +369,7 @@ sind leer, die Information FEHLT. R kann gut mit leeren Feldern umgehen,
 gibt ihnen aber diese interne Bezeichnung.
 
 Wiederholen wir das von eben noch einmal. Welches Feld wird durch diesen
-Code angesprochen:
+Code angesprochen?:
 
 ``` r
 penguins_2_5 <- penguins[2,5]

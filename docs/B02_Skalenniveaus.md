@@ -1,4 +1,5 @@
-### Skalenniveaus
+Skalenniveaus
+=============
 
 Wir hatten über **Skalenniveaus** geredet und ich hatte auch erwähnt,
 dass es dafür äquivalente in R gibt.
@@ -150,7 +151,7 @@ Das dumme ist nur, jetzt können wir damit keinen Mittelwert mehr
 errechnen:
 
 ``` r
-mean(class(penguins$body_mass_g)
+mean(penguins$body_mass_g)
 ```
 
 Die Fehlermeldung ist eigentlich eindeutig. Wir haben den Computer
@@ -186,3 +187,10 @@ Allgemeiner Tipp: Wenn nur ein Teil des Skripts funktioniert, immer erst
 einmal stehen lassen, kopieren und an der Kopie rumprobieren bis alles
 klappt. Wenn man die Lösung irgendwann hat, kommentiert man sie sich und
 löscht alles, was vorher nicht geklappt hatte.
+
+### Zusammenfassung
+
+Was haben wir hier gerade gelernt? Wir haben gelernt, welche
+Skalenniveaus in R wie kodiert werden, wie man den Datentyp eines
+Objektes herausfindet und umwandelt. Das sind ganz grundlegende Dinge,
+die wir immer wieder brauchen werden!

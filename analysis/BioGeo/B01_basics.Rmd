@@ -248,7 +248,7 @@ Jetzt ist penguins in unserer Environment, also als Datensatz mit einer bestimmt
 
 Wir sehen jetzt folgende Spalten: `colnames(penguins)`. In einigen dieser Spalten steht manchmal ein schräggedrucktes *NA*. Diese Felder sind leer, die Information FEHLT. R kann gut mit leeren Feldern umgehen, gibt ihnen aber diese interne Bezeichnung. 
 
-Wiederholen wir das von eben noch einmal. Welches Feld wird durch diesen Code angesprochen:
+Wiederholen wir das von eben noch einmal. Welches Feld wird durch diesen Code angesprochen?:
 ```{r}
 penguins_2_5 <- penguins[2,5]
 ```
