@@ -67,9 +67,9 @@ library(yarrr)
 data(pirates)
 ```
 
-Die Piraten haben eine Anzahl von Tatoos. Das ist nun eine eindeutig diskrete Variable, denn es wird wohl kaum jemand mit einem halben Tatoo herumlaufen. Trotzdem ist sie als `numeric` abgelegt, was gut ist, da der `wilcox.test` als Datentyp einen numerischen Vektor braucht.
+Die Piraten haben eine Anzahl von Tattoos. Das ist nun eine eindeutig diskrete Variable, denn es wird wohl kaum jemand mit einem halben Tatoo herumlaufen. Trotzdem ist sie als `numeric` abgelegt, was gut ist, da der `wilcox.test` als Datentyp einen numerischen Vektor braucht.
 
-Wir können jetzt schauen, ob die Zahl der Tatoos bei Piraten mit und ohne Bandana (`headband`) unterschiedlich ist. Das heißt:
+Wir können jetzt schauen, ob die Zahl der Tattoos bei Piraten mit und ohne Bandana (`headband`) unterschiedlich ist. Das heißt:
 
 ```{r}
 wilcox.test(data = pirates, tattoos ~ headband, paired = FALSE)
@@ -139,7 +139,7 @@ Die Syntax des Tests kennen wir schon vom `wilcox.test`
 kruskal.test(weight ~ group, data = my_data)
 ```
 
-Wenden wir das auf den Pinguin-Datensatz an, sieht das so aus:
+Wenden wir das auf den Pinguin-Datensatz an, um zu überprüfen, ob das Gewicht zwischen den Arten signifikant variiert, sieht das so aus:
 
 ```{r}
 kruskal.test(body_mass_g ~ species, data = penguins)

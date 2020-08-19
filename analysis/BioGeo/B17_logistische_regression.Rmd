@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 ```
 
 
-## Logistische Regression
+# Logistische Regression
 
 Wie in der Vorlesung erläutert, ist eine logistische Regression dazu da, einzuschätzen, welche Faktoren zu der Wahrscheinlichkeit des Auftretens einer binären abhängigen Variablen beitragen.
 
@@ -74,7 +74,7 @@ pirates$college <- as.numeric(pirates$college)
 
 
 
-Jetzt funktioniert die Berechnung der regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial".
+Jetzt funktioniert die Berechnung der Regression mit der Funktion `glm`, also `general linear model`, aber wir setzen das Argument `family` zu "binomial".
 
 ```{r}
 mylogit <- glm(headband ~  college + tattoos + sex, data = pirates, family = "binomial")

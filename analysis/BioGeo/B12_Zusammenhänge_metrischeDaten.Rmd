@@ -139,7 +139,7 @@ Weiter damit zur einfaktoriellen ANOVA!
 
 Die ANOVA ist bereits in `base` umgesetzt, mit der Funktion `aov`.
 
-Aus irgendwelchen Gründen wir bei der ANOVA das Ergebnis nicht gleich angezeigt (Also der p-Wert). Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben:
+Aus irgendwelchen Gründen wir bei der ANOVA das Ergebnis nicht gleich angezeigt (also der p-Wert). Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben:
 
 ```{r}
 # eigentliche ANOVAberechnung
@@ -162,7 +162,9 @@ Wir rechnen hier deshalb nur eine zwei-faktorielle ANOVA. Wer mehr wissen will, 
 
 Wir könnten untersuchen, ob bei den Piraten die Größe von Geschlecht und dem College abhängt.
 
-Als erstes checken wir alle Voraussetzungen: 1. Sind die Daten in den jeweiligen Gruppen normalverteilt?
+Als erstes checken wir alle Voraussetzungen: 
+
+1. Sind die Daten in den jeweiligen Gruppen normalverteilt?
 
 Machen wir hier also ein QQ-plot für alle Werte gleichzeitig:
 
@@ -175,7 +177,11 @@ ggqqplot(pirates, "height", ggtheme = theme_bw()) +
 
 Ja, das sieht doch ganz gut aus insgesamt.
 
-Testen wir also als nächstes, ob die Varianz in den Gruppen gleich ist. Dafür nehmen wir den leveneTest aus dem Paket `car`. Wir stellen die abhängige metrische Variablen den beiden kategorialen Faktoren gegenüber:
+Testen wir also als nächstes, ob
+
+2. die Varianz in den Gruppen gleich ist.
+
+Dafür nehmen wir den leveneTest aus dem Paket `car`. Wir stellen die abhängige metrische Variablen den beiden kategorialen Faktoren gegenüber:
 
 ```{r}
 library(car)
