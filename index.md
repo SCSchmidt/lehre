@@ -10,8 +10,8 @@
 8. [Eine Reihe Übungen zu Erstellung von Grafiken](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B08_Daten_Grafiken_Aufgaben.md)
 9. [Wahrscheinlichkeitsfunktionen](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B09_Wahrscheinlichkeitsfunktion.md)
 10. [Chi Quadrat Test](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B10_Chi-Quadrat.md)
-11. [Zusammenhänge zwischen ordinalen Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B11_Zusammenhänge_ordinaleDaten.md)
-12. [Zusammenhänge zwischen metrischen Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B12_Zusammenhänge_metrischeDaten.md)
+11. [Gruppenunterschiede bei ordinalen Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B11_Zusammenhänge_ordinaleDaten.md)
+12. [Gruppenunterschiede bei metrischen Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B12_Zusammenhänge_metrischeDaten.md)
 13. [Korrelation](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B13_korrelation.md)
 
 ![](https://cdn.pixabay.com/photo/2018/03/27/12/16/analytics-3265840_960_720.jpg)
