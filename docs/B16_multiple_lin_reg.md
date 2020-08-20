@@ -70,7 +70,7 @@ Standardabweichung, t-Wert und Wahrscheinlichkeit.
 
 Wir haben es also mit einer Korrelation von Tattoos und Größe mit
 Bartlänge zu tun, die dieser Formel folgt:
-*b**e**a**r**d*.*l**e**n**g**t**h* =  − 64.87 + 0.59 \* *t**a**t**t**o**o**s* + 0.41 \* *h**e**i**g**h**t*
+*b*e*a*r*d*.*l*e*n*g*t*h* =  − 64.87 + 0.59 \* *t*a*t*t*o*o*s* + 0.41 \* *h*e*i*g*h*t*
 
 Daraus können wir uns auch die Konfidenzintervalle anzeigen lassen:
 
