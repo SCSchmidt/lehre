@@ -1,17 +1,3 @@
-``` r
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  warning = FALSE,
-  message = FALSE,
-  echo = TRUE,
-  eval = FALSE,
-  comment = "#>",
-  fig.path = "../figures/",
-  fig.width=6, 
-  fig.height=6
-)
-```
-
 Korrelation
 ===========
 
