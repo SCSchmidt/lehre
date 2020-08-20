@@ -21,6 +21,9 @@ wir uns doch noch einmal die Flossenlänge unserer Pinguine an und
 differenzieren sie nach Geschlecht.
 
 ``` r
+library(palmerpenguins)
+data(penguins)
+
 # zwei Datensätze nach Geschlecht trennen:
 
 penguins_f <- subset(penguins, penguins$sex == "female")
@@ -100,8 +103,6 @@ geom_boxplot(data = gentoo,
                    x = sex))
 ```
 
-    #> Warning: Removed 1 rows containing non-finite values (stat_boxplot).
-
 ![](./figures/gentoo_flipper_sex-1.png) Ja, die beiden “boxes” sind doch
 deutlich unterschiedlich groß und stark voneinander verschoben.
 
@@ -165,8 +166,6 @@ Machen wir also mit diesem Bsp jetzt den t-Test:
 t-test
 ------
 
-<a href="http://www.sthda.com/english/wiki/unpaired-two-samples-t-test-in-r" class="uri">http://www.sthda.com/english/wiki/unpaired-two-samples-t-test-in-r</a>
-
 Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass
 wir von zwei unterschiedlichen Gruppen ausgehen können:
 
@@ -201,8 +200,6 @@ hier die Varianzgleichheit untersuchen:
 Levene-Test
 -----------
 
-<a href="https://www.bjoernwalther.com/levene-test-in-r-berechnen-und-interpretieren/" class="uri">https://www.bjoernwalther.com/levene-test-in-r-berechnen-und-interpretieren/</a>
-
 Der Levene-Test ist im Paket “car” umgesetzt. Wie immer installieren
 bitte nur diejenigen das Paket, die nicht in der Cloud arbeiten!
 
@@ -213,8 +210,6 @@ install.packages("car")
 ``` r
 library (car)
 ```
-
-    #> Warning: package 'car' was built under R version 4.0.2
 
     #> Loading required package: carData
 
@@ -287,17 +282,11 @@ Machen wir hier also ein QQ-plot für alle Werte gleichzeitig:
 library(yarrr)
 ```
 
-    #> Warning: package 'yarrr' was built under R version 4.0.2
-
     #> Loading required package: jpeg
 
     #> Loading required package: BayesFactor
 
-    #> Warning: package 'BayesFactor' was built under R version 4.0.2
-
     #> Loading required package: coda
-
-    #> Warning: package 'coda' was built under R version 4.0.2
 
     #> Loading required package: Matrix
 
@@ -308,8 +297,6 @@ library(yarrr)
     #> ************
 
     #> Loading required package: circlize
-
-    #> Warning: package 'circlize' was built under R version 4.0.2
 
     #> ========================================
     #> circlize version 0.4.10

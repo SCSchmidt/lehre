@@ -1,16 +1,3 @@
-``` r
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  warning = FALSE,
-  message = FALSE,
-  echo = TRUE,
-  comment = "#>",
-  fig.path = "./figures/",
-  fig.width=6, 
-  fig.height=6
-)
-```
-
 Lineare Regression
 ==================
 
@@ -341,8 +328,9 @@ Werte besser werden, wenn wir die Pinguine getrennt nach Art
 untersuchen.
 
 **Aufgabe:** Erstellt zwei lineare Regressionen für die
-Chinstrap-Pinguine für ihre Schnabeldicke und -länge und prüft, 1.ob die
-lineare Regression hier angebracht ist und
+Chinstrap-Pinguine für ihre Schnabeldicke und -länge und prüft,
+
+1.ob die lineare Regression hier angebracht ist und
 
 1.  welcher der beiden Parameter eher von dem anderen abzuhängen
     scheint!
