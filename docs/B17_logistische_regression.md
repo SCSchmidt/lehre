@@ -139,11 +139,7 @@ Der Hinweis auf die Fisher scoring iterations hat etwas damit zu tun,
 wie das Modell geschätzt wurde (hier wurden 7 verschiedene Modelle
 ausprobiert, bis entschieden wurde, dass es so am besten passt).
 
-<a href="http://www.dwoll.de/r/gddmr_ed2/08_glm.pdf" class="uri">http://www.dwoll.de/r/gddmr_ed2/08_glm.pdf</a>
 
-<a href="https://stats.idre.ucla.edu/r/dae/logit-regression/" class="uri">https://stats.idre.ucla.edu/r/dae/logit-regression/</a>
-
-<a href="https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression" class="uri">https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression</a>
 
 ### Vorhersage
 
