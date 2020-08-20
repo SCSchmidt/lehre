@@ -1,13 +1,25 @@
 ---
 title: "Zusammenhänge ordinaler Daten"
-author: "Sophie C. Schmidt"
-date: "14 7 2020"
-output: html_document
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      eval = FALSE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  warning = FALSE,
+  comment = "#>",
+  fig.path = "./figures/",
+  fig.width=5, 
+  fig.height=5)
 
 library(palmerpenguins)
 data(penguins)
@@ -29,7 +41,7 @@ Der U-Test ist geeignet für ordinale und metrische Variablen.
 
 Nehmen wir als erstes Beispiel das Gewicht der Pinguine und schauen, ob Männchen oder Weibchen einer Art unterschiedlich schwer sind. 
 
-Der Test in R benutzt eine recht "alte" Syntax, die manchmal vorkommt. Mithilfe der Tilde "~" beschreibt er, welche zwei Variablen gegeneinander getestet werden sollen. `paired = FALSE` stellt sicher, dass wir hier den U-Test und nicht den Wilcoxon-Test berechnen.
+Der Test in R benutzt eine recht "alte" Syntax, die manchmal vorkommt. Mithilfe der Tilde "~" beschreibt er, welche zwei Variablen gegeneinander getestet werden sollen. `paired = FALSE` stellt sicher, dass wir hier den U-Test / Rangsummentest und nicht den Wilcoxon-Test für gebundene Stichproben berechnen.
 
 ```{r}
 # zuerst einen neuen Datensatz nur mit der Art "Adelie" ersellen 
@@ -45,7 +57,7 @@ Dass da `Wilcoxon rank sum test with continuity correction` steht, bedeutet, das
 Der p-Wert ist wieder super klein, das heißt, die beiden Gruppen sind signifikant unterschiedlich!
 Schauen wir uns das einmal an:
 
-```{r}
+```{r box_adelie_gewicht_sex}
 library(ggplot2)
 
 ggplot()+
@@ -77,7 +89,7 @@ wilcox.test(data = pirates, tattoos ~ headband, paired = FALSE)
 
 Wir haben einen sehr kleine p-Wert, schauen wir uns das doch noch einmal als Balkendiagramm an:
 
-```{r}
+```{r bar_pirates_tattos_headband}
 ggplot()+
   geom_bar(data = pirates, 
            aes(x = tattoos,
@@ -159,9 +171,12 @@ Wenn man sich die Output-Tabelle anschaut, sieht man, dass nur Gentoo signifikan
 
 Visualisieren wir das kurz als Boxplot, können wir das auch besser einschätzen:
 
-```{r}
+```{r adelie_chinstrap_weight}
 ggplot()+
-  geom_boxplot(data = penguins, aes(x = species, y = body_mass_g), na.rm = TRUE)
+  geom_boxplot(data = penguins, 
+               aes(x = species, 
+                   y = body_mass_g), 
+               na.rm = TRUE)
 ```
 
 Ja, Adelie und Chinstrap sehen ziemlich gleich schwer aus.

@@ -73,43 +73,6 @@ Fragestellung nicht anwenden. Wenn ein Datensatz die Voraussetzungen für
 einen Test nicht erfüllt, kann man ihn nicht anwenden. Allerdings, wenn
 man auf den Datensatz schaut, sind die Zusammenhänge auch so sonnenklar.
 
-Exkurs: nested (verschachtelt) und crossed (gekreuzte) Modelle
---------------------------------------------------------------
-
-Bei der Auswahl, welchen Test man anwenden möchte, ist es wichtig zu
-wissen, wie die Daten strukturiert sind. Wenn ich zwei verschiedene
-Faktoren (z. B. Spezies und Insel) betrachte, gibt es folgende
-Möglichkeiten:
-
-1.  Alle Pinguine einer Art kommen je genau auf nur einer Insel vor.
-2.  Pinguine jeder Art kommen auf allen Inseln vor.
-3.  Es gibt Inseln, auf denen kommen nur Pinguine einer Art vor und es
-    gibt Inseln, auf denen kommen mehrere Arten vor.
-4.  Alle Pinguinarten leben nur auf einer Insel.
-5.  Alle Pinguine wurden von Seelöwen gefressen (quatsch).
-
-Der erste Fall, Pinguine einer Art kommen nur auf je einer Insel vor,
-wird als verschachtelt (engl. nested) bezeichnet. Es bedeutet, dass ein
-Faktor-Wert (zB Gentoo-Pinguin) nur in einem bestimmten Wert des anderen
-Faktors (zB Insel Biscoe) vorkommt. Damit haben wir keine gleichmäßige
-Verteilung der Kategorien mehr und wenn wir die Daten tabellarisch
-zusammenfassen, wie wir es hier getan haben, entstehen diese 0-Felder.
-
-Der zweite Fall: Alle Pinguinarten kommen auf allen Inseln vor, ist das
-perfekte Beispiel eines gekreuzten (crossed) Modells. Das heißt ich habe
-in der Kreuztabelle in jedem Feld mindestens eine 1.
-
-Manchmal gibt es Mischformen und das haben wir hier: Chinstrap- und
-Gentoo-Pinguine kommen nur auf jeweils einer Insel vor und
-Adelie-Pinguine hüpfen überall herum.
-
-Weil dem so ist, können wir den Chi-Quadrat-Test nicht machen. Er
-funktioniert nur, wenn die Faktoren gekreuzt sind.
-
-Eine sehr ausführliche Erklärung des damit zusammenhängenden
-Codierungsproblems gibt es z. B. hier
-<a href="https://qastack.com.de/stats/228800/crossed-vs-nested-random-effects-how-do-they-differ-and-how-are-they-specified" class="uri">https://qastack.com.de/stats/228800/crossed-vs-nested-random-effects-how-do-they-differ-and-how-are-they-specified</a>
-
 Chi Quadrat: Auswahl treffen
 ----------------------------
 

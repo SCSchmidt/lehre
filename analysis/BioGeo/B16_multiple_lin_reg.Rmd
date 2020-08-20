@@ -1,37 +1,39 @@
 ---
 title: "Multiple lineare Regression"
 author:
-  - Schmidt, Sophie C.
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
-    bookdown::word_document2:
-      fig_caption: yes
-      reference_docx: "../templates/template.docx" # Insert path for the DOCX file
-bibliography: references.bib
-csl: "../templates/journal-of-archaeological-science.csl" # Insert path for the bib-style
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 ---
 
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
   message = FALSE,
   echo = TRUE,
   comment = "#>",
-  fig.path = "../figures/",
+  fig.path = "./figures/",
   fig.width=6, 
   fig.height=6
 )
 ```
 
+# Multiple Lineare Regression
+
 Mithilfe der multiplen linearen Regression kann ich die Abhängigkeit einer metrischen Variable von mehreren anderen metrischen Variablen schätzen und zwar gleichzeitig und nicht einfach hintereinander.
 
 Es gelten alle Voraussetzungen wie für die normale lineare Regression (d.h. eine lineare Beziehung zwischen den unabhängigen und der abhängigen Variable, Homoskedastizität, Normalverteilung der Residuen und Unabhängigkeit der Residuen).
 
-Dabei müssen die unabhängigen Variablen auch von einander unabhängig sein (Problem der „Multikolinearität“)! Wenn zwei der unabhängigen Variablen stark miteinander korrelieren, kann das Modell nicht mehr herausfinden, welche der gegebenen unabhängigen Variablen einfluss auf die abhängige Variable hat.
+Dabei müssen die unabhängigen Variablen auch von einander unabhängig sein (Problem der „Multikollinearität“)! Wenn zwei der unabhängigen Variablen stark miteinander korrelieren, kann das Modell nicht mehr herausfinden, welche der gegebenen unabhängigen Variablen einfluss auf die abhängige Variable hat.
 
-Eine Gleichung für die multiple lineare regression sieht so aus: $ y = a + b_1 * x_1, + b_2 * x_2 + b_3 * x_3 ... $. 
+Eine Gleichung für die multiple lineare regression sieht so aus: $ y = a + b_1 * x_1, + b_2 * x_2 + b_3 * x_3 ... + e $ und stellt damit eine Linearkombination von mehreren linearen Funktionen dar, die am Ende einen Fehler (e) berücksichtigen kann. 
 
 Nehmen wir als Bsp zwei Variablen. Ich teste, ob die Größe der Piraten mit ihrer Anzahl von Tattoos zu tun hat: 
 
@@ -56,47 +58,59 @@ summary(model1)
 R erklärt uns wieder, welche Berechnung wir da vorgenommen haben, dann die Verteilung der Residueen (das sieht doch recht gleichmäßig aus, sehr gut) und im Anschluss die Koeffizienten-Schätzung mit Standardabweichung, t-Wert und Wahrscheinlichkeit. 
 
 
-
 Wir haben es also mit einer Korrelation von Tattoos und Größe mit Bartlänge zu tun, die dieser Formel folgt: $beard.length = -64.87 + 0.59*tattoos + 0.41*height$
 
 Daraus können wir uns auch die Konfidenzintervalle anzeigen lassen:
 
 ```{r}
 confint(model1)
-
 ```
 
-Und so die Bereiche abschätzen, in denen die Regressionslinie mit einer sehr hohen Wahrscheinlichkeit liegt. Man kann das noch visualisieren, in dem man die beiden unabhängigen Variablen normalisiert. Sie liegen ja in unterschiedlichen Bereichen (Tattoos sind deutlich kleinere Werte als Größe) und können deshalb nicht einfach nur übereinander geplottet werden. Mit der Funktion `scale` normalisiere ich Wertereihen, d.h. jeder Wert wird von dem Mittelwert abgezogen und und durch die Standardabweichung geteilt (sog. z-Transformation). Das kann ich als x- und die Bartlänge als y in der Grafik abtragen, die Tattoo-Anzahlen rot einfärben und dann eine "normale" lineare Regression für jeden der beiden Werte berechnen lassen (`geom_smooth` mit `model = "lm",formula = y ~ x` ) und diese unterschiedliche einfärben.
+Und so die Bereiche abschätzen, in denen die Regressionslinie mit einer sehr hohen Wahrscheinlichkeit liegt. 
 
+Wie kann man am besten etwas visualisieren, in dem drei metrische Variablen vorkommen?
 
+Richtig. Im 3D-Raum. Das Paket "rockchalk" hat eine `plotPlane`-Funktion. 
 
-```{r}
-ggplot(data = pirates)+
-  geom_point(aes(x = scale(height), # normalisiere Größe
-                 y = beard.length))+ 
-  geom_point(aes(x = scale(tattoos), # normalisiere Anzahl Tattoos
-                 y = beard.length),
-             col = "red") +  # färbe Anzahl Tattoos rot ein
-  geom_smooth(aes(x = scale(height), # erste lineare regression für Größe
-                  y = beard.length),
-              model = "lm",
-              formula = y ~ x,
-              col = "blue") +  # blau
-  geom_smooth(aes(x = scale(tattoos), # zweite lineare regression für Tattoos
-                  y = beard.length),
-              model = "lm",
-              formula = y ~ x,
-              col = "green") + # eingefärbt grün
-  xlab("normierte Größe und Tattooanzahl") + 
-   ylab("Bartlänge")
+```{r multip_lin_reg}
+  rockchalk::plotPlane(model = model1, plotx1 = "tattoos", plotx2 = "height")
 ```
 
+(Idee geklaut von: https://wgruber.github.io/Modellbildung2/multiple-regression.html#voraussetzungen-mlr )
 
-https://wgruber.github.io/Modellbildung2/multiple-regression.html#voraussetzungen-mlr
 
-Residualanalyse
-...
+## Residualanalyse
 
+Genau wie bei der "normalen" linearen Regression können wir Residualanalyse betreiben:
+
+### Q-Q-Plot
+
+```{r qq_model1_res}
+library(ggpubr)
+ggqqplot(model1$residuals)
+```
+
+### Residuen und vorhergesagte Werte (residuals vs fitted)
+
+```{r fitted_vs_residuals_model1}
+plot(model1, which=1, col=c("blue")) # Residuals vs Fitted Plot
+```
+
+Die rote Linie zeigt eine Regression zwischen den Residuen und den vorhergesagten Werten. Das "Ziel" für eine gute lineare Regression ist, dass sie auf der 0-Achse liegt. Auch wenn es hier eine leichte Kurve am Ende gibt, liegt sie aber doch echt nahe dran. Das zeigt, dass die Residuen halbwegs gleichmäßig verteilt sind und damit eine Voraussetzung für die lineare Regression erfüllt ist.
+
+
+### "Scale-Location"
+
+Hier schauen wir, ob die Homoskedastizität gegeben ist, d. h. die Varianz der Residuen entlang der Regressionslinie etwa gleich bleibt. 
+
+Der Plot wird mit `which = 3` aufgerufen:
+
+```{r homoskedas_model1}
+plot(model1, which=3, col=c("blue"))  # Scale-Location Plot
+```
+Auch das ist überzeugend. Sehr schön! 
+
+## Aufgabe
 Nun haben wir natürlich eigentlich noch Frauen im Datensatz, die eine Bartlänge von 0 haben. Das könnte uns das Ergebnis ganz schön verzerren.
 
 **Aufgabe** Nehmt noch einmal nur die männlichen Piraten und überprüft, ob sich das Modell deutlich verändert! 

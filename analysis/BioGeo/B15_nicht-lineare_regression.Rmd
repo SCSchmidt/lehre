@@ -1,14 +1,18 @@
 ---
 title: "nicht-lineare Regression"
 author:
-  - Schmidt, Sophie C.
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: 
-    bookdown::word_document2:
-      fig_caption: yes
-      reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 
 ---
+
+# Nicht-lineare Regression
 
 Jetzt hatten wir schon das Beispiel für eine nicht-lineare Regression mit dem Alter der Schafe und der Größe der Zähne. Nicht-lineare Zusammenhänge können durch polynomiale Funktionen beschrieben werden, die dem Schema:
 
@@ -43,11 +47,12 @@ fit <- lm(zahn_mm ~ alter + I(alter^2), data = schafe)
 summary(fit)
 
 ```
+
 Da die Daten hier vorher mit genau einer solchen Formel berechnet wurden,ist natürlich das Konfidenzintervall extrem schmal. R sagt uns auch "essentially perfect fit: summary may be unreliable", hat also mitbekommen, dass da irgendetwas komisch ist. ;-)
 
 Wir können uns das Ergebnis auch wieder visualisieren, wie bei einer linearen Regression: 
 
-```{r}
+```{r schafszaehne_linreg}
 
 library(ggplot2)
 ggplot(data = schafe,
@@ -71,7 +76,7 @@ Nehmen wir ein kleines witziges Beispiel nach dem Comic von Jorge Cham:
 
 Ich konstruiere also einmal "wild" Zahlen mithilfe der Kosinusfunktion, um das abzubilden und versuche dann diese Werte mit einer Funktion zu schätzen, die der Formel $ y = x + x^2 + x^3$ folgt:
 
-```{r}
+```{r happiness_phd}
 years_at_uni <- seq(1,20,1)
 happiness <- cos(years_at_uni/2.7 + 5)
 

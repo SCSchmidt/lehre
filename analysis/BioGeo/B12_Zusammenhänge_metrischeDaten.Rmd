@@ -15,13 +15,12 @@ always_allow_html: true
 knitr::opts_chunk$set(
   echo = TRUE,
   eval = TRUE,
+  warning = FALSE,
   comment = "#>",
   fig.path = "./figures/",
   fig.width=5, 
   fig.height=5)
 
-library(palmerpenguins)
-data(penguins)
 
 ```
 
@@ -38,6 +37,10 @@ D.h. man sollte immer zuerst einen Test auf Normalverteilung machen, wie wir ihn
 Der F-Test vergleicht die Varianzen von metrischen Variablen. Schauen wir uns doch noch einmal die Flossenlänge unserer Pinguine an und differenzieren sie nach Geschlecht. 
 
 ```{r}
+
+library(palmerpenguins)
+data(penguins)
+
 # zwei Datensätze nach Geschlecht trennen:
 
 penguins_f <- subset(penguins, penguins$sex == "female")
@@ -111,8 +114,6 @@ Machen wir also mit diesem Bsp jetzt den t-Test:
 
 ## t-test
 
-http://www.sthda.com/english/wiki/unpaired-two-samples-t-test-in-r
-
 Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass wir von zwei unterschiedlichen Gruppen ausgehen können:
 ```{r}
 t.test(data = gentoo, body_mass_g ~ sex, na.rm = TRUE,
@@ -126,7 +127,6 @@ Der p-Wert erlaubt es uns, die Alternativhypothese sicher anzunehmen.
 Jetzt erweitern wir das Spektrum der Gruppen. Durch einen Faktor getrennt, der aber mehr als nur 2 Ausprägungenannehmen kann, können zB durch den Faktor "species" drei Gruppen entstehen. Bevor wir diese jedoch auf ihren Mittelwertsunterschied testen können, müssen wir auch hier die Varianzgleichheit untersuchen:
 
 ## Levene-Test
-https://www.bjoernwalther.com/levene-test-in-r-berechnen-und-interpretieren/
 
 Der Levene-Test ist im Paket "car" umgesetzt.
 Wie immer installieren bitte nur diejenigen das Paket, die nicht in der Cloud arbeiten!
@@ -245,6 +245,8 @@ Hängen Größe und Gewicht von dem Geschlecht ab?
 Dazu benutzen wir die Funktion `manova`, so wird die multivariate Varianzanalyse auch meistens abgekürzt.
 
 wir fügen beide Variablen mit einem cbind (column bind) zusammen und setzen diese mit der Tilde gegenüber den Faktor Geschlecht. Wie auch vorhin wird das Ergebnis einer Variablen zugewiesen und dann mit `summary` ausgegeben. 
+
+
 ```{r}
 library(yarrr)
 data(pirates)

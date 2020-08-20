@@ -72,17 +72,11 @@ Nehmen wir dafür den Piraten-Datensatz:
 library(yarrr)
 ```
 
-    #> Warning: package 'yarrr' was built under R version 4.0.2
-
     #> Loading required package: jpeg
 
     #> Loading required package: BayesFactor
 
-    #> Warning: package 'BayesFactor' was built under R version 4.0.2
-
     #> Loading required package: coda
-
-    #> Warning: package 'coda' was built under R version 4.0.2
 
     #> Loading required package: Matrix
 
@@ -93,8 +87,6 @@ library(yarrr)
     #> ************
 
     #> Loading required package: circlize
-
-    #> Warning: package 'circlize' was built under R version 4.0.2
 
     #> ========================================
     #> circlize version 0.4.10
@@ -192,9 +184,6 @@ Jetzt können wir den Test machen:
 ``` r
 ks.test(adelie_m$body_mass_g, adelie_f$body_mass_g)
 ```
-
-    #> Warning in ks.test(adelie_m$body_mass_g, adelie_f$body_mass_g): p-value will be
-    #> approximate in the presence of ties
 
     #> 
     #>  Two-sample Kolmogorov-Smirnov test
