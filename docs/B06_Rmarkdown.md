@@ -2,8 +2,8 @@
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Hinweise zum “guten Schreiben” von Code
-=======================================
+Hinweise zur Reproduzierbarkeit
+===============================
 
 Style guide
 -----------
@@ -92,12 +92,12 @@ abgelegt:
 
 -   Der Titel wird hinter `title:` in Hochkommas geschrieben
 -   Hinter `author:` schreibt man seinen eigenen Namen in Hochkommas
--   `date:` ist nichr verpflichtend, aber das kann hilfreich sein
+-   `date:` ist nicht verpflichtend, aber das kann hilfreich sein
 -   und mit `output:` wird spezifiziert, in was für eine Art Dokument
-    das Rmarkdown-Dokument verwandelt werden soll. “html\_document”
-    wurde hier gewählt, es geht aber auch “word\_document” oder
-    “pdf\_document” und tatsächlich noch einige andere Versionen, die
-    hier nicht so wichtig sind.
+    das Rmarkdown-Dokument verwandelt werden soll. Es gibt
+    “html\_document”, “word\_document” oder “pdf\_document” und
+    tatsächlich noch einige andere Versionen, die hier nicht so wichtig
+    sind.
 
 Wenn das Paket `knitr` installiert ist (wer nicht in der Cloud arbeitet:
 bitte installiert es), gibt es oben den **Knit**-Knopf (englisch für
@@ -166,15 +166,15 @@ Grafik führen soll, wird die Grafik angezeigt:
 (Mehr zum Bilder einfügen [hier](#bilder-einfügen))
 
 Die Parameter des Code Chunks können bestimmen, ob der Code mit als Code
-in das html-Dokument übertragen werden werden soll (echo = TRUE) oder
-nicht (echo = FALSE) oder falls ein Diagramm erstellt wird, wie groß es
-sein soll (fig.height und fig.width). Einen Parameter, den ich immer
-benutze, um die Skripte zu erstellen, ist zB “eval = FALSE”, was besagt,
-dass der Code in diesem Chunk nicht ausgeführt werden soll. Ansonsten
-würde ich bei jedem Umwandeln des RMarkdown-Dokuments in die html alle
-Pakete neu installieren, deren Installationscode ich hinschreibe, das
-wäre Quatsch. Diese Parameter werden mit Komma voneinander getrennt,
-weitere findet ihr unter:
+in das html-Dokument übertragen werden werden soll (`echo = TRUE`) oder
+nicht (`echo = FALSE`) oder falls ein Diagramm erstellt wird, wie groß
+es sein soll (fig.height und fig.width). Einen Parameter, den ich immer
+benutze, um die Skripte zu erstellen, ist zB “`eval = FALSE`”, was
+besagt, dass der Code in diesem Chunk nicht ausgeführt werden soll.
+Ansonsten würde ich bei jedem Umwandeln des RMarkdown-Dokuments in die
+html alle Pakete neu installieren, deren Installationscode ich
+hinschreibe, das wäre Quatsch. Diese Parameter werden mit Komma
+voneinander getrennt, weitere findet ihr unter:
 <a href="https://rmarkdown.rstudio.com/lesson-3.html" class="uri">https://rmarkdown.rstudio.com/lesson-3.html</a>
 und eine super Zusammenstellung hier:
 <a href="https://yihui.org/knitr/options/" class="uri">https://yihui.org/knitr/options/</a>.
@@ -274,3 +274,50 @@ und einen sehr praktischen Schummelzettel hier:
 <a href="https://rstudio.com/wp-content/uploads/2015/06/rmarkdown-german.pdf" class="uri">https://rstudio.com/wp-content/uploads/2015/06/rmarkdown-german.pdf</a>
 . Hilfreich ist auch dieses Buch:
 <a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>.
+Wer auf interaktive Weise mehr Markdown lernen möchte, findet hier ein
+gutes Tutorial:
+<a href="https://commonmark.org/help/tutorial/" class="uri">https://commonmark.org/help/tutorial/</a>.
+
+**Aufgabe** Im Beispielprojekt und damit auch in dem Projekt, was ihr
+für euch erstellt habt, liegt eine RmD-Datei unter “/analysis/paper/”.
+Schaut sie euch an, drückt *knit* und schaut, was passiert.
+
+Anschließend probiert einmal folgendes aus:
+
+-   im YAML-header steht ein großes Stück Code
+
+<!-- -->
+
+    output: 
+       bookdown::word_document2:
+         fig_caption: yes
+         reference_docx: "../templates/template.docx" # Insert path for the DOCX file
+         pandoc_args:
+         - --lua-filter=../templates/scholarly-metadata.lua
+         - --lua-filter=../templates/author-info-blocks.lua
+         - --lua-filter=../templates/pagebreak.lua
+
+Ersetzt es durch
+
+    output:
+      html_document
+
+und auf *knit* drücken (oder Strg+shift+k). Was passiert?
+
+An die Stelle könnt ihr auch einmal schreiben:
+
+    output:
+      pdf_document
+
+und dann *knit* drücken.
+
+Toll oder?! Mit einem Knopfdruck aus einer “Grund”-Datei drei
+unterschiedliche Formate exportieren, ohne Probleme. Mit Code, der
+korrekt umgewandelt wird. Ich schreibe inzwischen alle meine Artikel in
+Rmarkdown, da ich so am einfachsten den Output generieren kann, der
+gewünscht ist.
+
+Die in dem Originaldokument gegebene reference\_docx definiert solche
+Sachen wie Überschriften formatiert werden sollen, wenn es als docx
+ausgegeben werden soll. Die pandoc-arcs sind für ähnliche Dinge da. Aber
+das führt hier zu weit.

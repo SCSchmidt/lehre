@@ -363,7 +363,8 @@ View(penguins)
 Jetzt ist penguins in unserer Environment, also als Datensatz mit einer
 bestimmten Variable eingeladen.
 
-Wir sehen jetzt folgende Spalten: `colnames(penguins)`. In einigen
+Wir sehen jetzt folgende Spalten: species, island, bill\_length\_mm,
+bill\_depth\_mm, flipper\_length\_mm, body\_mass\_g, sex. In einigen
 dieser Spalten steht manchmal ein schräggedrucktes *NA*. Diese Felder
 sind leer, die Information FEHLT. R kann gut mit leeren Feldern umgehen,
 gibt ihnen aber diese interne Bezeichnung.
@@ -443,6 +444,17 @@ mean(penguins$body_mass_g, na.rm = TRUE)
 
 So, jetzt sollten wir wissen, wie schwer der durschschnittliche Pinguin
 in unserem Datensatz ist.
+
+Eine weitere Sache, die ganz einfach ist, ist mit den Spalten zu
+rechnen. Wir können zum Bsp an den Datensatz `penguins` eine Spalte
+einfügen, bei der wird die Länge des Schnabels durch seine Breite
+teilen. Wir müssen es einfach nur definieren:
+
+``` r
+penguins$bill_length_by_depth <- penguins$bill_length_mm/penguins$bill_depth_mm
+```
+
+Das ist super praktisch.
 
 Daten nach Kriterien auswählen
 ------------------------------
@@ -533,7 +545,7 @@ chinstraps <- penguins %>%
     (Zahlenreihe = Vektor = Objekt).
 
 -   mithilfe von Zuweisungen werden Variablen definiert, mit denen
-    weiter gearbeitet werden kann.
+    weiter gearbeitet und gerechnet werden kann.
 
 -   Die Installation von Paketen erweitert die Funktionalitäten in R.
     CRAN-Pakete werden mit “install.packages(”Paketname“)” installiert.
