@@ -13,5 +13,11 @@
 11. [Gruppenunterschiede bei ordinalen Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B11_Zusammenhänge_ordinaleDaten.md)
 12. [Gruppenunterschiede bei metrischen Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B12_Zusammenhänge_metrischeDaten.md)
 13. [Korrelation](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B13_korrelation.md)
+14. [Lineare Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B14_lineare_regression.md)
+15. [Nicht-lineare Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B15_nicht-lineare_regression.md)
+16. [Multiple lineare Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B16_multiple_lin_reg.md)
+17. [Logistische Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B17_logistische_regression.md)
+
+
 
 ![](https://cdn.pixabay.com/photo/2018/03/27/12/16/analytics-3265840_960_720.jpg)
