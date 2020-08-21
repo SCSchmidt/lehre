@@ -27,10 +27,9 @@ mit ihrer Anzahl von Tattoos zu tun hat:
 ``` r
 library(yarrr)
 data("pirates")
-pirates <- subset(pirates, pirates$sex == "male")
 
 cor(pirates$tattoos, pirates$height, method = "pearson")
-#> [1] -0.06458851
+#> [1] -0.0305655
 ```
 
 und stelle fest: Nein.
@@ -48,19 +47,19 @@ summary(model1)
 #> 
 #> Residuals:
 #>     Min      1Q  Median      3Q     Max 
-#> -13.946  -3.326  -0.026   3.117  15.299 
+#> -22.952  -7.037  -1.000   6.699  29.876 
 #> 
 #> Coefficients:
-#>             Estimate Std. Error t value Pr(>|t|)    
-#> (Intercept) 11.17191    3.86645   2.889  0.00403 ** 
-#> tattoos      0.93987    0.06466  14.535  < 2e-16 ***
-#> height      -0.00352    0.02132  -0.165  0.86889    
+#>              Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept) -64.87274    3.94053 -16.463  < 2e-16 ***
+#> tattoos       0.58952    0.08272   7.126 1.97e-12 ***
+#> height        0.40944    0.02249  18.204  < 2e-16 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
-#> Residual standard error: 4.938 on 487 degrees of freedom
-#> Multiple R-squared:  0.3038, Adjusted R-squared:  0.3009 
-#> F-statistic: 106.2 on 2 and 487 DF,  p-value: < 2.2e-16
+#> Residual standard error: 8.802 on 997 degrees of freedom
+#> Multiple R-squared:  0.2731, Adjusted R-squared:  0.2716 
+#> F-statistic: 187.3 on 2 and 997 DF,  p-value: < 2.2e-16
 ```
 
 R erklärt uns wieder, welche Berechnung wir da vorgenommen haben, dann
@@ -70,16 +69,16 @@ Standardabweichung, t-Wert und Wahrscheinlichkeit.
 
 Wir haben es also mit einer Korrelation von Tattoos und Größe mit
 Bartlänge zu tun, die dieser Formel folgt:
-*beard.length =  − 64.87 + 0.59 \* tattoos + 0.41 \* height*
+*b**e**a**r**d*.*l**e**n**g**t**h* =  − 64.87 + 0.59 \* *t**a**t**t**o**o**s* + 0.41 \* *h**e**i**g**h**t*
 
 Daraus können wir uns auch die Konfidenzintervalle anzeigen lassen:
 
 ``` r
 confint(model1)
 #>                   2.5 %      97.5 %
-#> (Intercept)  3.57492531 18.76888945
-#> tattoos      0.81282109  1.06692532
-#> height      -0.04540058  0.03836025
+#> (Intercept) -72.6054281 -57.1400512
+#> tattoos       0.4271865   0.7518499
+#> height        0.3653065   0.4535812
 ```
 
 Und so die Bereiche abschätzen, in denen die Regressionslinie mit einer
@@ -145,11 +144,18 @@ plot(model1, which=3, col=c("blue"))  # Scale-Location Plot
 ![](./figures/homoskedas_model1-1.png) Auch das ist überzeugend. Sehr
 schön!
 
-Aufgabe
--------
-
 Nun haben wir natürlich eigentlich noch Frauen im Datensatz, die eine
 Bartlänge von 0 haben. Das könnte uns das Ergebnis ganz schön verzerren.
 
 **Aufgabe** Nehmt noch einmal nur die männlichen Piraten und überprüft,
 ob sich das Modell deutlich verändert!
+
+Zusammenfassung
+---------------
+
+Sie haben hier die multiple lineare Regression kennengelernt, die
+Abhängigkeit einer metrischen Variablen von mehreren anderen metrischen
+Variablen gleichzeitig berechnet. Sie haben kennengelernt, wie man dies
+darstellt und eine Residualanalyse durchführt.
+
+Sehr gut!

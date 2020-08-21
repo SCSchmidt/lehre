@@ -40,7 +40,6 @@ Nehmen wir als Bsp zwei Variablen. Ich teste, ob die Größe der Piraten mit ihr
 ```{r}
 library(yarrr)
 data("pirates")
-pirates <- subset(pirates, pirates$sex == "male")
 
 cor(pirates$tattoos, pirates$height, method = "pearson")
 
@@ -110,7 +109,12 @@ plot(model1, which=3, col=c("blue"))  # Scale-Location Plot
 ```
 Auch das ist überzeugend. Sehr schön! 
 
-## Aufgabe
 Nun haben wir natürlich eigentlich noch Frauen im Datensatz, die eine Bartlänge von 0 haben. Das könnte uns das Ergebnis ganz schön verzerren.
 
 **Aufgabe** Nehmt noch einmal nur die männlichen Piraten und überprüft, ob sich das Modell deutlich verändert! 
+
+## Zusammenfassung 
+
+Sie haben hier die multiple lineare Regression kennengelernt, die Abhängigkeit einer metrischen Variablen von mehreren anderen metrischen Variablen gleichzeitig berechnet. Sie haben kennengelernt, wie man dies darstellt und eine Residualanalyse durchführt.
+
+Sehr gut!
