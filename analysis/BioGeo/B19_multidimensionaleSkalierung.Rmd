@@ -76,7 +76,7 @@ colnames(mds) <- c("Dim.1", "Dim.2") # benennt die beiden Spalten
 
 Wir haben mit mds jetzt einen Data.frame, in dem die "neuen Koordinaten" stehen. Das lässt sich wunderbar mit ggplot visualisieren:
 
-```{r}
+```{r ggplot2_mds_1}
 library(ggplot2)
 
 ggplot(data =  mds)+
@@ -103,9 +103,12 @@ mds_c <- mds_pir %>%         # wir erstellen mds_c aus mds_pir
 ```
 
 
-Jetzt können wir folgendes machen: Die Punkte werden nach Dimension 1 und 2 geplottet, die Form der Punkte (shape) gibt das Geschlecht an und die Gruppen, wie sie von k-means erkannt wurden, werden farblich dargestellt und umrandet.
+Jetzt können wir folgendes machen: Die Punkte werden nach Dimension 1 und 2 geplottet, die Form der Punkte (shape) gibt das Geschlecht an und die Gruppen, wie sie von k-means erkannt wurden, werden farblich dargestellt und umrandet. Nehmen wir dafür`ggscatter` in dem Paket `ggpubr`:
 
-```{r}
+```{r ggscatter_mds_kmeans}
+library(ggpubr)
+
+
 ggscatter(mds_c, x = "Dim.1", y = "Dim.2",  #Punkte zeichnen
           shape = "sex",                    # Form der Punkte nach Geschlecht
           color = "groups",              # Farbe nach Gruppen von k-means
@@ -119,7 +122,7 @@ ggscatter(mds_c, x = "Dim.1", y = "Dim.2",  #Punkte zeichnen
 
 Etwas übersichtlicher ist es vllt, wenn man nur visualisiert, ob diese Verteilung zB mit dem Geschlecht zusammenhängt:
 
-```{r}
+```{r ggplot_mds_gender}
 ggplot(data =  mds_pir)+
   geom_point(aes(x = Dim.1,
              y = Dim.2,
@@ -133,14 +136,11 @@ Manchmal sieht man in diesem Scatter-Plot Punkte und würde gerne wissen, "wer" 
 
 Wir können das herausfinden, indem wir die Punkte labeln, am einfachsten mit `ggscatter` in dem Paket `ggpubr`:
 
-```{r}
-library(ggpubr)
-
+```{r ggscatter_mds_labels}
 ggscatter(mds_pir, x = "Dim.1", y = "Dim.2", 
           label = rownames(mds_pir),
           size = 1,
           repel = TRUE)
-
 ```
 
 Praktisch!
@@ -224,7 +224,7 @@ row.names(example_species) <- dimnames(example_NMDS$species)[[1]]
 
 In ggplot kann man statt `geom_point` `geom_text` eingeben und ein `label` spezifizieren und so die Punkte beschriften, ohne sie vorher zu "malen".
 
-```{r ggplot_textlabel}
+```{r ggplot_nmds_textlabel}
 ggplot()+
   geom_text(data = example_points,
              aes(x = MDS1,
