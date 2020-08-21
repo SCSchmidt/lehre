@@ -8,10 +8,7 @@ Faaaancy.
 
 Oder zumindest klingt es so. Aber ein Witz unter Statistikern geht
 ungefähr so “Steht Machine Learning drauf, ist aber Lineare Regression
-drin”. Und das bei vielen anderen auch: “Steht ANOVA drauf, ist aber
-lineare Regression drin”…
-
-![<a href="https://media.makeameme.org/created/when-you-advertise-f81897f53a.jpg" class="uri">https://media.makeameme.org/created/when-you-advertise-f81897f53a.jpg</a>]()
+drin”. 
 
 Die LDA entwickelt eine Schätzfunktion anhand der sie die Daten mithilfe
 von metrischen Variablen in Gruppen einteilt.

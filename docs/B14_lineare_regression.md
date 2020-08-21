@@ -330,7 +330,7 @@ untersuchen.
 **Aufgabe:** Erstellt zwei lineare Regressionen für die
 Chinstrap-Pinguine für ihre Schnabeldicke und -länge und prüft,
 
-1.ob die lineare Regression hier angebracht ist und
+1. ob die lineare Regression hier angebracht ist und
 
-1.  welcher der beiden Parameter eher von dem anderen abzuhängen
+2.  welcher der beiden Parameter eher von dem anderen abzuhängen
     scheint!
