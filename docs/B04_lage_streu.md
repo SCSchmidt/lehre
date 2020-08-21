@@ -1,14 +1,3 @@
-``` r
-knitr::opts_chunk$set(
-  warning = FALSE, # keine Warnungen
-  message = FALSE, # keine Nachrichten
-  echo = TRUE, # Code wird auch abgebildet
-  comment = "#>", # so kann man Kommentare als solche kennzeichnen
-  fig.path = "../figures/", # hier werden Bilder gespeichert
-  fig.width=10, 
-  fig.height=10
-)
-```
 
 Lagemaße
 ========
