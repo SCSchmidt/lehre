@@ -21,8 +21,7 @@ fand und selber ausprobieren möchte.
 
 Deswegen ist Code teilen toll und wichtig.
 
-**Für die Cloud-User ist es am einfachsten, ihr kopiert das
-Beispielpaket von mir! rrtools läuft nicht gut in der Cloud!**
+**Für die Cloud-User: rrtools läuft nicht gut in der Cloud! In dem in der Cloud ein neues Projekt angelegt wird, entsteht eine Kopie eines Basisprojektes, das ich vorbereitet habe und in dem die folgenden Schritte schon durchgeführt wurden. Ihr müsst nichts installieren und keine Funktion ausführen!**
 
 #### für die nicht-Cloud nutzer:
 
@@ -83,7 +82,7 @@ Imports: bookdown
 
 Wenn wir jetzt mit rrtools weiter arbeiten wollen, müssen wir es noch
 einmal laden, weil wir in einem neuen Projekt unterwegs sind als ganz am
-Anfang. Deswegen für die nicht-Cloud-User:
+Anfang. Deswegen **nur** für die nicht-Cloud-User:
 
 ``` r
 library(rrtools)
@@ -118,7 +117,7 @@ Ordner angelegt wurden:
     ge-render-t. In ihm steht schon:
     -   ein “YAML header” , der auf die `references.bib` (die Ablage der
         Literatur) und eine `csl` verweist
-    -   ein Kolophpn, in dem automatisch Details zu dem letzten git
+    -   ein Kolophon, in dem automatisch Details zu dem letzten git
         commit des papers geschrieben werden. Damit wird das ausgegebene
         Dokument (HTML/PDF/Word) immer zu einem bestimmten Stand des
         Codes auf github verlinkt.
@@ -132,8 +131,8 @@ Ordner angelegt wurden:
     [Zotero](https://www.zotero.org/) für die Literaturverwaltung zu
     nutzen
 
-Bitte arbeitet ab sofort in eurem neuen R-Projekt und dort innerhalb des
-RMarkdown-Dokuments. Hier könnt ihr euch den Code gleich in
+Bitte arbeitet ab sofort in diesem RMarkdown-Dokuments. 
+Hier könnt ihr euch den Code gleich in
 “normal-Text” dokumentieren (Was soll die Berechnung? Welche Vorgaben
 gab es? Wie kann das Ergebnis interpretiert werden?).
 
@@ -141,10 +140,10 @@ Die Prüfungsleistung wird mir am Ende als R-Projekt (mit Daten im Ordner
 data und den Text im paper.Rmd abgegeben! Bitte übt das also schon
 während des Kurses.
 
-Hilfestellungen
+Hinweise
 ---------------
 
-Empfohlen wurde für rrtools [zotero](https://www.zotero.org/). Zotero
+Empfohlen wird für rrtools die Zusammenarbeit mit [zotero](https://www.zotero.org/). Zotero
 ist ein Programm mit dem Literatur verwaltet werden kann, ähnlich wie
 Citvai, nur freie und offene Software und allein schon deshalb besser.
 Ich empfehle es sehr, sich spätestens für die Abschlussarbeit ein
