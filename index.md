@@ -17,6 +17,8 @@
 15. [Nicht-lineare Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B15_nicht-lineare_regression.md)
 16. [Multiple lineare Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B16_multiple_lin_reg.md)
 17. [Logistische Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B17_logistische_regression.md)
+18. [Diskriminanzanalyse](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B18_diskriminanzanalyse.md)
+19. [Multidimensionale Skalierung](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B19_multidimensionaleSkalierung.md)
 
 
 
