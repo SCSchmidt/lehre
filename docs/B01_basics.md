@@ -32,7 +32,8 @@ angibt.
 Achtung! R ist die Sprache eines dummen Computers, der nicht damit
 klarkommen, wenn wir etwas “falsch” sagen. Das kann bedeuten, dass ein
 Komma oder ein Klammer fehlt und R es nicht mehr versteht. Deshalb
-achtet darauf, alles genau so abzutippen.
+achtet darauf, alles genau so abzutippen. R ist auch case-sensitive, das
+bedeutet, GROSS und klein-Schreibung sind von Bedeutung!
 
 ### Taschenrechner
 
