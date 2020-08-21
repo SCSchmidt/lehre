@@ -57,7 +57,62 @@ ggplot()+
                   geom = "text")
 ```
 
-## Lösung Aufgabe logistische Regression
+## Lösung multiple lineare Regression (B16)
+
+
+```{r}
+library(yarrr)
+data("pirates")
+pirates <- subset(pirates, pirates$sex == "male")
+
+cor(pirates$tattoos, pirates$height, method = "pearson")
+
+```
+
+```{r}
+model1 <- lm(beard.length ~ tattoos + height, data = pirates)
+
+summary(model1)
+```
+
+
+```{r}
+confint(model1)
+```
+
+
+```{r multip_lin_reg}
+  rockchalk::plotPlane(model = model1, plotx1 = "tattoos", plotx2 = "height")
+```
+
+
+## Residualanalyse
+
+Genau wie bei der "normalen" linearen Regression können wir Residualanalyse betreiben:
+
+### Q-Q-Plot
+
+```{r qq_model1_res}
+library(ggpubr)
+ggqqplot(model1$residuals)
+```
+
+### Residuen und vorhergesagte Werte (residuals vs fitted)
+
+```{r fitted_vs_residuals_model1}
+plot(model1, which=1, col=c("blue")) # Residuals vs Fitted Plot
+```
+
+### "Scale-Location"
+
+
+```{r homoskedas_model1}
+plot(model1, which=3, col=c("blue"))  # Scale-Location Plot
+```
+Auch das ist überzeugend. Sehr schön! 
+
+
+## Lösung Aufgabe logistische Regression (B 17)
 
 ```{r}
 library(palmerpenguins)
@@ -142,7 +197,7 @@ https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-
 
 <a href="https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression" class="uri">https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression</a> 
 
-## Lösung Aufgabe Lineare Diskriminanzanalyse
+## Lösung Aufgabe Lineare Diskriminanzanalyse (B18)
 
 
 
@@ -197,10 +252,15 @@ predictions_lda <- model %>%
 mean(predictions_lda$class == test.transformed$species)
 ```
 
+Links zu weiteren Hilfestellungen:
+<https://www.faes.de/Basis/Basis-Lexikon/Basis-Lexikon-Multivariate/Basis-Lexikon-Diskriminanz/basis-lexikon-diskriminanz.html>
+
+<http://www.sthda.com/english/articles/36-classification-methods-essentials/146-discriminant-analysis-essentials-in-r/>
+
+<https://www.statistik.tu-dortmund.de/fileadmin/user_upload/Lehrstuehle/Datenanalyse/Wissensentdeckung/Wissensentdeckung-Li-5_2x2.pdf>
 
 
-
-## Lösung zu metrische multidimensionsale Skalierung
+## Lösung zu metrische multidimensionsale Skalierung (B19)
 
 **Aufgabe:** Wiederholt die Berechnung mit den Pinguinen, Gewicht, Schnabelmaßen und Flossenmaß. Visualisiert das Ergebnis und färbt die Punkte nach Spezies ein.
 

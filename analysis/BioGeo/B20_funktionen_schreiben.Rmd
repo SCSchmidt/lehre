@@ -8,9 +8,12 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Option: Funktionen schreiben (falls vor der Pause noch Zeit ist)
 
-Wir haben jetzt schon Funktionen angewandt. Man kann sich in R aber auch Funktionen selber definieren. Die Syntax dafür ist immer gleich:
+# Option: Funktionen schreiben (falls noch Zeit ist)
+
+Wir haben jetzt schon Funktionen angewandt und an ein-zwei Stellen wurden Funktionen extra definiert (die getmode-Funktion und in dem Giraffen-Tutorial).
+
+Die Syntax dafür ist immer gleich:
 
 myfunction <- function(x) {
 das wird mit x passieren
@@ -28,11 +31,72 @@ Ich rechne zwei mal die Summe von x (d.h. x muss ein Vektor sein) und teile dies
 zwei_m kann ich jetzt anwenden:
 
 ```{r}
-zwei_m(BACups$RD)
+
+library(palmerpenguins)
+data(penguins)
+
+
+
+zwei_m(penguins$body_mass_g)
 ```
+
+Tja. Doof, ne.
+Das Problem kennen wir ja schon. Im Datensatz sind NA-Werte, aber die Funktion hat noch keine Möglichkeit damit umzugehen.
+
+Erweitern wir sie also!
+
+```{r}
+zwei_m <- function(x){ 
+  x <- na.omit(x)  # entferne aus x alle NA
+  2*sum(x)/length(x)
+  }
+```
+
+Testen wir es also:
+
+```{r}
+zwei_m(penguins$body_mass_g)
+
+```
+
+Yay!
+In der Funktion habe ich definiert, dass das, was ich eingebe, erst durch die Funktion `na.omit()` geschickt wird und sich dabei selbst überschreibt. Damit wird dann weitergerechnet und - taadaaaaa - es gibt kein Problem mehr!
+
+Ich kann also in der Definition einer Funktion, andere Funktionen aufrufen und mehrere Berechnungen "hintereinanderschalten".
 
 Es heißt, wenn man eine Abfolge von Berechnungen mehr als 3mal benutzt, sollte man sie in eine Funktion packen, damit man den Code nicht immer kopieren und einfügen muss. Außerdem kann man so Fehler vermeiden, weil man nur noch die Funktion aufrufen muss und nicht mehr den ganzen Code wiederholen.
 
+Ein weiteres kleines Beispiel. Erinnert ihr euch an das Erstellen eines Trainings- und Testdatensatzes für die Diskriminanzanalyse?
+
+Da wurden mehrere Sachen hintereinander notwendig. Ich erinnere einmal:
+```
+train <- sample(nrow(pir), size = 0.75*nrow(pir))
+train_pir.df <- as.data.frame(pir[train, ])
+test_pir.df <- as.data.frame(pir[-train, ]) 
+```
+
+Wenn ich diese Schritte in eine Funnktion übertragen möchte, muss ich eigentlich nur alles das, was hier spezifisch ist, mit Variablen generalisieren. Wie ich diese nenne, ist eigentlich egal. Ich benenne den Datensatz, der eingegeben werden soll `df` und den Anteil mit dem ich den Datensatz teilen möchte `x`:
+
+```{r}
+split_test_train <- function(df, x) {
+  y <- sample(nrow(df), size = x*nrow(df))
+  train_df <- as.data.frame(df[y, ])
+  test_df <- as.data.frame(df[-y, ]) 
+  return(train_df)
+  return(test_df)
+}
+
+# fehlt noch: ausgabe der daetn
+```
+
+Und hier merkt ihr sicherlich schon etwas: Wenn ich nicht weiß, was ich in eine Funktion eingeben muss, dann kann ich damit nicht arbeiten.
+
+Probieren wir das doch einmal aus mit dem Pinguindatensatz:
+
+```{r}
+split_test_train(penguins, 0.5)
+```
 
 
-Beides funktioniert gleichermaßen gut.
+Eine **Aufgabe:** Schreibt eine Funktion, die 
+
