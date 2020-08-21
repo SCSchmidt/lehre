@@ -310,9 +310,6 @@ Und wir könnten die Farbe des Textes gleich nochmal ändern…:
 
 ![](./figures/schrift_aendern-1.png)
 
-Herzlichen Glückwunsch! Das sieht doch langsam nach einer publizierbaren
-Grafik aus.
-
 ### x- und y vertauschen
 
 Wenn wir der Meinung sind, wir hätten lieber ein Balkendigramm, dann
@@ -335,6 +332,8 @@ können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt
 ```
 
 ![](./figures/flip_coord-1.png)
+
+Herzlichen Glückwunsch! Das waren jetzt echt eine Menge Informationen!
 
 Bilder sichern
 ==============
