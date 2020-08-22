@@ -160,7 +160,7 @@ Deshalb hier nur kurz der Code, solltet ihr solche Daten einmal
 bekommen. Eigentlich ganz einfach, der einzige Unterschied zum
 Mann-Whitney-Test ist die Angabe von `paired = TRUE`:
 
-    wilcox.test(data = df, metrische Variable ~ gruppierende, paired = TRUE)
+    wilcox.test(data = df, metrische/ordinale Variable ~ gruppierende, paired = TRUE)
 
 ### Kolmogorov-Smirnov-Test mit zwei Verteilungen:
 
