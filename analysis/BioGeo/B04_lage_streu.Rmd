@@ -6,8 +6,7 @@ author:
       correspondence: true
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  md_document:
-    variant: markdown_github
+  word_document
 always_allow_html: true
 ---
 
@@ -143,7 +142,7 @@ Was hätten wir uns schon denken können?
 Als nächstes visualisieren wir die Verteilung einmal. Häufig benutzt man dafür Histogramme. Über Histogramme in R kommt gleich noch mehr, aber erst einmal reicht es zu wissen, dass bei einem Histogramm auf der x-Achse immer metrische Werte eingetragen werden, die klassifiziert werden. Das ist der Unterschied zum Balkendiagramm, wo auf der x-Achse nominale Daten abgetragen werden.
 
 
-```{r normalvert}
+```{r normalvert, echo=FALSE}
 library(ggplot2)
 ggplot()+
   geom_histogram(aes(x = normal))
