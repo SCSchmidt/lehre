@@ -28,7 +28,7 @@ für gebundene Stichproben berechnen.
 
 ``` r
 # zuerst einen neuen Datensatz nur mit der Art "Adelie" ersellen 
-adelie <- subset(penguins, species = "Adelie")
+adelie <- subset(penguins, penguins$species == "Adelie")
 
 # Testberechnung: wilcox.test(data = df, ordinale od. metrische Variable ~ gruppierender Faktor, paired = FALSE):
 
@@ -39,7 +39,7 @@ wilcox.test(data = adelie, body_mass_g ~ sex, paired = FALSE)
     #>  Wilcoxon rank sum test with continuity correction
     #> 
     #> data:  body_mass_g by sex
-    #> W = 6874.5, p-value = 1.813e-15
+    #> W = 310.5, p-value < 2.2e-16
     #> alternative hypothesis: true location shift is not equal to 0
 
 Dass da `Wilcoxon rank sum test with continuity correction` steht,
@@ -55,7 +55,7 @@ signifikant unterschiedlich! Schauen wir uns das einmal an:
 library(ggplot2)
 
 ggplot()+
-  geom_boxplot(data = subset(adelie, !is.na(sex)), # Trick: Ich filtere bei "data" alle Datensätze raus, in denen in der Spalte "sex" NA steht
+  geom_boxplot(data = subset(adelie, !is.na(adelie$sex)), # Trick: Ich filtere bei "data" alle Datensätze raus, in denen in der Spalte "sex" NA steht
                aes(y = body_mass_g, 
                    x = sex, 
                    col = sex))
@@ -70,50 +70,7 @@ Nehmen wir dafür den Piraten-Datensatz:
 
 ``` r
 library(yarrr)
-```
 
-    #> Loading required package: jpeg
-
-    #> Loading required package: BayesFactor
-
-    #> Loading required package: coda
-
-    #> Loading required package: Matrix
-
-    #> ************
-    #> Welcome to BayesFactor 0.9.12-4.2. If you have questions, please contact Richard Morey (richarddmorey@gmail.com).
-    #> 
-    #> Type BFManual() to open the manual.
-    #> ************
-
-    #> Loading required package: circlize
-
-    #> ========================================
-    #> circlize version 0.4.10
-    #> CRAN page: https://cran.r-project.org/package=circlize
-    #> Github page: https://github.com/jokergoo/circlize
-    #> Documentation: https://jokergoo.github.io/circlize_book/book/
-    #> 
-    #> If you use it in published research, please cite:
-    #> Gu, Z. circlize implements and enhances circular visualization
-    #>   in R. Bioinformatics 2014.
-    #> 
-    #> This message can be suppressed by:
-    #>   suppressPackageStartupMessages(library(circlize))
-    #> ========================================
-
-    #> yarrr v0.1.5. Citation info at citation('yarrr'). Package guide at yarrr.guide()
-
-    #> Email me at Nathaniel.D.Phillips.is@gmail.com
-
-    #> 
-    #> Attaching package: 'yarrr'
-
-    #> The following object is masked from 'package:ggplot2':
-    #> 
-    #>     diamonds
-
-``` r
 data(pirates)
 ```
 
@@ -175,8 +132,8 @@ Im Gegensatz zum wilcox-Test sieht die Syntax so aus:
 Das heißt wir müssen noch einmal schnell die beiden Gruppen definieren:
 
 ``` r
-adelie_f <- subset(adelie, sex == "female")
-adelie_m <- subset(adelie, sex == "male")
+adelie_f <- subset(adelie, adelie$sex == "female")
+adelie_m <- subset(adelie, adelie$sex == "male")
 ```
 
 Jetzt können wir den Test machen:
@@ -189,7 +146,7 @@ ks.test(adelie_m$body_mass_g, adelie_f$body_mass_g)
     #>  Two-sample Kolmogorov-Smirnov test
     #> 
     #> data:  adelie_m$body_mass_g and adelie_f$body_mass_g
-    #> D = 0.44459, p-value = 1.021e-14
+    #> D = 0.72603, p-value < 2.2e-16
     #> alternative hypothesis: two-sided
 
 Ja! Klasse! Ein winziger p-Wert.

@@ -138,9 +138,17 @@ install.packages("car")
 library (car)
 leveneTest(data = penguins, body_mass_g ~ species, na.rm = TRUE)
 ```
-Ein sehr kleiner p-Wert sagt: Ja. Diese Gruppen haben alle die gleiche Varianz.
+Ein sehr kleiner p-Wert sagt: Die Gruppen haben nicht die gleiche Varianz. 
 
-Weiter damit zur einfaktoriellen ANOVA!
+Nehmen wir also ein anderes Beispiel, und zwar die Flügellänge. Haben da die Pinguinspezies eine ähnliche Varianz?
+
+```{r}
+leveneTest(data = penguins, flipper_length_mm ~ species, na.rm = TRUE)
+
+```
+
+Jawohl! Der p-Wert ist sehr hoch, das heißt, wir können von Varianzhomogenität ausgehen.
+
 
 
 ## einfaktorielle ANOVA
@@ -151,14 +159,14 @@ Aus irgendwelchen Gründen wir bei der ANOVA der p-Wert nicht gleich angezeigt. 
 
 ```{r}
 # eigentliche ANOVAberechnung
-res.aov <- aov(body_mass_g ~ species, data = penguins)
+res.aov <- aov(flipper_length_mm ~ species, data = penguins)
 
 # Zusammenfassung des Ergebnisses
 summary(res.aov)
 
 ```
 
-Höchstsignifikant! Das bedeutet? Die Art hat einen Einfluss auf das Gewicht der Pinguine. 
+Höchstsignifikant! Das bedeutet? Die Art hat einen Einfluss auf die Flügellänge der Pinguine. 
 
 Wer hätte es gedacht. ;-)
 
