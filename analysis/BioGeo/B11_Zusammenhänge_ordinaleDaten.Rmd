@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   echo = TRUE,
   eval = TRUE,
   warning = FALSE,
+  message = FALSE,
   comment = "#>",
   fig.path = "./figures/",
   fig.width=5, 
@@ -45,7 +46,7 @@ Der Test in R benutzt eine recht "alte" Syntax, die manchmal vorkommt. Mithilfe 
 
 ```{r}
 # zuerst einen neuen Datensatz nur mit der Art "Adelie" ersellen 
-adelie <- subset(penguins, species = "Adelie")
+adelie <- subset(penguins, penguins$species == "Adelie")
 
 # Testberechnung: wilcox.test(data = df, ordinale od. metrische Variable ~ gruppierender Faktor, paired = FALSE):
 
@@ -61,7 +62,7 @@ Schauen wir uns das einmal an:
 library(ggplot2)
 
 ggplot()+
-  geom_boxplot(data = subset(adelie, !is.na(sex)), # Trick: Ich filtere bei "data" alle Datensätze raus, in denen in der Spalte "sex" NA steht
+  geom_boxplot(data = subset(adelie, !is.na(adelie$sex)), # Trick: Ich filtere bei "data" alle Datensätze raus, in denen in der Spalte "sex" NA steht
                aes(y = body_mass_g, 
                    x = sex, 
                    col = sex))
@@ -125,8 +126,8 @@ ks.test(x = Werte der Gruppe 1, y = Werte der Gruppe 2)
 Das heißt wir müssen noch einmal schnell die beiden Gruppen definieren:
 
 ```{r}
-adelie_f <- subset(adelie, sex == "female")
-adelie_m <- subset(adelie, sex == "male")
+adelie_f <- subset(adelie, adelie$sex == "female")
+adelie_m <- subset(adelie, adelie$sex == "male")
 ```
 
 Jetzt können wir den Test machen:
