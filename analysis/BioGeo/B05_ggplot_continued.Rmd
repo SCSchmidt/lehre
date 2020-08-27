@@ -12,7 +12,8 @@ always_allow_html: true
 
 ---
 
-# Metrische Daten
+
+# Visualisierung metrischer Daten
 
 In der letzten Stunde haben wir vor allem mit nominalen Daten gearbeitet und sie dargestellt. Dafür eignen sich Balkendiagramme ganz hervorragend. Hier geht es aber um metrische Daten.
 
@@ -42,7 +43,7 @@ Wir wissen ja schon, dass in dem Datensatz ein paar Werte fehlen, deswegen spezi
 
 Ein Beispiel:
 
-```{r Histogramm}
+```{r Histogramm_gewicht_peng}
 ggplot(data = penguins)+
   geom_histogram(aes(x = body_mass_g),  na.rm = TRUE)
 ```
@@ -53,12 +54,12 @@ Wenn ihr das ausgeführt habt, sollte eine Meldung aufgeploppt sein: "`stat_bin(
 
 Probiert einmal verschiedene Werte für die Klassengröße (binwidth) in dem Beispiel aus, zB einmal 5 und einmal 500:
 
-```{r}
+```{r hist_peng2}
 ggplot(data = penguins)+
   geom_histogram(aes(x = body_mass_g), binwidth = 5, na.rm = TRUE) # Klassengröße 5. Versucht doch einmal andere Werte und schaut, was passiert!
 ```
 
-```{r}
+```{r hist_peng3}
 ggplot(data = penguins)+
   geom_histogram(aes(x = body_mass_g), binwidth = 500, na.rm = TRUE) # Klassengröße 500. Versucht doch einmal andere Werte und schaut, was passiert!
 ```
@@ -89,7 +90,7 @@ Ein Boxplottdiagramm eignet sich sehr gut, um mehrere Verteilungen EINER Variabl
 
 Ein Beispiel:
 
-```{r ein Boxplotdiagramm, fig.height=5, fig.width=5}
+```{r ein_Boxplotdiagramm, fig.height=5, fig.width=5}
 
 ggplot(data = penguins)+
   geom_boxplot(aes(x = species,  # auf der x-Achse die Art
@@ -119,7 +120,7 @@ Bei Streudiagrammen kann ich zwei Variablen einer Einheit gegeneinander plotten 
 
 Wir tragen auf der X- und auf der Y-Achse metrische Daten ab. Das gehört zu den aesthetics-Elementen, deshalb tun wir die Info in die Klammern hinter aes(): 
 
-```{r Streudiagramm basics}
+```{r Streudiagramm_basics}
 
 ggplot(data = penguins)+
   geom_point(aes(x = bill_depth_mm, y = bill_length_mm), na.rm = TRUE)
@@ -128,7 +129,7 @@ ggplot(data = penguins)+
 
 Jetzt können wir damit wieder die Dinge tun, die wir mit dem Balkendiagramm gemacht hatten, also die Achsen beschriften, einen Titel vergeben und den Style ändern:
 
-```{r Streudiagramm mit Titel, mit x- und y-Achsenbeschriftung}
+```{r Streudiagramm_mit_titel}
 ggplot(data = penguins)+
   geom_point(aes(x = bill_depth_mm, y = bill_length_mm), na.rm = TRUE) + 
   labs(x =" Dicke des Schnabels",
@@ -144,7 +145,7 @@ Und die Farbe!
 Welches Merkmal, das ich in der Tabelle als Spalte aufgenommen habe, die Form der Punkte bestimmt, lege ich mit "shape" fest, die Farbe mit "color". Geben wir doch einmal die Pinguinarten als Form und ihr Geschlecht als Farbe an.
 
 
-```{r Streudiagramm mit schönen Punkten, fig.height=5, fig.width=5}
+```{r StreudiagrammSchoenePunkten, fig.height=5, fig.width=5}
 
 ggplot(data = penguins)+
   geom_point(aes(x = bill_depth_mm, y = bill_length_mm, shape = species, color = sex), na.rm = TRUE) + 
@@ -163,7 +164,7 @@ Da könnte man schon fast was interpretieren!
 Und wir sollten die Beschriftung der Legende wieder anpassen:
 
 
-```{r Streudiagramm Legendenbeschriftung, fig.height=5, fig.width=5}
+```{r Streudiagramm_Legendenbeschriftung, fig.height=5, fig.width=5}
 
 ggplot(data = penguins)+
   geom_point(aes(x = bill_depth_mm, y = bill_length_mm, shape = species, color = sex), na.rm = TRUE) + 

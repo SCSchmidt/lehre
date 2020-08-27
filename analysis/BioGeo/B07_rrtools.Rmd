@@ -1,8 +1,14 @@
 ---
-title: "RRtools"
-author: "Sophie C. Schmidt"
-date: "11 Juli 2020"
-output: html_document
+title: "RRtools - Tools für Reproduzierbare Wissenschaft"
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 bibliography: bsp_lit.bib
 csl: geobiology.csl
 ---
@@ -13,27 +19,36 @@ knitr::opts_chunk$set(echo = TRUE,
 
 library(bookdown)
 ```
+# RRtools - Tools für Reproduzierbare Wissenschaft
 
-rrtools ist von Ben Marwick et al entwickelt worden, um es einfach zu machen ein R-Paket zu erstellen, in dem man alle seine Daten, seine Analyse und sein "paper" zusammen ablegt. Dieses Paket kann man dann auch einfach anderen Menschen zur Verfügung stellen, damit diese die eigenen Analysen nachvollziehen können und es lassen sich unterschiedliche Versionen leicht über github kontrollieren: https://github.com/benmarwick/rrtools 
+rrtools ist von Ben Marwick et al entwickelt worden, um es einfach zu machen ein R-Paket zu erstellen, in dem man alle seine Daten, seine Analyse und sein "paper" zusammen ablegt. Dieses Paket kann man dann auch einfach anderen Menschen zur Verfügung stellen, damit diese die eigenen Analysen nachvollziehen können und es lassen sich unterschiedliche Versionen leicht über github kontrollieren: <https://github.com/benmarwick/rrtools> 
 
 Das Bereitstellen von Code und Daten (open access) ist wichtig für die Wissenschaftlichkeit einer Analyse, da sie so reproduzierbar wird (wenn jemand weder Code noch Daten hergibt, kann niemand jemals überprüfen, ob er/sie sich nicht doch verrechnet hat), aber auch für die Replizierbarkeit. Replizieren heißt, ich nehme die Methode der anderen und wende sie auf meine eigenen Daten an. Viele Artikel sind nicht sonderlich replizierbar, weil die Methode kaum im Detail beschrieben wird. Das ist frustrierend, wenn man die Methode und das Ergebnistoll fand und selber ausprobieren möchte.
 
 Deswegen ist Code teilen toll und wichtig. 
 
+**Für die Cloud-User ist es am einfachsten, ihr kopiert das Beispielpaket von mir! rrtools läuft nicht gut in der Cloud!** 
+
+#### für die nicht-Cloud nutzer:
 Also. Wir installieren rrtools. Weitere Infos dazu gibt es hier: https://github.com/benmarwick/rrtools. 
 
 ```{r rrtools installieren, eval = FALSE}
 
 devtools::install_github("benmarwick/rrtools") #devtools:: ruft das Paket devtools. ich brauch es nur einmal, deswegen habe ich es nicht mit library ins Boot geholt.
 
-library(rrtools) # wir laden das Paket und alles was zum Thema git kommt, ignorieren wir.
-# Wer Lust hat git kennen zu lernen, findet hier ein paar hilfreiche Links zu dem Thema: http://archaeoinformatics.net/git-how-not-to-learn-it/ 
 ```
 
+
 ```{r rrtools anwenden, eval=FALSE}
+library(rrtools) # wir laden das Paket und alles was zum Thema git kommt, ignorieren wir.
+
+# Wer Lust hat git kennen zu lernen, findet hier ein paar hilfreiche Links zu dem Thema: http://archaeoinformatics.net/git-how-not-to-learn-it/ 
+
 rrtools::use_compendium("C:/Hier/kommt/ein/Pfadname/pkgname") # wir definieren wo unser Paket liegt und wie es heißen wird "pkgname"
 ```
 Jetzt muss sich einfach so ein neues Projekt / Paket in Rstudio geöffnet haben. Oben rechts seht ihr den Namen eures Pakets. Oder ihr navigiert zu dem Pfad, in dem ihr eben das neue Projekt angelegt habt und öffnet es. 
+
+#### hier weiter für alle
 
 rrtools erstellt die Struktur eines "normalen" R-Pakets, wie man es von CRAN herunterladen und bei sich installieren kann. Wenn ihr jetzt rechts unter "Files" schaut, seht ihr eine DESCRIPTION-Datei. Hier kann man jetzt ein paar Metadaten zu dem Paket editieren:
 
@@ -60,7 +75,7 @@ Imports: bookdown
 
 ```
 
-Wenn wir jetzt mit rrtools weiter arbeiten wollen, müssen wir es noch einmal laden, weil wir in einem neuen Projekt unterwegs sind als ganz am Anfang. Deswegen: 
+Wenn wir jetzt mit rrtools weiter arbeiten wollen, müssen wir es noch einmal laden, weil wir in einem neuen Projekt unterwegs sind als ganz am Anfang. Deswegen für die nicht-Cloud-User: 
 
 ```{r rrtools-Dateistruktur aufbauen, eval = FALSE}
 library(rrtools)
@@ -138,5 +153,12 @@ Als csl habe ich für dieses Beispeil einen Ziterstil namens "Geoboiology" von <
 
 Wenn man dieses bib-file und die csl hat, kann man mit `citr` eine kleine GUI installieren, die einen interaktiv innerhalb des bib-files nach der Veröffentlichung suchen lässt, die man gerade zitieren möchte. Macht es einfacher, aber ist nicht unbedingt notwendig. Nach der Installation von citr muss Rstudio neu gestartet werden und dann findet man es unter "Addins" oben in der Leiste unterhalb "File"", "Edit", "Code", "View", "Plots"... in Rstudio.
 
+Toll ist auch, dass wenn ich R-Pakete zitieren möchte, ich mir die Informationen, wie sie zitiert werden sollen in einem Bibtex-Stil ausgeben lassen kann:
+
+```{r}
+citation("ggplot2")
+```
+
+Das kann ich dann in meine bib-Datei kopieren und ihm dort eine eigene ID geben. Seht ihr, dass das was bei dem Beispiel oben "legendre_2012" war, hier fehlt? Statt "Book{," würde ich z. B. "Book{ggplot2," schreiben und dann innerhalb meiner Texte immer auf mit @ggplot2 das Paket zitieren können. Das ist besonders wichtig bei den Paketen, die man von anderen kostenlos herunterladen konnte. Wenn man die Programmierer schon nicht in Geld bezahlt, sollte man sie wenigstens mit Reputation bezahlen.
 
 # Bibliographie

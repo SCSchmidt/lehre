@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 
-### Skalenniveaus
+# Skalenniveaus
 
 Wir hatten über **Skalenniveaus** geredet und ich hatte auch erwähnt, dass es dafür äquivalente in R gibt.
 
@@ -57,9 +57,11 @@ class(penguins)
 Der Output erzählt uns, dass es sich um eine Tabelle, einen `Data frame` handelt.
 
 Jetzt nehmen wir doch einmal nur eine Spalte der Tabelle, die erste, "species"
+
 ```{r}
 class(penguins$species)
 ```
+
 Ahja. Es ist ein Vektor mit factor - Daten, also mit Daten auf nominalem Skalenniveau. Finden wir doch einmal heraus, welche Werte in dieser Spalte stehen:
 
 ```{r}
@@ -130,7 +132,7 @@ class(penguins$body_mass_g)
 Das dumme ist nur, jetzt können wir damit keinen Mittelwert mehr errechnen:
 
 ```{r}
-mean(class(penguins$body_mass_g)
+mean(penguins$body_mass_g)
 
 ```
 Die Fehlermeldung ist eigentlich eindeutig. Wir haben den Computer angewiesen, mit Text zu rechnen. Da er nicht von alleine auf die Idee kommt, den Text in Zahlen umzuwandeln, gibt er uns den Fehler aus. 
@@ -151,3 +153,7 @@ Tatsächlich ist das relativ häufig notwendig, wenn man  versucht etwas umzuset
 
 Allgemeiner Tipp: Wenn nur ein Teil des Skripts funktioniert, immer erst einmal stehen lassen, kopieren und an der Kopie rumprobieren bis alles klappt. Wenn  man die Lösung irgendwann hat, kommentiert man sie sich und löscht alles, was vorher nicht geklappt hatte.
 
+
+### Zusammenfassung
+
+Was haben wir hier gerade gelernt? Wir haben gelernt, welche Skalenniveaus in R wie kodiert werden, wie man den Datentyp eines Objektes herausfindet und umwandelt. Das sind ganz grundlegende Dinge, die wir immer wieder brauchen werden!

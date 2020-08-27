@@ -1,16 +1,22 @@
 ---
 title: "Chi Quadrat Test"
-author: "Sophie C. Schmidt"
-date: "14 7 2020"
-output: html_document
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       eval=FALSE)
 ```
+# Der Chi-Quadrat-Test
 
-### Chi-Quadrat-Test
 
 Die erste Anwendung für den Chi-Quadrat-Test, die wir benutzen wollen, ist ähnlich wieder Binomialtest. ABER ich kann sie für deutlich mehr Werte anwenden als nur zwei. Aus Einfachheitsgründen machen wir das aber hier nochmal mit zwei Werten und einer einfachen Verteilung. Ich überprüfe, ob die beobachteten Werte von Wallnussbäumen, der Verteilung der Fläche auf Ebene und Hang entsprechen:
 
@@ -33,14 +39,13 @@ chi <- chisq.test(wn_b, p = Vert_fl)
 chi$expected
 chi$p.value
 ```
-Ich kann v.a. auch coolerweise innerhalb meines R-markdown-Dokumentes den P-Wert aufrufen. Wenn ich \` r chi\$p.value \` schreibe, bekomme ich:  `r chi$p.value`.
 
 
 Machen wir weiter mit etwas komplizierterem. Wie wär es wenn es mal mehr als nur zwei Ausprägungen der Variable geben dürfte? Ist doch langweilig, immer nur nach der Verteilung einer Variable zu schauen...
 
 Damit ändert sich auch unsere Fragestellung. Wir untersuchen jetzt, ob es einen Zusammenhang gibt zwischen zwei nominalen Variablen!
 
-### Chi Quadrat mit zwei oder mehr Variablen!
+## Chi Quadrat mit zwei oder mehr Variablen!
 
 Also wie wär es, wenn wir schauen, ob in unserem Pinguindatensatz bestimmte Arten auf bestimmten Inseln leben?
 
@@ -61,6 +66,8 @@ Oh oh. Das ist aber ein komisch hoher Chi-Wert. Ich bin ein bisschen skeptisch. 
 
 Da fällt doch was auf! Ja, einige Felder sind mit 0 belegt. Das geht in einem Chi-Quadrat-Test so gar nicht. Wir können ihn für diese Fragestellung nicht anwenden. Wenn ein Datensatz die Voraussetzungen für einen Test nicht erfüllt, kann man ihn nicht anwenden. Allerdings, wenn man auf den Datensatz schaut, sind die Zusammenhänge auch so sonnenklar.
 
+
+## Chi Quadrat: Auswahl treffen
 
 Dann gucken wir doch lieber, ob bei den Adelie-Pinguinen die Männchen oder Weibchen eine Insel bevorzugen:
 
@@ -111,7 +118,7 @@ Um die **Stärke** eines Zusammenhangs zu messen, kann ich **nicht** den p-Wert 
 
 Dafür nehme ich am besten Cramér's V... oder Cramérs Index (CI) oder K...  manchmal bennenen Statistiker Sachen unterschiedlich und das ist voll nervig. Aber egal. Alles das gleiche.
 
-Es gibt mehrere Pakete, die man installieren kann, die diese Berechnungen anstellen, in base r ist das leider nicht umgesetzt. Wir installieren "lsr", das Paket for *Learning Statitics with R*.
+Es gibt mehrere Pakete, die man installieren kann, die diese Berechnungen anstellen, in base r ist das leider nicht umgesetzt. Wer nicht die Cloud-Lösung nutzt, installiere "lsr", das Paket for *Learning Statitics with R*, alle anderen laden es bitte nur.
 
 ```{r vcd, eval=FALSE}
 install.packages("lsr", dependencies = TRUE)
@@ -129,11 +136,8 @@ Cramérs V kann Werte zwischen 0 und 1 annehmen. Ist V = 0, dann besteht kein Zu
 
 ## Herzlichen Glückwunsch!
 
-Wir haben mit dem binomial-Test geschaut, ob sich eine Variable einer bestimmten Verteilung entsprechend verhält und haben dafür einen Wahrscheinlichkeitswert errechnet.
 
-Wir haben den Chi-Quadrat-Test genutzt, um a) das gleiche wie mit dem binomial-Test zu überprüfen und b) die Abhängigkeit zweier Variablen zueinander zu untersuchen und auch dafür immer Warhscheinlichkeitswerte errechnet.
-
-Und wir haben jetzt die Stärke eines Zusammenhangs berechnet.
+Wir haben den Chi-Quadrat-Test genutzt, um die Abhängigkeit zweier Variablen zueinander zu untersuchen, nested und crossed designs kennengelernt und die Stärke eines Zusammenhangs berechnet.
 
 Super! 
 

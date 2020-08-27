@@ -224,7 +224,7 @@ Achtung! "allisonhorst/palmerpenguins" muss in Hochkommas, damit R nicht denkt, 
 
 Nach erfolgreicher Installation (roter Text heißt in R nicht, dass Fehler passiert sind!), müssen wir das Paket noch in unsere Sitzung ("R-session") laden, damit wir damit umgehen können:
 
-```{r}
+```{r, eval=TRUE}
 library(palmerpenguins)
 # Paketen einladen
 ```
@@ -232,7 +232,7 @@ library(palmerpenguins)
 Pakete müssen nur EINMAL installiert, aber in jeder Sitzung / nach jedem Neustart des Programms neu "geladen" werden. Die Befehle fürs Laden heißen entweder "library" oder "require", beides funktioniert gleich gut. In der Regel schreibt man die Ladebefehle für die Pakete, die man in einem Skript braucht, ganz nach oben, damit andere gleich am Anfang sehen, was sie vielleicht nach-installieren müssen. Wenn ich ein Skript nur für mich schreibe, setze ich es gern direkt vor die Funktion, für die ich das Paket brauche, damit ich weiß, aus welchem Paket die Funktion stammte. Meist erläutere ich das auch mit einem Kommentar.
 
 In dem Paket Palmerpenguins gibt es zwei Datensätze. Die rufen wir jetzt mit dem Befehl "data" auf und schauen uns den an.
-```{r}
+```{r, eval=TRUE}
 data(penguins)
 # Daten laden
 ```
@@ -246,9 +246,9 @@ View(penguins)
 
 Jetzt ist penguins in unserer Environment, also als Datensatz mit einer bestimmten Variable eingeladen. 
 
-Wir sehen jetzt folgende Spalten: `colnames(penguins)`. In einigen dieser Spalten steht manchmal ein schräggedrucktes *NA*. Diese Felder sind leer, die Information FEHLT. R kann gut mit leeren Feldern umgehen, gibt ihnen aber diese interne Bezeichnung. 
+Wir sehen jetzt folgende Spalten: `r colnames(penguins)`. In einigen dieser Spalten steht manchmal ein schräggedrucktes *NA*. Diese Felder sind leer, die Information FEHLT. R kann gut mit leeren Feldern umgehen, gibt ihnen aber diese interne Bezeichnung. 
 
-Wiederholen wir das von eben noch einmal. Welches Feld wird durch diesen Code angesprochen:
+Wiederholen wir das von eben noch einmal. Welches Feld wird durch diesen Code angesprochen?:
 ```{r}
 penguins_2_5 <- penguins[2,5]
 ```
@@ -299,6 +299,13 @@ mean(penguins$body_mass_g, na.rm = TRUE)
 
 So, jetzt sollten wir wissen, wie schwer der durschschnittliche Pinguin in unserem Datensatz ist.
 
+Eine weitere Sache, die ganz einfach ist, ist mit den Spalten zu rechnen. Wir können zum Bsp an den Datensatz `penguins` eine Spalte einfügen, bei der wird die Länge des Schnabels durch seine Breite teilen. Wir müssen es einfach nur definieren:
+
+```{r}
+penguins$bill_length_by_depth <- penguins$bill_length_mm/penguins$bill_depth_mm
+```
+
+Das ist super praktisch. 
 
 ## Daten nach Kriterien auswählen
 
@@ -357,7 +364,7 @@ chinstraps <- penguins %>%
 
 - Es gibt Funktionen und Objekte. Eine Funktion "macht etwas" mit einem Objekt, berechnet zB den Mittelwert einer Zahlenreihe (Zahlenreihe = Vektor =  Objekt).
 
-- mithilfe von Zuweisungen werden Variablen definiert, mit denen weiter gearbeitet werden kann.
+- mithilfe von Zuweisungen werden Variablen definiert, mit denen weiter gearbeitet und gerechnet werden kann.
 
 - Die Installation von Paketen erweitert die Funktionalitäten in R. CRAN-Pakete werden mit "install.packages("Paketname")" installiert.
 

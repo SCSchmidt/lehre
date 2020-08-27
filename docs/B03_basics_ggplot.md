@@ -1,3 +1,12 @@
+Visualisierungen von Daten
+==========================
+
+Eine ganz grundlegende Technik ist es, Daten, die man aufgenommen hat,
+auf verschiedene Arten zu visualisieren, um einen Überblick zu bekommen.
+In R gibt es mehrere Möglichkeiten. Ganz einfache “plots” (Grafiken)
+kann mit `base R` erstellen, aber schönere und komplexere Grafiken gehen
+am besten mit dem Paket `ggplot2`.
+
 ggplot- Logik!
 --------------
 
@@ -16,16 +25,16 @@ Erarbeiten wir uns das Schritt für Schritt.
 
 3 Dinge gibt es in jedem ggplot, die definiert werden müssen:
 
--   Welche Daten es benutzen soll ggplot(data = ),
+-   Welche Daten es benutzen soll ggplot(`data =`),
 
--   welche Art von Diagramm es bauen soll (geom) und
+-   welche Art von Diagramm es bauen soll (`geom`) und
 
--   wie das Diagramm aussehen soll (aes() von aesthetics), damit
+-   wie das Diagramm aussehen soll (`aes()` von aesthetics), damit
     überhaupt etwas entsteht, also z. B., was auf der x- und der y-Achse
     abgetragen werden soll.
 
-Alles andere danach sind reine Verschönerungsmaßnahmen. Mit “scales”
-lassen sich die Achsen und Legenden verändern, mit “theme”
+Alles andere danach sind reine Verschönerungsmaßnahmen. Mit `scales`
+lassen sich die Achsen und Legenden verändern, mit `theme`
 Hintergrundfarbe u. ä. (für mehr Infos siehe:
 <a href="https://r-intro.tadaa-data.de/book/visualisierung.html" class="uri">https://r-intro.tadaa-data.de/book/visualisierung.html</a>
 )
@@ -39,8 +48,8 @@ Ein Säulendiagramm eignet sich zur Darstellung nominaler und ordinaler
 Variablen. Ihr könnt es ja mal mit metrischen probieren, dann seht ihr
 schnell, warum das nicht gut ist.
 
-Als erstes müssen wir das Paket ggplot2 installieren
-(*install.packages*) und aufrufen, sowie die Daten, die wir nutzen
+Als erstes müssen wir das Paket ggplot2 installieren (*install.packages*
+für die Nicht-Cloud-User) und aufrufen, sowie die Daten, die wir nutzen
 wollen:
 
 ``` r
@@ -72,7 +81,7 @@ ggplot()+
   geom_bar(data = penguins, aes(x = species)) 
 ```
 
-![](./figures/unnamed-chunk-2-1.png)
+![](./figures/erstes_saeulendiag-1.png)
 
 Das + am Ende jeder Zeile sagt R, dass der Befehl in der nächsten Zeile
 weiter geht, ähnlich wie bei der pipe.
@@ -82,7 +91,7 @@ und einfach angezeigt.
 
 Aber schön ist es noch nicht.
 
-Geben wir den Achsen eine andere Beschriftung. Mit dem “labs”-Befehl
+Geben wir den Achsen eine andere Beschriftung. Mit dem `labs`-Befehl
 lassen sich die Achsenbeschriftungen und die Überschriften ändern:
 
 ``` r
@@ -93,9 +102,9 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/erstes%20Säulendiagramm%20mit%20Achsen-Titel-1.png)
+![](./figures/erstes_saeulendiag_achsen-1.png)
 
-Wir können auch die Säulen bunt einfärben. Der Befehl *fill* gibt den
+Wir können auch die Säulen bunt einfärben. Der Befehl `fill` gibt den
 Balken unterschiedliche Farben, je nach den Angaben in der Spalte, die
 ich spezifiziere (hier wieder Spezies):
 
@@ -107,7 +116,7 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/erstes%20Säulendiagramm%20und%20jetzt%20bunt!-1.png)
+![](./figures/erstes_saeulendiag_bunt-1.png)
 
 Vielleicht nervt euch auch, so wie mich, dass die Reihenfolge der Balken
 nicht nach Größe geordnet ist?
@@ -211,12 +220,12 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/unnamed-chunk-10-1.png)
+![](./figures/saeulendiag-1.png)
 
 “Aber ey!” werdet ihr sagen. Die Balken sind ja noch nicht in der
 richtigen Reihenfolge. Richtig. Aber jetzt können wir das machen, in dem
 wir eine ganz kleine Änderung einfügen: Wir ordnen x um, englisch
-“reorder”.
+“`reorder`”.
 
 ``` r
 ggplot()+ 
@@ -226,8 +235,8 @@ ggplot()+
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/unnamed-chunk-11-1.png) Die Ansage ist: Nimm als x species,
-aber geordnet nach der Größe von n. 
+![](./figures/ordnung-x-1.png) Die Ansage ist: Nimm als x species, aber
+geordnet nach der Größe von n. 
 
 Wunderbar.
 
@@ -235,14 +244,14 @@ Wunderbar.
 
 Jetzt gefällt mir aber nicht, das die Beschriftung so klein ist. Ändern
 wir das doch einmal. Beschriftungsgröße ist etwas, das zu den
-“Verschönerungsoptionen” gehört und in einem “theme” abgehandelt wird.
+“Verschönerungsoptionen” gehört und in einem `theme` abgehandelt wird.
 Wir öffnen also ein “theme”, spezifizieren darin, dass wir über die
-beiden Achsen-Titel reden wollen (axis.title) und die Elemente des
-Textes ändern (element\_text). Wir können dort angeben, dass der Text
-dickgedruckt werden soll (face = “bold”) und die Größe (size = 20). Dann
-machen wir doch das gleiche noch mit der Beschriftung der Werte auf den
-Achsen (axis.text). Hier ändern wir vllt nur die Größe. Und am Ende noch
-den Titel von dem ganzen
+beiden Achsen-Titel reden wollen (`axis.title`) und die Elemente des
+Textes ändern (`element_text`). Wir können dort angeben, dass der Text
+dickgedruckt werden soll (`face = "bold"`) und die Größe (`size = 20`).
+Dann machen wir doch das gleiche noch mit der Beschriftung der Werte auf
+den Achsen (`axis.text`). Hier ändern wir vllt nur die Größe. Und am
+Ende noch den Titel von dem ganzen
 
 ``` r
 ggplot()+ 
@@ -255,17 +264,17 @@ ggplot()+
         title = element_text(size = 25))
 ```
 
-![](./figures/unnamed-chunk-12-1.png)
+![](./figures/achsenbeschriftung-1.png)
 
 Ach, werdet ihr sagen, aber diese blöde Legende da rechts. Die gefällt
 mir nicht, sie benutzt den englischen Begriff “species”, das ist doch
 doof.
 
-Auch hierfür lässt sich leicht abhilfe schaffen. Die legende ist “scale”
-im englischen. Und wir wollen die Legende ansprechen, die sich mit der
-“Füllung” beschäftigt, dem was unter `fill =` definiert wurde und da es
-sich um eine “diskrete Variable” handelt, ändern wir den Legendennamen
-mit “scale\_fill\_discrete”.
+Auch hierfür lässt sich leicht abhilfe schaffen. Die Legende ist
+“`scale`” im englischen. Und wir wollen die Legende ansprechen, die sich
+mit der “Füllung” beschäftigt, dem was unter `fill =` definiert wurde
+und da es sich um eine “diskrete Variable” handelt, ändern wir den
+Legendennamen mit `scale_fill_discrete`.
 
 ``` r
 ggplot()+ 
@@ -279,7 +288,7 @@ ggplot()+
   scale_fill_discrete(name = "Pinguinart")
 ```
 
-![](./figures/unnamed-chunk-13-1.png)
+![](./figures/legendenbeschriftung-1.png)
 
 Jetzt ist nur noch die Schrift in der Legende zu klein. Schrift gehört
 wieder zu den “theme”-Aspekten, also bauen wir das doch einfach da ein.
@@ -299,10 +308,7 @@ Und wir könnten die Farbe des Textes gleich nochmal ändern…:
     scale_fill_discrete(name = "Pinguinart")
 ```
 
-![](./figures/unnamed-chunk-14-1.png)
-
-Herzlichen Glückwunsch! Das sieht doch langsam nach einer publizierbaren
-Grafik aus.
+![](./figures/schrift_aendern-1.png)
 
 ### x- und y vertauschen
 
@@ -325,7 +331,9 @@ können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt
   coord_flip()
 ```
 
-![](./figures/unnamed-chunk-15-1.png)
+![](./figures/flip_coord-1.png)
+
+Herzlichen Glückwunsch! Das waren jetzt echt eine Menge Informationen!
 
 Bilder sichern
 ==============
@@ -351,3 +359,17 @@ mit dpi. Super praktisch!
 (D. h. ich hab das Bild als png in einer Größe von 4x4cm abgespeichert.
 Es hat eine Auflösung von 300 dpi und liegt in dem Ordner, den ich
 angebe (Pfad) unter dem Namen “Plotname”.
+
+Zusammenfassung:
+================
+
+In diesem Kapitel ging es um die Grundlagen der Datenvisualisierung in
+R. Wir haben ein Paket namens ggplot2 kennengelernt, welches auf anhieb
+schön formatierte Grafiken erstellt. Es benötigt immer die Angabe des
+Datensatzes und in `aes`(thetics) die Angabe, welche Spalten auf welcher
+Achse abgetragen werden sollen. Mithilfe von `theme`-Angaben können wir
+die Schriftgrößen und -farben ändern, mithilfe con `scale`-Angaben, wie
+die Legende aussehen soll.
+
+Herzlichen Glückwunsch! Wir werden noch zig Grafiken mit ggplot
+erstellen und dieses Basiswissen immer wieder brauchen.

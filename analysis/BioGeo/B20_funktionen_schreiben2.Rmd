@@ -1,0 +1,116 @@
+---
+title: "Funktionen schreiben"
+author: "Sophie C. Schmidt"
+date: "8 Juli 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Option: Funktionen schreiben (falls noch Zeit ist)
+
+Wir haben jetzt schon Funktionen angewandt und an ein-zwei Stellen wurden Funktionen extra definiert (die getmode-Funktion und in dem Giraffen-Tutorial).
+
+Die Syntax dafür ist immer gleich:
+
+myfunction <- function(x) {
+das wird mit x passieren
+}
+
+Die neue Funktion heißt "myfunction", sie wird auf eine Variable x angewandt und was mit x passiert, wird in den geschweiften Klammern definiert. Stellen wir uns vor, ich möchte eine Funktion für die Berechnung des doppelten Mittelwertes. Die könnte z. B. so aussehen:
+
+```{r}
+zwei_m <- function(x){
+  2*sum(x)/length(x)
+  }
+```
+Ich rechne zwei mal die Summe von x (d.h. x muss ein Vektor sein) und teile dies durch die Länge des Vektors (Anzahl der Einträge). Ich nenne die Funktion zwei_m.
+
+zwei_m kann ich jetzt anwenden:
+
+```{r}
+
+library(palmerpenguins)
+data(penguins)
+
+
+
+zwei_m(penguins$body_mass_g)
+```
+
+Tja. Doof, ne.
+Das Problem kennen wir ja schon. Im Datensatz sind NA-Werte, aber die Funktion hat noch keine Möglichkeit damit umzugehen.
+
+Erweitern wir sie also!
+
+```{r}
+zwei_m <- function(x){ 
+  x <- na.omit(x)  # entferne aus x alle NA
+  2*sum(x)/length(x)
+  }
+```
+
+Testen wir es also:
+
+```{r}
+zwei_m(penguins$body_mass_g)
+
+```
+
+Yay!
+In der Funktion habe ich definiert, dass das, was ich eingebe, erst durch die Funktion `na.omit()` geschickt wird und sich dabei selbst überschreibt. Damit wird dann weitergerechnet und - taadaaaaa - es gibt kein Problem mehr!
+
+Ich kann also in der Definition einer Funktion, andere Funktionen aufrufen und mehrere Berechnungen "hintereinanderschalten".
+
+Es heißt, wenn man eine Abfolge von Berechnungen mehr als 3mal benutzt, sollte man sie in eine Funktion packen, damit man den Code nicht immer kopieren und einfügen muss. Außerdem kann man so Fehler vermeiden, weil man nur noch die Funktion aufrufen muss und nicht mehr den ganzen Code wiederholen.
+
+Ein weiteres kleines Beispiel. 
+
+Stellen wir uns vor, wir wollen shapiro-wilk für das Gewicht aller drei Spezies Pinguine rechnen. Das sind drei Funktionen, kann ich da eine draus machen? Und mir gemeinsam ausgeben lassen, welche Irrtumswahrscheinlichkeit bei jedem Test herauskommt?
+
+Jetzt ist es die Kunst des Programmierens, sich genau zu überlegen, welche Schritte man dafür benötigt.
+
+1. Die Funktion braucht als Eingabe etwas, das den Datensatz in seine Gruppen splittet und die Funktion braucht als Eingabe die zu testende Variable.
+
+2. Ich brauche die einzelnen Werte für die zu splittende Variable
+
+3. Ich muss die Gruppen erstellen
+
+4. den Test berechnen
+
+4. Ich muss die Teststatistik auslesen
+
+5. Ich muss dies in einer hübschen Tabelle ablegen.
+
+6. Die Tabelle mus ausgegeben werden.
+```{r}
+# 1. Eingabeparameter
+sw_nachgruppe <- function(df, gruppe, variable){ 
+# 2. die verschiedenen Werte des gruppiernden Merkmals abgreifen   
+  level <- levels(df[[gruppe]]) # levels zeigt, welche Werte in einem Faktor-Vektor vorkommen
+  for (i in level) { # für jeden der Werte in level
+  s <- subset(df, df[[gruppe]] == i) # filtere den Datensatz
+  s <- df[[variable]]
+  y <- shapiro.test(s) # berechne den Shapiro-Test auf die Variable
+  w <- summary(y) # lass dir die Werte ausgeben
+  d <- data.frame(i, w[2])# erstelle den Vektor, der jeder Gruppe einen p-WErt zuordnet
+  df_ausgabe <- rbind(df_ausgabe, d)
+  }
+  print(df_p)
+}
+
+
+sw_nachgruppe(df = penguins, gruppe = "species", variable = "bill_depth_mm")
+
+r <- summary(shapiro.test(variable[gruppe == i]))
+```
+
+Und hier merkt ihr sicherlich schon etwas: Wenn ich nicht weiß, was ich in eine Funktion eingeben muss, dann kann ich damit nicht arbeiten.
+
+Probieren wir das doch einmal aus mit dem Pinguindatensatz:
+
+
+Eine **Aufgabe:** Schreibt eine Funktion, die 
+
