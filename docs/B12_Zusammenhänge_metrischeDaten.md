@@ -224,10 +224,23 @@ leveneTest(data = penguins, body_mass_g ~ species, na.rm = TRUE)
     #> ---
     #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Ein sehr kleiner p-Wert sagt: Ja. Diese Gruppen haben alle die gleiche
+Ein sehr kleiner p-Wert sagt: Die Gruppen haben nicht die gleiche
 Varianz.
 
-Weiter damit zur einfaktoriellen ANOVA!
+Nehmen wir also ein anderes Beispiel, und zwar die Flügellänge. Haben da
+die Pinguinspezies eine ähnliche Varianz?
+
+``` r
+leveneTest(data = penguins, flipper_length_mm ~ species, na.rm = TRUE)
+```
+
+    #> Levene's Test for Homogeneity of Variance (center = median: TRUE)
+    #>        Df F value Pr(>F)
+    #> group   2  0.3306 0.7188
+    #>       339
+
+Jawohl! Der p-Wert ist sehr hoch, das heißt, wir können von
+Varianzhomogenität ausgehen.
 
 einfaktorielle ANOVA
 --------------------
@@ -241,21 +254,21 @@ zusammengefasst ausgeben:
 
 ``` r
 # eigentliche ANOVAberechnung
-res.aov <- aov(body_mass_g ~ species, data = penguins)
+res.aov <- aov(flipper_length_mm ~ species, data = penguins)
 
 # Zusammenfassung des Ergebnisses
 summary(res.aov)
 ```
 
-    #>              Df    Sum Sq  Mean Sq F value Pr(>F)    
-    #> species       2 146864214 73432107   343.6 <2e-16 ***
-    #> Residuals   339  72443483   213698                   
+    #>              Df Sum Sq Mean Sq F value Pr(>F)    
+    #> species       2  52473   26237   594.8 <2e-16 ***
+    #> Residuals   339  14953      44                   
     #> ---
     #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     #> 2 observations deleted due to missingness
 
-Höchstsignifikant! Das bedeutet? Die Art hat einen Einfluss auf das
-Gewicht der Pinguine.
+Höchstsignifikant! Das bedeutet? Die Art hat einen Einfluss auf die
+Flügellänge der Pinguine.
 
 Wer hätte es gedacht. ;-)
 
