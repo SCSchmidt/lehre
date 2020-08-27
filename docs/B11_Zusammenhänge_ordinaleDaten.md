@@ -28,7 +28,7 @@ für gebundene Stichproben berechnen.
 
 ``` r
 # zuerst einen neuen Datensatz nur mit der Art "Adelie" ersellen 
-adelie <- subset(penguins, species == "Adelie")
+adelie <- subset(penguins, penguins$species == "Adelie")
 
 # Testberechnung: wilcox.test(data = df, ordinale od. metrische Variable ~ gruppierender Faktor, paired = FALSE):
 
