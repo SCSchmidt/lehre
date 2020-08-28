@@ -259,7 +259,7 @@ wir fügen beide Variablen mit einem cbind (column bind) zusammen und setzen die
 library(yarrr)
 data(pirates)
 
-res.man <- manova(cbind(height, weight) ~ sex, data = pirates)
+res.man <- manova(cbind(pirates$height, pirates$weight) ~ pirates$sex, data = pirates)
 
 summary(res.man)
 ```
@@ -276,6 +276,7 @@ Erst wird uns "response height", also die Ergebnisse für die Größe und dann "
 Wie ist das mit der Spezies, den Pinguinen, ihrer Flipper-Length und dem Gewicht?
 
 **Aufgabe: Berechnet und interpretiert eine multivariate ANOVA für das Gewicht der Pinguine und ihrer Flossenlänge in Abhängigkeit von der Spezies!**
+
 
 
 
