@@ -22,6 +22,6 @@
 18. [Diskriminanzanalyse](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B18_diskriminanzanalyse.md)
 19. [Multidimensionale Skalierung](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B19_multidimensionaleSkalierung.md)
 
-20.[Funktionen schreiben](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B20_Funktionen_schreiben2.md)
+20. [Funktionen schreiben](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B20_Funktionen_schreiben2.md)
 
 ![](https://cdn.pixabay.com/photo/2018/03/27/12/16/analytics-3265840_960_720.jpg)
