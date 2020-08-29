@@ -279,8 +279,6 @@ Visualisierung 2D ist, ist es sinnvoll sich die einflussreichste
 Variable für die x-Achse rauszusuchen. Nehmen wir also Anzahl Tattoos.
 
 ``` r
-library(tidyverse)
-
 library(ggplot2)
   ggplot(data = pirates, 
          aes(tattoos , # logit-modell unabhängige Variable
