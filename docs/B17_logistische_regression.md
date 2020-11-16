@@ -139,7 +139,11 @@ Der Hinweis auf die Fisher scoring iterations hat etwas damit zu tun,
 wie das Modell geschätzt wurde (hier wurden 7 verschiedene Modelle
 ausprobiert, bis entschieden wurde, dass es so am besten passt).
 
+<a href="http://www.dwoll.de/r/gddmr_ed2/08_glm.pdf" class="uri">http://www.dwoll.de/r/gddmr_ed2/08_glm.pdf</a>
 
+<a href="https://stats.idre.ucla.edu/r/dae/logit-regression/" class="uri">https://stats.idre.ucla.edu/r/dae/logit-regression/</a>
+
+<a href="https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression" class="uri">https://stats.stackexchange.com/questions/86351/interpretation-of-rs-output-for-binomial-regression</a>
 
 ### Vorhersage
 
@@ -174,13 +178,13 @@ zwischen Semikolon und Komma im Code!
 ``` r
 library(glm.predict)
 
-predicts(model = mylogit, values = "1,0,-1;6;1", position = 1) # position = 1 bedeutet der erste Wert wird verändert
-#>   val1_mean val1_lower val1_upper val2_mean val2_lower val2_upper   dc_mean
-#> 1 0.4192692  0.2122369  0.6296763 0.2844838 0.11285436  0.5029646 0.1347854
-#> 2 0.2909084  0.1209305  0.5158347 0.1897502 0.05006363  0.4294668 0.1011583
-#>     dc_lower  dc_upper college_val1 college_val2 tattoos sex
-#> 1 0.02486765 0.2510481            1            0       6   1
-#> 2 0.02128634 0.1831817            0           -1       6   1
+predicts(model = mylogit, values = "-1,0,1;6;1", position = 1) # position = 1 bedeutet der erste Wert wird verändert
+#>   val1_mean val1_lower val1_upper val2_mean val2_lower val2_upper    dc_mean
+#> 1 0.1802163 0.05052913  0.4226773 0.2808460  0.1240667  0.5101015 -0.1006297
+#> 2 0.2871700 0.12240864  0.5124548 0.4274972  0.2354458  0.6527792 -0.1403272
+#>     dc_lower    dc_upper college_val1 college_val2 tattoos sex
+#> 1 -0.1822689 -0.02969555           -1            0       6   1
+#> 2 -0.2626172 -0.03100334            0            1       6   1
 
 # -1,0,1 -- beschreibt den ersten Parameter also college. Da für numerische Daten immer ein Anfangs und ein Endwert angegeben werden muss, muss ich hier "tricksen" und die Kategorie -1-0 und 0-1 erstellen.
 
@@ -210,16 +214,16 @@ gewesen scheint. Nehmen wir also die Tattoos als sich verändernden Wert.
 
 ``` r
 predicts(model = mylogit, values = "1;0-20,5;1", position = 2) 
-#>    val1_mean  val1_lower val1_upper val2_mean val2_lower val2_upper
-#> 1 0.01613901 0.003698829 0.04428309 0.2826846  0.1233799  0.4968663
-#> 2 0.28472018 0.122316381 0.51001373 0.9053074  0.8039179  0.9627371
-#> 3 0.90296616 0.794493446 0.96223614 0.9957492  0.9879252  0.9987977
-#> 4 0.99559395 0.989079964 0.99897851 0.9998142  0.9993815  0.9999746
-#>        dc_mean    dc_lower      dc_upper college tattoos_val1 tattoos_val2 sex
-#> 1 -0.266545585 -0.45807842 -0.1181958634       1            0            5   1
-#> 2 -0.620587169 -0.72759460 -0.4524822879       1            5           10   1
-#> 3 -0.092783026 -0.19499679 -0.0362849146       1           10           15   1
-#> 4 -0.004220241 -0.01034622 -0.0009960066       1           15           20   1
+#>   val1_mean  val1_lower val1_upper val2_mean val2_lower val2_upper      dc_mean
+#> 1 0.0170517 0.003823329 0.04653053 0.2884607  0.1188833  0.5032799 -0.271408974
+#> 2 0.2842527 0.132671535 0.51602979 0.9047031  0.7932566  0.9628316 -0.620450384
+#> 3 0.9033951 0.793361858 0.96184172 0.9958288  0.9884580  0.9987711 -0.092433606
+#> 4 0.9957941 0.988042597 0.99900876 0.9998195  0.9993405  0.9999776 -0.004025317
+#>      dc_lower      dc_upper college tattoos_val1 tattoos_val2 sex
+#> 1 -0.45830595 -0.1167411217       1            0            5   1
+#> 2 -0.72697044 -0.4372869765       1            5           10   1
+#> 3 -0.19729524 -0.0367149029       1           10           15   1
+#> 4 -0.01127789 -0.0009536791       1           15           20   1
 
 # 1 -- bedeutet diesmal, dass nur das College, das wir mit 1 kodiert haben, also CCCC, betrachten (der Wert verändert sich nicht)
 
@@ -275,8 +279,6 @@ Visualisierung 2D ist, ist es sinnvoll sich die einflussreichste
 Variable für die x-Achse rauszusuchen. Nehmen wir also Anzahl Tattoos.
 
 ``` r
-library(tidyverse)
-
 library(ggplot2)
   ggplot(data = pirates, 
          aes(tattoos , # logit-modell unabhängige Variable

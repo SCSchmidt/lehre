@@ -66,7 +66,7 @@ data(pirates)
 
 table(pirates$headband, pirates$college)
 
-e <- chisq.test(table(pirates$headband, pirates$sword.type))
+e <- chisq.test(table(pirates$headband, pirates$college))
 
 e
 ```
