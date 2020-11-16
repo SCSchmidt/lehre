@@ -1,58 +1,39 @@
----
-title: "Skalenniveaus in R"
-author:
-  - Sophie C. Schmidt:
-      email: s.c.schmidt@uni-koeln.de
-      correspondence: true
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  md_document:
-    variant: markdown_github
-always_allow_html: true
----
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,
-                      eval = FALSE)
-```
-
-
-# Skalenniveaus
+Skalenniveaus
+=============
 
 Wir hatten über **Skalenniveaus** geredet und ich hatte auch erwähnt, dass es dafür Äquivalente in R gibt.
 
-Der class-Befehl zeigt, welches Datenformat die Daten haben. 
+Der class-Befehl zeigt, welches Datenformat die Daten haben.
 
-- `boolean`: Das sind TRUE / FALSE - Angaben, man braucht sie häufig innerhalb von Funktionen, um bestimmte Parameter einzustellen
+-   `boolean`: Das sind TRUE / FALSE - Angaben, man braucht sie häufig innerhalb von Funktionen, um bestimmte Parameter einzustellen
 
-- `factor` und `character` sind nominal, wobei `character` Buchstaben enthalten muss, `factor` nicht. Ein `factor` hat `level`, das sind die Werte, die in dem Vektor, der die `class factor` hat, enthalten sind. `character` sind nicht auf diese Weise "kategorisiert".
+-   `factor` und `character` sind nominal, wobei `character` Buchstaben enthalten muss, `factor` nicht. Ein `factor` hat `level`, das sind die Werte, die in dem Vektor, der die `class factor` hat, enthalten sind. `character` sind nicht auf diese Weise "kategorisiert".
 
-- `ordered factor` ist ordinal
+-   `ordered factor` ist ordinal
 
-- `numeric` und `integer`: metrisch
+-   `numeric` und `integer`: metrisch
 
- - Es gibt zwei Typen bei den metrischen Daten, nämlich: `integer` (ganze Zahlen) und `double` (Kommazahlen, Dezimalzahlen)
+-   Es gibt zwei Typen bei den metrischen Daten, nämlich: `integer` (ganze Zahlen) und `double` (Kommazahlen, Dezimalzahlen)
 
 Diese Typen findet man mit dem Befehl `typeof` heraus.
 
 Um das alles einmal auszuprobieren, nehmen wir archäologische Datensätze:
 
 Zuerst laden wir das Paket (falls es nocht nicht installiert wurde, holt das mit `install.packages("archdata")` nach):
-```{r}
+
+``` r
 library(archdata)
 ```
 
 und den Datensatz "Bornholm"
 
-```{r}
+``` r
 data("Bornholm")
 ```
 
-
 Schaut einmal in die Beschreibung des Datensatzes "Bornhom". Das geht mit
 
-```{r}
+``` r
 ?Bornholm
 ```
 
@@ -62,34 +43,31 @@ Um was für Daten handelt es sich? Wer hat sie erhoben? Wie wurden sie publizier
 
 Schauen wir uns einmal, wie R den ganzen Datensatz organisiert. Der "class"-Befehl zeigt uns das folgende:
 
-```{r Skalenniveaus mit class-Funktion herausfinden}
+``` r
 class(Bornholm)
-
 ```
 
 Der Output erzählt uns, dass es sich um eine Tabelle, einen `Data frame` handelt.
 
 Schauen wir uns diese Tabelle einmal an:
 
-```{r}
+``` r
 View(Bornholm)
 ```
 
-
 Jetzt nehmen wir doch einmal nur eine Spalte der Tabelle, die "Site"
 
-```{r}
+``` r
 class(Bornholm$Site)
-
 ```
 
 Ok. Was bedeutet das?
 
-Character beschreibt, dass es sich um Text handelt, der aber nicht in Gruppen klassifziert wird. Wenn ihr euch das genauer anschaut, erkennt ihr auch warum: Alle sites kommen nur eimal vor. Eine Gruppierung wäre hier Quatsch. 
+Character beschreibt, dass es sich um Text handelt, der aber nicht in Gruppen klassifziert wird. Wenn ihr euch das genauer anschaut, erkennt ihr auch warum: Alle sites kommen nur eimal vor. Eine Gruppierung wäre hier Quatsch.
 
 Schauen wir uns ein anderes Bsp an:
 
-```{r}
+``` r
 class(Bornholm$Period)
 ```
 
@@ -99,60 +77,59 @@ Richtig!
 
 Allerdings sind die Perioden mit 1a, 1b, 2a, 2b etc kodiert. R sortiert diese Kategorien bei `factor`-Datensätzen "per default" alphabetisch. Das wäre also schon die richtige Reihenfolge. Trotzdem können wir das noch einmal explizit machen:
 
-```{r ordinales Skalenniveau}
+``` r
 # Weil die aphabetische Reihenfolge schon inhärent ist, muss ich keine Reihenfolge angeben, in der ich sie ordnen möchte, sondern nur, dass ich sie ordnen möchte:
 
 Bornholm$Period <- ordered(Bornholm$Period) 
-
 ```
+
 Jetzt schaut einmal nach: Was hat sich verändert?
 
-```{r}
+``` r
 class(Bornholm$Period)
 ```
 
 Und wie sieht die Ordnung aus? Mit dem "levels"-Befehl kann ich die Kategorien einer factor-Datenreihe anzeigen lassen:
 
-```{r}
+``` r
 levels(Bornholm$Period)
 ```
 
 Weil ich es kann, bringe ich jetzt noch einmal Unordnung in diese Reihenfolge:
 
-```{r Skalenniveau: Unordnung in der Reihenfolge}
-
+``` r
 Bornholm$Period <- ordered(Bornholm$Period, levels = c("3a", "1b", "1a", "2c", "3b", "2a", "2b"))
 ```
 
 Und überprüfe, was passiert:
-```{r}
+
+``` r
 class(Bornholm$Period)
 levels(Bornholm$Period)
 ```
 
-Was für eine Macht!  Das Chronologie-System ist zerstört!
+Was für eine Macht! Das Chronologie-System ist zerstört!
 
-Und noch etwas kann ich:  Zahlen in Text umwandeln!
+Und noch etwas kann ich: Zahlen in Text umwandeln!
 
 Manchmal ist das sinnvoll, nicht jede Zahl als Zahl zu verstehen, sondern als Abkürzung für eine Kategorie. Das geht so:
 
 Zuerst schau ich, dass ich einen Zahlendatensatz habe (nehmen wir die Spalte "Number" dafür):
-```{r}
-class(Bornholm$Number)
 
+``` r
+class(Bornholm$Number)
 ```
 
 Dann diese mit "as.character" umwandeln und noch einmal überprüfen:
-```{r}
+
+``` r
 Bornholm$Number <-  as.character(Bornholm$Number)
 class(Bornholm$Number)
 ```
 
-
 Aber, naja, wir wollen ja nicht, dass wir gleich falsche Ergebnisse bekommen, deshalb benutzen wir jetzt folgenden Trick:
 
-Der Vektor Bornholm\$Period wurde von uns mit der falschen Reihenfolge überschrieben. 
-Und der Bornholm\$Number mit einem anderen Datentyp als er vorher war.
+Der Vektor Bornholm$Period wurde von uns mit der falschen Reihenfolge überschrieben. Und der Bornholm$Number mit einem anderen Datentyp als er vorher war.
 
 Was passiert, wenn wir einfach die Daten noch einmal neu einladen?
 
@@ -162,106 +139,97 @@ Ha! Damit überschreiben wir die falsch geordneten Daten einfach wieder. Solange
 
 Und man braucht das alles nicht neu zu schreiben oder so, nein, man scrollt in seinem Skript-Dokument einfach nach oben und wiederholt den Befehl, der da noch irgendwo steht.
 
-Tatsächlich ist das relativ häufig notwendig, wenn man  versucht etwas umzusetzen, was man noch nie gemacht hat und ein paar unterschiedliche Dinge ausprobieren möchte.... muss...  ;-) 
+Tatsächlich ist das relativ häufig notwendig, wenn man versucht etwas umzusetzen, was man noch nie gemacht hat und ein paar unterschiedliche Dinge ausprobieren möchte.... muss... ;-)
 
-Allgemeiner Tipp: Was funktioniert, immer erst einmal stehen lassen, kopieren und an der Kopie rumprobieren bis es klappt. Wenn  man die Lösung irgendwann hat, kommentiert man sie sich und löscht alles, was vorher nicht geklappt hatte.
+Allgemeiner Tipp: Was funktioniert, immer erst einmal stehen lassen, kopieren und an der Kopie rumprobieren bis es klappt. Wenn man die Lösung irgendwann hat, kommentiert man sie sich und löscht alles, was vorher nicht geklappt hatte.
 
-## Wiederholung
+Wiederholung
+------------
 
 Machen wir den Spaß noch einmal mit einem anderen Datensatz namens "BACups"
 
-1. Einladen:
-```{r}
+1.  Einladen:
+
+``` r
 data("BACups")
 ```
 
-2. Informationen dazu lesen:
+1.  Informationen dazu lesen:
 
-```{r}
+``` r
 ?BACups
 ```
 
+1.  Schauen wir uns den Gesamten Datensatz an:
 
-3. Schauen wir uns den Gesamten Datensatz an: 
-```{r}
+``` r
 class(BACups)
-
 ```
+
 Was für eine Art des Datensatzes ist es?
 
 Jetzt nehmen wir doch einmal nur eine Spalte der Tabelle, die erste, "RD", das heißt Rim Diameter, also den Randumfang:
 
-```{r}
+``` r
 class(BACups$RD)
 ```
 
 Es ist ein `numeric` Vektor, das heißt ein Vektor auf metrischem Skalenniveau. Welchen Typs dieser Datensatz ist, könne wir, wie oben erwähnt mit `typeof` herausfinden.
 
-```{r}
+``` r
 typeof(BACups$RD)
 ```
 
 Was bedeutet "double" noch einmal?
 
+**Aufgabe**: Welches Skalenniveau haben die Werte in der Spalte "Phase" und "H"?
 
-**Aufgabe**: Welches Skalenniveau haben die Werte in der Spalte "Phase" und "H"? 
+Speichern und Einladen von Daten außerhalb von R-Paketen
+========================================================
 
-# Speichern und Einladen von Daten außerhalb von R-Paketen
-
-## Speichern von Daten
+Speichern von Daten
+-------------------
 
 Es gibt unterschiedliche Möglichkeiten, Daten zu speichern. Eine davon ist als R-eigenes Format "RData". Der Befehl `save(data, file = "data.RData")` kann z.B. für den Datensatz BACups so genutzt werden:
 
-```
-save(BACups, "dataBACups.RData")
-```
+    save(BACups, "dataBACups.RData")
 
 Auch hier kann statt nur den Namen der Datei, die ich erstelle (im Bsp "dataBACups.RData") ein bestimmter Pfad angegeben werden.
 
 Man kann Datensätze als csv und als excel-Dateien speichern.
-```
- write.csv(data, "Pfad/wo/gespeichet/werden/soll/Name.csv")
-```
+
+     write.csv(data, "Pfad/wo/gespeichet/werden/soll/Name.csv")
 
 Für Excel-Daten muss ein extra Paket installiert werden, namens "xlsx"
 
-```
-install.packages("xlsx")
-library(xlsx)
-```
+    install.packages("xlsx")
+    library(xlsx)
 
 Die Syntax ist dann vergleichbar zu csv:
 
-```
-write.xlsx(data, "Pfad/wo/gespeichet/werden/soll/Name.xls, sheetName = "Sheet1")
-```
+    write.xlsx(data, "Pfad/wo/gespeichet/werden/soll/Name.xls, sheetName = "Sheet1")
 
+Einladen von selbsterstellten Tabellendaten
+-------------------------------------------
 
-## Einladen von selbsterstellten Tabellendaten 
+Für jede Art des Datenformats gibt es Möglichkeiten Daten zu laden.
 
-Für jede Art des Datenformats gibt es Möglichkeiten Daten zu laden. 
+1.  CSV-Dateien: comma-separated values, also Tabellen, deren Spalteneinträge durch Kommas voneinander getrennt werden, sind die einfachsten und häufigst die beste Möglichkeit Daten zu speichern. Sie werden eingeladen mit dem Befehl `read.csv2("Pfad/zu/meinen/Daten")`
 
+2.  Excel-Daten: Für Excel-Daten muss ein extra Paket installiert werden, namens "xlsx"
 
-1. CSV-Dateien: comma-separated values, also Tabellen, deren Spalteneinträge durch Kommas voneinander getrennt werden, sind die einfachsten und häufigst die beste Möglichkeit Daten zu speichern. Sie werden eingeladen mit dem Befehl `read.csv2("Pfad/zu/meinen/Daten")`
+<!-- -->
 
-2. Excel-Daten: Für Excel-Daten muss ein extra Paket installiert werden, namens "xlsx"
+    install.packages("xlsx")
+    library(xlsx)
 
-```
-install.packages("xlsx")
-library(xlsx)
-```
+Danach können die Daten so eingeladen werden: `mydata <- read.xlsx("Pfad/zu/meinen/Daten/myexcel.xlsx", 1)`, wobei 1 bedeutet, dass die erste Tabelle in der Arbeitsmappe "myexcel" eingeladen wird. Man kann auch den Namen der Tabelle angeben: `mydata <- read.xlsx("c:/myexcel.xlsx", sheetName = "mysheet")`
 
-Danach können die Daten so eingeladen werden: `mydata <- read.xlsx("Pfad/zu/meinen/Daten/myexcel.xlsx", 1)`, wobei 1 bedeutet, dass die erste Tabelle in der Arbeitsmappe "myexcel" eingeladen wird. Man kann auch den Namen der Tabelle angeben: `mydata <- read.xlsx("c:/myexcel.xlsx", sheetName = "mysheet")` 
+1.  RData
 
-3. RData
+RData-Daten können mit einem einfachen `load()`-Befehl wieder eingeladen werden:
 
-RData-Daten können mit einem einfachen `load()`-Befehl wieder eingeladen werden: 
-
-```
-load("dataBACups.Rdata")
-```
-
-
+    load("dataBACups.Rdata")
 
 ### Zusammenfassung
 
