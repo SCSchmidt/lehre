@@ -88,11 +88,11 @@ sich eignen würden.
 Euch ist vielleicht aufgefallen, dass es für den Modus keine Funktion in
 R zu geben scheint. Keine Ahnung warum. Aber man findet online schlaue
 Menschen, die eine Funktion geschrieben haben, mit der man ganz genauso
-den Modus abfragen kann, wie man den Median abfragen kann. Diese
-Funktion kann man einmal markieren und mit Strg+Enter ausführen und
-bekommt dann unter Environment und Functions angezeigt, dass man eine
-Funktion “getmode” erstellt hat. JETZT kann man sie anwenden, wie unten
-im Bsp.
+den Modus abfragen kann, wie man den Median abfragen kann. Diese gesamte
+Funktionsbeschreibung von getmode bis zur letzten geschweiften Klammer
+kann man einmal markieren und mit Strg+Enter ausführen und bekommt dann
+unter Environment und Functions angezeigt, dass man eine Funktion
+“getmode” erstellt hat. JETZT kann man sie anwenden, wie unten im Bsp.
 
 ``` r
 # Funktion schreiben
@@ -290,8 +290,36 @@ ggplot(data = EndScrapers)+
 
 ![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/zweites%20Säulendiagramm-1.png)
 
+Um den Hinweis von Arne nachzugehen:
+
+So geht das mit die Säulen sollen nebeneinander stehen:
+
+``` r
+ggplot(data = EndScrapers)+
+  geom_col(aes(x = Site, fill = Width, y = Freq), position = "dodge")+ 
+  labs(y = "Häufigkeit",
+       title = "Anzahl der Steinartefakte nach Breite und Fundort")+
+  theme_bw() 
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
 1.  Erstellt ein neues Säulendiagramm. Nehmt dafür die Werte von
     EndScrapers und erstellt ein Diagramm, in dem die Häufigkeit
     retuschierter Steinwerkzeuge auf den beiden Fundstellen Castanet A
     und Ferrassie H dargestellt werden. Beschriftet die Legende um, so
     dass sie deutsch wird.
+
+Abspeichern von Bildern
+=======================
+
+Wenn ggplot genutzt wurde, um eine Grafik zu erstellen, kann man direkt
+danach den ggsave-Befehl nutzen. Er speichert immer das letzte erstellte
+ggplot ab. Man kann eine Reihe von Argumenten hinzugeben, wie die
+DPI-Anzahl, Größe in Breite und Höhe. Das wichtigste ist jedoch der Name
+der Datei, die erstellt werden soll mitsamt der richtigen Endung (jpg
+oder png o.ä.)
+
+``` r
+ggsave("mein_schönestes_Balkendiagramm.png", dpi = 300, width = 10, height = 10)
+```
