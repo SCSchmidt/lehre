@@ -1,0 +1,297 @@
+Pakete
+------
+
+Als allererstes laden wir die Pakete, die wir benötigen (der
+library-Befehl).
+
+Falls sie noch nicht installiert sind, muss der Befehl zur
+Paketinstallation ausgeführt werden. Danach ist das Paket auf dem System
+installiert und müsste (zumindest theoretisch) nie wieder installiert
+werden.
+
+    install.packages("ggplot2")
+    install.packages("archdata")
+
+Dann das “laden” oder “aktivieren”:
+
+``` r
+library(archdata) 
+```
+
+    ## Warning: package 'archdata' was built under R version 4.0.2
+
+``` r
+library(ggplot2) 
+```
+
+Das Thema “Daten laden” kennen wir schon:
+
+``` r
+data("BACups") # das geht, weil das Paket archdata geladen wurde und die Daten dort vorliegen
+
+View(BACups) #so kann ich mir die Tabelle angucken. Ich kann sie auch rechts unter dem Environments-Tab und "Data" anklicken
+```
+
+Lagemaße
+--------
+
+Lagemaße sind einfache Berechnungen von Werten, die uns etwas über die
+Verteilung der Werte aussagen soll. Am bekanntesten ist der Mittelwert,
+wir berechnen jedoch auch Modus, Median, Standardabweichung und Varianz.
+
+-   Der Mittelwert berechnet sich in dem man alle Werte zusammenrechnet
+    und durch die Anzahl der Werte teilt.
+-   Der Median ist der Wert, der, wenn ich meine Wertereihe nach Größe
+    ordne, den Datensatz in genau zwei Hälften teilt.
+-   Der Modus ist der Wert, der am häufigsten vorkommt.
+-   Die Standardabweichung sagt, wie wie stark die Streuung der Werte um
+    den Mittelwert ist. Sie ist die Wurzel aus der Varianz.
+-   Die Varianz ist die “mittlere quadratische Abweichung der Werte um
+    den Mittelwert”. Sie wird quadriert zur Berechnung, damit die Plus-
+    und Minusabweichungen um den Mittelwert sich nicht aufheben. Dadurch
+    ist die Zahl aber immer sehr groß. Die Standardabweichung ist für
+    uns einfacher zu verstehen, weil sie diese Quadrierung wieder
+    aufhebt.
+
+Mit einem “\<-” wird ein Wert, den ich berechne einer Variablen
+zugewiesen, mit der ich später weiterrechnen kann. Das ist häufig eine
+gute Idee. Das Dollar-Zeichen bezeichnet den vector (“die Spalte”) eines
+data frames (“der Tabelle”). Also “BACups$RD” ist die Spalte RD in der
+Tabelle BACups.
+
+``` r
+RD_mean <- mean(BACups$RD) # Hiermit wird der Mittelwert berechnet. (alle Werte zusammengerechnet / Anzahl der Werte)
+RD_med <- median(BACups$RD) #das ist die Berechnung des Medians. 
+table(BACups$RD) #hiermit kann man sich anschauen, wie häufig jeder Wert vorkommt (was der Modus ist)
+```
+
+    ## 
+    ##  6.6    8  8.4  8.5  8.7  8.8    9  9.5  9.8   10 10.1 10.5 10.7 10.8   11 11.1 
+    ##    1    2    1    1    1    1    5    3    1    1    2    2    1    1    3    1 
+    ## 11.5 11.7   12 12.1 12.9   13 13.2 13.3   15 15.2 15.5 15.8 17.2   18 18.3 18.5 
+    ##    1    1    1    1    1    1    1    1    2    1    1    1    1    1    1    3 
+    ##   19 19.1 19.5   20 20.8   22   24   29 29.5 
+    ##    4    1    3    1    1    1    1    1    1
+
+``` r
+RD_sd <- sd(BACups$RD) #Standardabweichung
+RD_var <- var(BACups$RD) # Varianz
+RD_range <- range(BACups$RD) # kleinster und größter Wert
+```
+
+**Aufgabe**: Eine andere Variablen ebenso erkunden. Unklar welche?
+Schaut euch die Tabelle BACups mit `View()` an und entscheidet, welche
+sich eignen würden.
+
+### Modus-Funktion
+
+Euch ist vielleicht aufgefallen, dass es für den Modus keine Funktion in
+R zu geben scheint. Keine Ahnung warum. Aber man findet online schlaue
+Menschen, die eine Funktion geschrieben haben, mit der man ganz genauso
+den Modus abfragen kann, wie man den Median abfragen kann. Diese
+Funktion kann man einmal markieren und mit Strg+Enter ausführen und
+bekommt dann unter Environment und Functions angezeigt, dass man eine
+Funktion “getmode” erstellt hat. JETZT kann man sie anwenden, wie unten
+im Bsp.
+
+``` r
+# Funktion schreiben
+getmode <- function(v) { # die Funktion heißt getmode und wird auf einen Vektor v angewendet
+   uniqv <- unique(v) # die einzelnen Werte des Vektors (ohne Dopplungen) werden in einem Vektor uniqv gesammelt 
+   uniqv[which.max(tabulate(match(v, uniqv)))] # welcher maximale Wert entsteht, wenn ich zähle, wie häufig die Werte von uniqv in v vorkommen (das ist der Modus)
+}
+
+mod_RD <- getmode(BACups$RD) # Modus 
+```
+
+Überprüft doch einmal, ob ihr mit der getmode genau den gleichen Modus
+bekommt, wie ihr selber mit table gefunden habt! :-)
+
+ggplot
+------
+
+ggplot wurde von Hadley Wickham entwickelt, ist ein Paket mit vielen
+Funktionen zur Visualisierung von Daten und folgt einer “Grammatik der
+Diagramme”.
+
+Erarbeiten wir uns das Schritt für Schritt.
+
+Wir müssen dem Programm sagen: Welche Daten es benutzen soll (data = ),
+welche Art von Diagramm es bauen soll (geom\_xxx) und wie das Diagramm
+aussehen soll (aes von aesthetics), damit überhaupt etwas entsteht. Dies
+sind in der Regel die ersten drei Layer, die man in ggplot definiert.
+Alles andere danach sind reine Verschönerungsmaßnahmen. ;-)
+
+Die verschiedenen “Layer”-Befehle werden untereinander geschrieben und
+jeweils mit einem + verbunden.
+
+### ein Säulendiagramm
+
+Ein Säulendiagramm eignet sich zur Darstellung nominaler und ordinaler
+Variablen. Ihr könnt es ja mal mit metrischen Probieren, dann seht ihr
+schnell, warum das nicht gut ist.
+
+Im folgenden Code bezieht sich `data =` auf den Datensatz mit dem ich
+arbeite, der ist meist ein dataframe. Wir nehmen wieder BACups.
+
+`geom_bar` bedeutet, ich hätte gern ein Balkendiagramm. Innerhalb der
+Klammern von `aes()` (aesthetic) definiere ich, dass auf der X-Achse die
+Phasen abgetragen werden (`x = Phase`).
+
+``` r
+ggplot(data = BACups)+ 
+  geom_bar(aes(x = Phase)) #
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/erstes%20Säulendiagramm-1.png)
+
+Jetzt kann man viele Dinge verschönern
+
+1.  B. Den Achsen eine andere Beschriftung geben:
+
+``` r
+ggplot(data = BACups)+ 
+  geom_bar(aes(x = Phase))+
+  labs(y = "Häufigkeit", #der y-Achse einen neuen Namen geben
+       title = "Vorkommen der zwei Phasen") # dem ganzen Plot eine Überschrift geben
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/erstes%20Säulendiagramm%20mit%20Achsen-Titel-1.png)
+
+Oder einen anderen Look wählen (ein anderes Thema):
+
+``` r
+ggplot(data = BACups)+ 
+  geom_bar(aes(x = Phase))+ 
+  labs(y = "Häufigkeit",
+       title = "Vorkommen der zwei Phasen")+
+  theme_bw() #theme_classic, theme_grey, theme_minimal sind andere Versionen. Probiert sie aus!
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/erstes%20Säulendiagramm%20mit%20anderem%20Thema-1.png)
+
+Oder die Säulen bunt einfärben:
+
+``` r
+ggplot(data = BACups)+ #data = bezieht sich auf den Datensatz mit dem ich arbeite, meist ein dataframe
+  geom_bar(aes(x = Phase, fill = Phase))+ # fill gibt den Balken unterschiedliche Farben, je nach den Angaben in der Spalte Phase
+  labs(y = "Häufigkeit",
+       title = "Vorkommen der zwei Phasen")+
+  theme_bw() 
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/erstes%20Säulendiagramm%20und%20jetzt%20bunt!-1.png)
+
+Das war jetzt aber all das mit nur zwei Säulen. Fast ein bisschen
+langweilig. Ein komplexerer Datensatz ist “DartPoints”. Schaut in der
+Hilfe nach, was für Daten in diesem Datensatz liegen! Worum geht es? Wer
+hat die Daten erhoben? Was bedeuten die verschiedenen Variablen?
+
+Als nächstes visualisieren wir mit diesem Code die Häufigkeiten, wie oft
+die verschiedenen Basenformen (Base.Sh) bei den unterschiedlichen
+Spitzen-Typen vorkommen (Name). Wir färben die unterschiedlichen
+Basenformen ein, wir “füllen” den Balken also entsprechend (`fill =`),
+
+``` r
+data("DartPoints")
+
+ggplot(data = DartPoints)+
+  geom_bar(aes(x = Name, fill = Base.Sh))
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/unnamed-chunk-3-1.png)
+
+Die Einfärbung ist jetzt eine eigene Variable. Wir sollten die
+Beschriftung der Legende ändern, es weiß ja sonst niemand was “E”, “I”
+oder “R” zu bedeuten hat. Dafür nutzen wir den Befehl
+`scale_fill_discrete`. “Scale” bedeutet Legende. Mit “fill” sagen wir,
+wir wollen die Legende, in der es um die Einfärbung geht, bearbeiten und
+zwar ist es eine diskrete Skala (weil alle nominalen Daten diskret
+sind).
+
+Mit `labels =` teilen wir R mit, wie wir die in alphabetischer
+Reihenfolge gegebenen Werte neu benennen möchten. Das `c()` hat R
+angezeigt, dass sie alle zusammen gehören und kein neuer Befehl
+gestartet wurde. Text muss in Hochkommas geschrieben werden!
+
+``` r
+ggplot(data = DartPoints)+
+  geom_bar(aes(x = Name, fill = Base.Sh))+
+  scale_fill_discrete(labels = c("Excurvate", "Incurvate", "Recurvate", "Straight", "not given") )
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/unnamed-chunk-4-1.png)
+
+Wir können mit dem gleichen `scale_fill_discrete` noch mehr ändern. Zum
+Bsp den Namen der Legende
+
+``` r
+ggplot(data = DartPoints)+
+  geom_bar(aes(x = Name, fill = Base.Sh))+
+  scale_fill_discrete(labels = c("Excurvate", "Incurvate", "Recurvate", "Straight", "not given"),
+                      name = "Basenform")
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/unnamed-chunk-5-1.png)
+
+Möchten wir die Farben ändern, ist es das einfachste den Befehl
+`scale_fill_manual` zu nutzen, der die anderen Argumente auch bedienen
+kann. Das zusätzliche Argument für die neuen Farbewerte ist `value`. Es
+gibt sehr viele Möglichkeiten, Farben in R auszudrücken, als html-Code,
+YMCK oder auch durch beschreibende Labels. Im Bsp definieren wir zuerst
+die Farben, die wir nutzen möchten als html-Farben und weisen sie einem
+Vektor zu:
+
+``` r
+okabe <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2") # Farbenblindengerechte Farben
+```
+
+``` r
+ggplot(data = DartPoints)+
+  geom_bar(aes(x = Name, fill = Base.Sh))+
+  scale_fill_manual(labels = c("Excurvate", "Incurvate", "Recurvate", "Straight", "not given"),
+                      name = "Basenform",
+                      values = okabe)
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/unnamed-chunk-7-1.png)
+
+Ich finde es ja irritierend, dass der Typ in diesem Diagramm “Name”
+genannt wird. Und “count” gefällt mir auch nicht. Wir können die
+Benennung der Achsen mit dem Befehl `labs()` ändern:
+
+``` r
+ggplot(data = DartPoints)+
+  geom_bar(aes(x = Name, fill = Base.Sh))+
+  scale_fill_manual(labels = c("Excurvate", "Incurvate", "Recurvate", "Straight", "not given"),
+                      name = "Basenform",
+                      values = okabe)+
+  labs(x = "Werkzeugtyp", y = "Häufigkeit")
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/unnamed-chunk-8-1.png)
+
+Hausaufgaben (oder jetzt, wenn ihr schon so weit seid)
+------------------------------------------------------
+
+1.  Überlegt bitte, (und diskutiert evtl mit eurer Gruppe) was in dem
+    nächsten Code Chunk passiert. Die Hilfe kann mit ?Suchbegriff
+    abgerufen werden. Wo ist der Unterschied zu `geom_bar` ?
+
+``` r
+data("EndScrapers")
+
+ggplot(data = EndScrapers)+
+  geom_col(aes(x = Site, fill = Width, y = Freq))+ 
+  labs(y = "Häufigkeit",
+       title = "Anzahl der Steinartefakte nach Breite und Fundort")+
+  theme_bw() 
+```
+
+![](00x1_Lagemaße_ggplot_arch_files/figure-markdown_github/zweites%20Säulendiagramm-1.png)
+
+1.  Erstellt ein neues Säulendiagramm. Nehmt dafür die Werte von
+    EndScrapers und erstellt ein Diagramm, in dem die Häufigkeit
+    retuschierter Steinwerkzeuge auf den beiden Fundstellen Castanet A
+    und Ferrassie H dargestellt werden. Beschriftet die Legende um, so
+    dass sie deutsch wird.

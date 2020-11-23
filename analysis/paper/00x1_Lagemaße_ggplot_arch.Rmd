@@ -14,7 +14,7 @@ always_allow_html: true
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      eval = FALSE)
+                      eval = TRUE)
 ```
 
 
@@ -27,7 +27,9 @@ Falls sie noch nicht installiert sind, muss der Befehl zur Paketinstallation aus
 install.packages("ggplot2")
 install.packages("archdata")
 ```
+
 Dann das "laden" oder "aktivieren":
+
 ```{r}
 library(archdata) 
 library(ggplot2) 
@@ -64,9 +66,12 @@ RD_sd <- sd(BACups$RD) #Standardabweichung
 RD_var <- var(BACups$RD) # Varianz
 RD_range <- range(BACups$RD) # kleinster und größter Wert
 
-## Aufgabe: Andere Variablen ebenso erkunden. Unklar welche? Schaut euch die Tabelle BACups mit View() an und entscheidet, welche sich eignen würden. 
+
 ```
 
+**Aufgabe**: Eine andere Variablen ebenso erkunden. Unklar welche? Schaut euch die Tabelle BACups mit `View()` an und entscheidet, welche sich eignen würden. 
+
+### Modus-Funktion 
 
 Euch ist vielleicht aufgefallen, dass es für den Modus keine Funktion in R zu geben scheint. Keine Ahnung warum. Aber man findet online schlaue Menschen, die eine Funktion geschrieben haben, mit der man ganz genauso den Modus abfragen kann, wie man den Median abfragen kann. Diese Funktion kann man einmal markieren und mit Strg+Enter ausführen und bekommt dann unter Environment und Functions angezeigt, dass man eine Funktion "getmode" erstellt hat. JETZT kann man sie anwenden, wie unten im Bsp.
 
@@ -91,17 +96,22 @@ ggplot wurde von Hadley Wickham entwickelt, ist ein Paket mit vielen Funktionen 
 
 Erarbeiten wir uns das Schritt für Schritt.
 
-Wir müssen dem Programm sagen: Welche Daten es benutzen soll (data = ), welche Art von Diagramm es bauen soll (geom_xxx) und wie das Diagramm aussehen soll (aes von aesthetics), damit überhaupt etwas entsteht.
+Wir müssen dem Programm sagen: Welche Daten es benutzen soll (data = ), welche Art von Diagramm es bauen soll (geom_xxx) und wie das Diagramm aussehen soll (aes von aesthetics), damit überhaupt etwas entsteht. Dies sind in der Regel die ersten drei Layer, die man in ggplot definiert. Alles andere danach sind reine Verschönerungsmaßnahmen. ;-)
 
-Alles andere danach sind reine Verschönerungsmaßnahmen. ;-)
+Die verschiedenen "Layer"-Befehle werden untereinander geschrieben und jeweils mit einem + verbunden.
 
 
-# ein Säulendiagramm
-Ein Säulendiagramm eignet sich zur Darstellung nominaler und ordinaler Variablen. Ihr könnt es ja mal mit metrischen Probieren, dann seht ihr schnell, warum das nicht gut ist.
+
+### ein Säulendiagramm
+Ein Säulendiagramm eignet sich zur Darstellung nominaler und ordinaler Variablen. Ihr könnt es ja mal mit metrischen Probieren, dann seht ihr schnell, warum das nicht gut ist. 
+
+Im folgenden Code bezieht sich `data =` auf den Datensatz mit dem ich arbeite, der ist meist ein dataframe. Wir nehmen wieder BACups.
+
+`geom_bar` bedeutet, ich hätte gern ein Balkendiagramm. Innerhalb der Klammern von `aes()` (aesthetic) definiere ich, dass auf der X-Achse die Phasen abgetragen werden (`x = Phase`).
 
 ```{r erstes Säulendiagramm}
-ggplot(data = BACups)+ #data = bezieht sich auf den Datensatz mit dem ich arbeite, meist ein dataframe
-  geom_bar(aes(x = Phase)) #geom_bar bedeutet, ich hätte gern ein Balkendiagramm, aesthetic: ich will, dass auf der X-Achse die Phasen abgetragen werden
+ggplot(data = BACups)+ 
+  geom_bar(aes(x = Phase)) #
 ```
 
 Jetzt kann man viele Dinge verschönern
@@ -140,7 +150,7 @@ Das war jetzt aber all das mit nur zwei Säulen. Fast ein bisschen langweilig. E
 
 
 
-Als nächstes visualisieren wir mit diesem Code die Häufigkeiten, wie oft die verschiedenen Basenformen (Base.Sh) in den unterschiedlichen Spitzen-Typen vorkommen (Name).
+Als nächstes visualisieren wir mit diesem Code die Häufigkeiten, wie oft die verschiedenen Basenformen (Base.Sh) bei den unterschiedlichen Spitzen-Typen vorkommen (Name). Wir färben die unterschiedlichen Basenformen ein, wir "füllen" den Balken also entsprechend (`fill = `),
 
 ```{r}
 
@@ -153,13 +163,14 @@ ggplot(data = DartPoints)+
 
 Die Einfärbung ist jetzt eine eigene Variable. Wir sollten die Beschriftung der Legende ändern, es weiß ja sonst niemand was "E", "I" oder "R" zu bedeuten hat. Dafür nutzen wir den Befehl `scale_fill_discrete`. "Scale" bedeutet Legende. Mit "fill" sagen wir, wir wollen die Legende, in der es um die Einfärbung geht, bearbeiten und zwar ist es eine diskrete Skala (weil alle nominalen Daten diskret sind). 
 
+Mit `labels = ` teilen wir R mit, wie wir die in alphabetischer Reihenfolge gegebenen Werte neu benennen möchten. Das `c()` hat R angezeigt, dass sie alle zusammen gehören und kein neuer Befehl gestartet wurde. Text muss in Hochkommas geschrieben werden!
+
 ```{r}
 ggplot(data = DartPoints)+
   geom_bar(aes(x = Name, fill = Base.Sh))+
   scale_fill_discrete(labels = c("Excurvate", "Incurvate", "Recurvate", "Straight", "not given") )
 ```
 
-Mit `labels = ` haben wir R mitgeteilt, wie wir die in alphabetischer Reihenfolge gegebenen Werte neu benennen möchten. Das `c()` hat R angezeigt, dass sie alle zusammen gehören und kein neuer Befehl gestartet wurde. Text muss in Hochkommas geschrieben werden!
 
 Wir können mit dem gleichen `scale_fill_discrete` noch mehr ändern. Zum Bsp den Namen der Legende
 
@@ -170,8 +181,6 @@ ggplot(data = DartPoints)+
   scale_fill_discrete(labels = c("Excurvate", "Incurvate", "Recurvate", "Straight", "not given"),
                       name = "Basenform")
 ```
-
-
 
 
 Möchten wir die Farben ändern, ist es das einfachste den Befehl `scale_fill_manual` zu nutzen, der die anderen Argumente auch bedienen kann. Das zusätzliche Argument für die neuen Farbewerte ist `value`. Es gibt sehr viele Möglichkeiten, Farben in R auszudrücken, als html-Code, YMCK oder auch durch beschreibende Labels. Im Bsp definieren wir zuerst die Farben, die wir nutzen möchten als html-Farben und weisen sie einem Vektor zu:
@@ -190,9 +199,21 @@ ggplot(data = DartPoints)+
                       values = okabe)
 ```
 
+Ich finde es ja irritierend, dass der Typ in diesem Diagramm "Name" genannt wird. Und "count" gefällt mir auch nicht. Wir können die Benennung der Achsen mit dem Befehl `labs()` ändern:
+
+```{r}
+
+ggplot(data = DartPoints)+
+  geom_bar(aes(x = Name, fill = Base.Sh))+
+  scale_fill_manual(labels = c("Excurvate", "Incurvate", "Recurvate", "Straight", "not given"),
+                      name = "Basenform",
+                      values = okabe)+
+  labs(x = "Werkzeugtyp", y = "Häufigkeit")
+```
+
 ## Hausaufgaben (oder jetzt, wenn ihr schon so weit seid)
 
-1. Überlegt bitte, (und diskutiert evtl mit eurer Gruppe) was in dem nächsten Code Chunk passiert. Die Hilfe kann mit ?Suchbegriff abgerufen werden.
+1. Überlegt bitte, (und diskutiert evtl mit eurer Gruppe) was in dem nächsten Code Chunk passiert. Die Hilfe kann mit ?Suchbegriff abgerufen werden. Wo ist der Unterschied zu `geom_bar` ?
 
 ```{r zweites Säulendiagramm}
 data("EndScrapers")
@@ -206,26 +227,7 @@ ggplot(data = EndScrapers)+
 ```
 
 
-2. Erstellt ein neues Säulendiagramm
+2. Erstellt ein neues Säulendiagramm. Nehmt dafür die Werte von EndScrapers und erstellt ein Diagramm, in dem die Häufigkeit retuschierter Steinwerkzeuge auf den beiden Fundstellen Castanet A und Ferrassie H dargestellt werden. Beschriftet die Legende um, so dass sie deutsch wird.  
 
 
-
-
-<!-- The following line inserts a page break when the output is MS Word. For page breaks in PDF, use \newpage on its own line.  -->
-##### pagebreak
-
-# References 
-<!-- The following line ensures the references appear here for the MS Word or HTML output files, rather than right at the end of the document (this will not work for PDF files):  -->
-<div id="refs"></div>
-
-##### pagebreak
-
-### Colophon
-
-This report was generated on `r Sys.time()` using the following computational environment and dependencies: 
-
-```{r colophon, cache = FALSE}
-# which R packages and versions?
-devtools::session_info()
-```
 
