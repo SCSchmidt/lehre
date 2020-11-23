@@ -1,0 +1,226 @@
+---
+title: "Prüfungsaufgaben zu den menschenähnlichen Großaffen"
+author: "Sophie C. Schmidt"
+date: "27 8 2020"
+output: pdf_document
+---
+
+# "Menschenähnliche Großaffen"
+
+
+Sie ist eine Legende unter den Biolog*innen und sie hat Ihnen ihren Datensatz hinterlassen: Lara Rachel Carlson ist bekannt für Ihre abenteuerlichen Expeditionen in die entlegendsten Ecken der Welt. 
+Auf der letzten großen Fahrt hat sie sowohl die Himalaya-Region als auch den nordamerikanischen Kontinent nach den legendären menschenähnlichen Großaffen (so ihre Theorie) durchsucht und verschiedene Informationen zu ihnen gesammelt. Sie übergibt Ihnen die folgende Tabelle, die Sie nun auswerten dürfen, da Lara schon wieder lieber in der Welt unterwegs ist, um neue Daten zu sammeln...
+
+ - ID - jedes Tier hat eine eindeutige ID bekommen
+ 
+ - fellfarbe - Die Farbe des Felles wurde in einfachen beschreibenden Termini aufgenommen
+ 
+ - groesse - die Größe wurde in cm aufgenommen
+ 
+ - art - die Spezies
+ 
+ - opfer - die Lieblingsspeise des jeweiligen Tieres (aus Erzählungen der lokalen Bevölkerung)
+ 
+ - gewicht_kg - das Gewicht der Tiere in kg
+ 
+ - landschaft - in welcher Landschaft das Tier beobachtet wurde (nicht-häufbar, da nur kurzfristige Beobachtungen)
+ 
+ - sex - das Geschlecht, soweit erkennbar
+ 
+ - hauerlaenge - die Länge des rechten Eckzahns
+ 
+## Aufgaben
+
+1. Gibt es einen Zusammenhang zwischen der Art und ihrer Lieblingsspeise?
+  1a: Stellen Sie die Zahlen visuell dar.
+  1b: Testen Sie auf den Zusammenhang!
+  
+2. Korreliert die Größe der Tiere mit ihrer Hauerlänge?
+2a: Visualisieren Sie den Zusammenhang
+2b: Was für eine Art des Zusammenhangs ist es?
+
+3. Gibt es bei den Bigfoots einen Geschlechtsdimorphismus im Bezug auf die Größe? 
+  2a: Testen Sie, ob und welches Geschlecht im Mittel größer ist als das andere.
+
+
+4. In einem Gespräch am Telefon aus dem tiefsten Dschungel Indiens gibt Lara zu, dass sie eigentlich das Gewicht der Tiere nur anhand der Größe geschätzt habe, weil sie keine Waage den Himalaya hochschleppen wollte. Sie sind natürlich schwer enttäuscht.
+Finden Sie die Formel heraus, mit der die Schätzung ungefähr vorgenommen wurde. Untersuchen Sie dabei die beiden Arten getrennt.
+
+5.Knobelaufgabe: 
+In dem gleichen Gespräch, geht Lara noch einmal darauf ein, dass sie bei den hellbraunen Tieren nicht sicher ist, zu welcher Art sie gehören. Sie rät Ihnen anhand der Größe noch einmal nachzuschauen, ob sie nicht eher in die Gruppe der Yetis passen würden. Finden Sie es heraus!
+
+
+
+# Lösungen
+
+### 1. Gibt es einen Zusammenhang zwischen der Art und ihrer Lieblingsspeise?
+
+```{r}
+chi <- chisq.test(table(monster$art, monster$opfer))
+
+chi$expected
+
+chi
+
+library(lsr)
+
+cramersV()
+```
+
+Ja. Gibt es.
+
+Punkte
+
+richtiger Test: 1
+richtiger cramers: 1
+richtig interpretiert: 1
+richtig auf Voraussetzungen geachtet: +1
+
+richtiger Plot: 1
+schön beschriftet: 1
+Titel: 1
+
+
+```{r}
+ggplot()+
+  geom_bar(data = monster,
+           aes( x = opfer,
+                fill = art))
+```
+
+
+### 2. Korreliert die Größe der Tiere mit ihrer Hauerlänge?
+2a: Visualisieren Sie den Zusammenhang
+2b: Was für eine Art des Zusammenhangs ist es?
+
+
+Auf normalverteilungen testen
+```{r}
+shapiro.test(monster$groesse[monster$art == "Yeti"])
+#nicht normal
+
+shapiro.test(monster$gewicht_kg[monster$art == "Yeti"])
+# nicht normal
+
+shapiro.test(monster$hauerlaenge)
+# normal
+
+```
+
+
+```{r}
+ggplot(data = monster,
+             aes(x = groesse,
+                 y = hauerlaenge))+
+  geom_point()+
+      stat_smooth(method = "lm", formula = y ~ x + I(x^2))
+
+```
+quadratischer Zusammenhang. fallend. Nimmt ab mit Größe der tiere.
+
+
+### 3. Gibt es bei den Bigfoots einen Geschlechtsdimorphismus im Bezug auf die Größe? 
+  3a: Testen Sie, ob und welches Geschlecht im Mittel größer ist als das andere.
+
+```{r}
+bf <- subset(monster, monster$art == "Bigfoot")
+bf <- subset(bf, bf$sex != "unbest.")
+
+monster$groesse <- as.numeric(monster$groesse)
+
+shapiro.test(bf$groesse[bf$sex == "männlich"])
+
+t.test(groesse ~ sex, data = bf)
+
+```
+
+
+
+
+### 4. In einem Gespräch am Telefon aus dem tiefsten Dschungel Indiens gibt Lara zu, dass sie eigentlich das Gewicht der Tiere nur anhand der Größe geschätzt habe, weil sie keine Waage den Himalaya hochschleppen wollte. Sie sind natürlich schwer enttäuscht.
+Finden Sie die Formel heraus, mit der die Schätzung ungefähr vorgenommen wurde. Untersuchen Sie dabei die beiden Arten getrennt.
+
+Zusammenhang: Gewicht und Größe 
+```{r}
+
+yeti <- subset(monster, monster$art == "Yeti")
+bf <- subset(monster, monster$art == "Bigfoot")
+
+
+ggplot(data = bf)+
+  geom_point(aes(x = groesse,
+                 y = gewicht_kg,
+                 col = art))+
+  stat_smooth(aes(x = groesse,
+                   y = gewicht_kg),
+                  method = "lm", 
+                  formula = y ~ x)
+
+f <- lm(groesse ~ gewicht_kg, data = yeti)
+
+summary(f)
+```
+
+Residualanalyse
+
+```{r}
+summary(f)
+
+plot(f,which=1, col=c("blue"))
+
+plot(f,which=2, col=c("blue"))
+
+plot(f,which=3, col=c("blue"))
+
+plot(f, which=5, col=c("blue")) 
+
+```
+
+
+```{r}
+man_monster <- manova(cbind(groesse, gewicht_kg) ~  art, data = monster)
+
+summary.aov(man_monster)
+```
+Ja, höchstsignifikanter Unterschied
+
+
+
+#### 5.In dem gleichen Gespräch, geht Lara noch einmal darauf ein, dass sie bei den hellbraunen Tieren nicht sicher ist, zu welcher Art sie gehören. Sie rät Ihnen anhand der Größe noch einmal nachzuschauen, ob sie nicht eher in die Gruppe der Yetis passen würden.
+
+Finden Sie es heraus!
+
+
+1. Gruppenunterschied Gewicht und Größe
+```{r}
+ggplot()+
+  geom_boxplot(data = monster, aes(x = art,
+                                   y = gewicht_kg))
+
+ggplot()+
+  geom_boxplot(data = monster, aes(x = art,
+                                   y = groesse))
+```
+
+2. subsetten und schauen
+```{r}
+hellbraun <- subset(monster, monster$fellfarbe == "hellbraun")
+
+
+mean(hellbraun$groesse)
+
+mean(monster$groesse[monster$art == "Yeti"])
+mean(monster$groesse[monster$art == "Bigfoot"])
+
+ggplot()+
+geom_boxplot(data = monster, aes(x = fellfarbe,
+                                 y= groesse))
+```
+
+
+```{r}
+table(monster$fellfarbe, monster$art)
+
+```
+
+

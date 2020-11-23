@@ -1,0 +1,165 @@
+---
+title: "Prüfungsaufgaben zum Haggis"
+author: "Sophie C. Schmidt"
+date: "27 8 2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Der Haggis
+
+Der Haggis ist bekannt als der Nationalbraten der Schotten. Als seltenes Nagetier lebt er in den schottischen Highlands. Da es dort sehr hügelig ist, hat er eine besondere Anpassung entwickelt: Eines der Beinpaare ist länger als das andere (also linke oder rechte Beine), damit er auf Hängen gut geradeaus laufen kann. So sind zwei Arten entstanden: Der linksdrehende (linke Beine kürzer) und der rechtsdrehende (rechte Beine kürzer) Haggis.
+
+In einer entbehrungsreichen Expedition reisen Sie in die entlegensten Winkel Schottlands und fangen in monatelanger Kleinarbeit 100 Haggisse, vermessen und notieren die folgenden Maße:
+
+ - ID - jedes Tier hat eine ID
+ 
+ - laenge_linkesBein - die Länge des linken Vorderbeines
+ 
+ - laenge_rechtesBein - die Länge des rechten Vorderbeines
+ 
+ - landschaften - in welcher Region der Haggis gefangen wurde
+ 
+ - sex - sein Geschlecht
+ 
+ - hautfarbe - die Hautfarbe des Tiers 
+ 
+ - gewicht_g - sein Gewicht in Gramm
+ 
+ - alter_monate - sein Alter in Monaten
+ 
+ - zahnlaenge_mm - die länge der Nagezähne in mm
+
+```{r}
+haggis <- read.csv2("haggis.csv", sep = ";")
+```
+
+## Aufgaben:
+
+
+1. Gibt es einen Zusammenhang zwischen dem Gewicht der Tiere und der Landschaft, in der sie leben?
+  2a: Stellen sie das visuell dar
+  2b: testen Sie!
+
+2. Gibt es bei den Tieren, die am Hang des Ben Nevis leben, einen Geschlechtsdimorphismus im Bezug auf Hautfarbe?
+
+3. Gibt es einen Geschlechtsdimorphismus im Bezug auf Körpergewicht? 
+  3a: Untersuchen Sie das dies auch visuell.
+
+4. Wie gestaltet sich der Zusammenhang zwischen der Zahnlänge und dem Alter der Tiere?
+ 4a: Visualisieren Sie ihn.
+ 4b: was für eine Art des Zusammenhangs ist es?
+ 
+5. Kobelaufgabe:
+klassifizieren Sie Ihre Tiere in links- und rechtsseitig drehend! Wie häufig haben Sie Tiere, die links längere Beine haben (rechtsdrehender Haggis) und wie viele Tiere haben rechts längere Beine?
+Visualisieren Sie das Ergebnis.
+
+## Aufgaben:
+
+
+
+
+
+1. Gibt es einen Zusammenhang zwischen dem Gewicht der Tiere und in welcher Landschaft sie leben?
+  1a: Stellen sie das visuell dar
+  1b: testen Sie!
+```{r}
+ggplot(data = haggis)+
+  geom_boxplot(aes(x = landschaften,
+                   y = gewicht_g))
+```
+2. 
+
+```{r}
+h1 <- subset(haggis, haggis$landschaften == "Hang des Ben Nevis")
+
+table(h1$sex, h1$hautfarbe)
+chisq.test(table(h1$sex, h1$hautfarbe)
+)
+```
+
+
+3. Gibt es einen Geschlechtsdimorphismus im Bezug auf Körpergewicht und Hautfarbe?
+
+ 3b: Test auf Normalverteilung
+ 3c: F-Test
+ 3d: t-Test
+```{r}
+shapiro.test(haggis$gewicht)
+```
+ 3b: normalverteilt
+ 
+```{r}
+shapiro.test(haggis$gewicht[haggis$sex == "weiblich"])
+shapiro.test(haggis$gewicht[haggis$sex == "männlich"])
+```
+
+```{r}
+var.test(haggis$gewicht[haggis$sex == "weiblich"],haggis$gewicht[haggis$sex == "männlich"] )
+```
+ 3b: Varianzgleichheit
+ 
+```{r}
+t.test(data = haggis, gewicht_g ~ sex, na.rm = TRUE,
+         alternative = "two.sided")
+```
+ 3c: kein Unterschied beim Gewicht
+
+```{r}
+ggplot()+
+  geom_boxplot(data = haggis,
+               aes(x = sex,
+                   y = gewicht_g))
+```
+
+
+4. Korrelieren die Länge der beiden Beinseiten miteinander? Geben Sie eine Grafik mit R², p-Wert und Funktion und interpretieren Sie das Ergebnis!
+
+```{r}
+
+# shapiro.test(haggis$laenge_rechtesBein) normalverteolt beide
+
+library(ggplot2)
+ggplot()+
+  geom_point(data = haggis, aes(x = laenge_linkesBein,
+                                y = laenge_rechtesBein,
+                                col = landschaften,
+                                shape = sex))
+```
+
+4. Wie gestaltet sich der Zusammenhang zwischen der Zahnlänge und dem Alter der Tiere?
+
+```{r}
+
+shapiro.test(haggis$alter_monate) # normalverteilt
+shapiro.test(haggis$zahnlaenge_mm) # nicht normalverteilt
+
+
+ggplot()+
+  geom_point(data = haggis, aes(alter_monate,
+                                zahnlaenge_mm))
+
+fit <- lm(zahnlaenge_mm ~ alter_monate + I(alter_monate^2), data = haggis) 
+summary(fit)
+
+```
+
+
+5. klassifizieren Sie Ihre Tiere in links- und rechtsseitig drehend!
+
+```{r}
+
+
+
+haggis$diff_links_rechts <- haggis$laenge_linkesBein - haggis$laenge_rechtesBein
+haggis$klass[haggis$diff_links_rechts > 0] <- "rechtsseitiger Haggis"
+haggis$klass[haggis$diff_links_rechts < 0] <- "linksseitiger Haggis"
+
+ggplot()+
+  geom_bar(data = haggis,
+           aes(x = klass))
+
+```

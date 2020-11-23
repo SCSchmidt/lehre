@@ -1,14 +1,43 @@
 Package: lehre
-Title: In diesem Paket wird Lehrmaterial zu Statistischen Methoden zur VerfÃ¼gung gestellt.
+Title: In diesem Paket wird Lehrmaterial zu Statistischen Methoden zur Verfügung gestellt.
 Version: 0.0.0.9000
 Authors@R:
     person(given = "Sophie C.",
            family = "Schmidt",
            role = c("aut", "cre"),
            email = "s.c.schmidt@uni-koeln.de")
-Description: Verschiedene Rmd-Dateien mit Hinweisen zu ggplot, statistischen Tests, reproduzierbarer Wissenschaft in ArchÃ¤ologie und Biologie.
-License: What license it uses
+Description: Verschiedene Rmd-Dateien mit Hinweisen zu ggplot, statistischen Tests, reproduzierbarer Wissenschaft in Archäologie und Biologie.
+License: MIT + file LICENSE
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
-Imports: bookdown
+Imports: bookdown,
+    here,
+    archdata (>= 1.2),
+    car (>= 3.0-8),
+    caret (>= 6.0-86),
+    devtools (>= 2.3.1),
+    dgof,
+    dplyr (>= 1.0.0),
+    ggbiplot (>= 0.55),
+    ggplot2 (>= 3.3.0),
+    ggpmisc (>= 0.3.5),
+    ggpubr (>= 0.3.0),
+    glm.predict,
+    klaR (>= 0.6-15),
+    knitr (>= 1.28),
+    lsr (>= 0.5),
+    magrittr (>= 1.5),
+    MASS (>= 7.3-51.5),
+    mda (>= 0.5-2),
+    nortest,
+    openxlsx (>= 4.1.5),
+    palmerpenguins (>= 0.1.0),
+    rmarkdown (>= 2.3),
+    rrtools (>= 0.1.0),
+    stringr (>= 1.4.0),
+    tidyr (>= 1.0.3),
+    tidyverse (>= 1.3.0),
+    vegan (>= 2.5-6),
+    xlsx,
+    yarrr (>= 0.1.5)

@@ -1,0 +1,279 @@
+---
+title: "Prüfungsfragen und Datensätze"
+author: "Sophie C. Schmidt"
+date: "24 8 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Haggis
+
+Der Haggis ist bekannt als der Nationalbraten der Schotten. Als seltenes Nagetier lebt es in den schottischen Highlands. Da es dort sehr hügelig ist, hat es eine besondere Anpassung entwickelt: Eines der Beinpaare ist länger als das andere (also linke oder rechte Beine), damit er auf Hängen gut geradeaus laufen kann. So sind zwei Arten entstanden: Der linksdrehende (linke Beine kürzer) und der rechtsdrehende (rechte Beine kürzer) Haggis.
+
+In einer entbehrungsreichen Expedition reisen Sie in die entlegensten Winkel Schottlands (in vier unterschiedliche Gebiete) und fangen in monatelanger Kleinarbeit 100 Haggisse, vermessen und notieren die folgenden Maße:
+
+ - ID - jedes Tier hat eine ID
+ 
+ - laenge_linkesBein - die Länge des linken Vorderbeines
+ 
+ - laenge_rechtesBein - die Länge des rechten Vorderbeines
+ 
+ - landschaften - in welcher Region der Haggis gefangen wurde
+ 
+ - sex - sein Geschlecht
+ 
+ - hautfarbe - die Hautfarbe des Tiers 
+ 
+ - gewicht_g - sein Gewicht in Gramm
+ 
+ - alter_monate - sein Alter in Monaten
+ 
+ - zahnlaenge_mm - die länge der Nagezähne in mm
+
+
+```{r}
+id <- seq(1:100)
+laenge_linkesBein <- rnorm(100, mean  = 12, sd = 2)
+laenge_rechtesBein <- laenge_linkesBein + rnorm(100, mean  = 0, sd = 2)
+
+haggis <- as.data.frame(cbind(id, laenge_linkesBein, laenge_rechtesBein))
+
+landschaften <- c("Ufer des Loch Ness", "Hang des Ben Nevis", "Flussufer des Ness", "Rannoch Moor")
+
+# Frage: Zusammenhang zwischen Landschaft und physikalischen Ausmaßen?
+
+haggis$landschaften[haggis$laenge_linkesBein < 10] <- landschaften[1]
+haggis$landschaften[haggis$laenge_linkesBein > 10 & haggis$laenge_linkesBein < 13.3] <- landschaften[2]
+haggis$landschaften[haggis$laenge_linkesBein > 13.3 & haggis$laenge_linkesBein < 14.3] <- landschaften[3]
+haggis$landschaften[haggis$laenge_linkesBein > 14.3] <- landschaften[4]
+
+
+# Frage: Geschlechtsdimorphismus bei der Größe?
+haggis$sex <- sample(c("weiblich", "männlich"), 100, replace = TRUE) # Geschlechtsdimorphismus bei der Größe?
+
+
+# Fell- und Hautfarbe: Geschlechtsdimorphismus?
+haggis$beige <- sample(c("ja", "nein"), 100, replace = TRUE)
+haggis$schwarzeBeine <- sample(c("ja", "nein"), 100, replace = TRUE)
+haggis$weisserBauch[haggis$sex == "weiblich"] <-  sample(c("ja", "nein"), table(haggis$sex)[2], replace = TRUE)
+haggis$weisserBauch[is.na(haggis$weisserBauch)] <- "nein"
+haggis$hautfarbe <-  sample(c("rosa", "braun", "schwarz"), 100, replace = TRUE)
+haggis$hautfarbe[haggis$sex == "weiblich" & haggis$beige == "ja"] <- "rosa"
+haggis$hautfarbe[haggis$sex == "männlich" & haggis$schwarzeBeine == "ja"] <- "schwarz"
+
+haggis$gewicht_g <- haggis$laenge_rechtesBein*80 + rnorm(100, 1000, sd = 250)
+
+
+# Zusammenhang von Alter und Zahnlänge
+
+haggis$alter_monate <- rnorm(100, 24, sd = 10) + rpois(100, 6) 
+haggis$zahnlaenge_mm <-  100 + 5*haggis$alter - 0.1*(haggis$alter + rnorm(50, 0, 2))^2
+
+write.table(haggis, "./pruefungsdatensaetze/haggis.csv", sep = ",", dec = ".", fileEncoding = "UTF-8")
+
+
+```
+
+```{r}
+haggis <- read.csv2("./pruefungsdatensaetze/haggis.csv", sep = ",", encoding = "UTF-8")
+
+
+v <- seq(20,0,-2)
+x <- colnames(haggis)
+
+for (i in v) {
+   d <- haggis                       # übernimm den normalen haggis datensatz
+   for (z in x) {
+      if (class(d[[z]]) == "numeric")   # wenn class numeric
+      d[[z]] <- d[[z]] + i              # rechne alles + i
+      }
+    write.table(d, paste("./pruefungsdatensaetze/haggis/haggis_",i,".csv", sep = ""), sep = ";", dec = ",", fileEncoding = "UTF-8")
+  }
+
+```
+
+
+# Yeti und Bigfoot
+
+Sie ist eine Legende unter den Biologen und sie hat Ihnen ihren Datensatz hinterlassen: Lara Rachel Carlson ist bekannt für Ihre abenteuerlichen Expeditionen in die entlegendsten Ecken der Welt. 
+Auf der letzten großen Fahrt hat sie sowohl die Himalaya-Region als auch den nordamerikanischen Kontinent nach den legendären menschenähnlichen Großaffen (so ihre Theorie) durchsucht und verschiedene Informationen zu ihnen gesammelt. Sie übergibt Ihnen die folgende Tabelle
+
+ - ID - jedes Tier hat eine eindeutige ID bekommen
+ 
+ - fellfarbe - Die Farbe des Felles wurde in einfachen beschreibenden Termini aufgenommen
+ 
+ - groesse - die Größe wurde in cm aufgenommen
+ 
+ - art - die Spezies
+ 
+ - opfer - die Lieblingsspeise des jeweiligen Tieres (aus Erzählungen der lokalen Bevölkerung)
+ 
+ - gewicht_kg - das geschätzte Gewicht der Tiere in kg
+ 
+ - landschaft - in welcher Landschaft das Tier beobachtet wurde (nicht-häufbar, da nur kurzfristige Beobachtungen)
+ 
+ - sex - das Geschlecht, soweit erkennbar
+
+
+```{r}
+id <- seq(1:100)
+
+fellfarbe <- c(rep("weiß", 21), rep("beige", 14), rep("hellbraun", 7), rep("dunkelbraun", 33), rep("schwarz", 25))
+
+groesse <- c(rnorm(45, mean = 240, sd = 30), rnorm(55, mean = 280, sd = 20))
+
+monster <- data.frame(id, fellfarbe, groesse)
+
+monster$art <- c(rep("Yeti", 45), rep("Bigfoot", 55))
+
+monster$art[monster$fellfarbe == "hellbraun"] <- "Bigfoot"
+
+monster$opfer <- c(rep("Tourist", 13), rep("Geologe", 18), rep("Biologe", 8), rep("Abenteurer", 11),  rep("Tourist", 25), rep("Geologe", 5),  rep("Abenteurer", 3), rep("Biologe", 17))
+
+monster$gewicht_kg <- rpois(100,300) + 1.8*monster$groesse
+
+monster$landschaft <- c(rep("Hochgebirge", 33), rep("Mittelgebirge", 25), rep("Ebene", 21), rep("Hochgebirge", 21))
+
+monster$sex <- c(rep("weiblich", 13), rep("unbest.", 10), rep("männlich", 30), rep("weiblich", 20), rep("unbest.", 10),  rep("männlich", 12), rep("weiblich", 5))
+
+monster$groesse <- round(monster$groesse)
+
+monster$gewicht_kg <- round(monster$gewicht_kg, 2)
+
+monster$hauerlaenge <-  700 + 15*monster$groesse - 0.05* (monster$groesse + rnorm(20, 0, 2))^2
+
+write.table(monster, "./pruefungsdatensaetze/monster.csv", dec = ".", sep = ",", fileEncoding = "UTF-8")
+
+```
+
+```{r}
+monster <- read.csv2( "./pruefungsdatensaetze/monster.csv", dec = ".", sep = ",", encoding = "UTF-8")
+
+v <- seq(0,10,1)
+x <- colnames(monster)
+
+for (i in v) {
+   d <- monster                       # übernimm den normalen haggis datensatz
+   for (z in x) {
+      if (class(d[[z]]) == "numeric")   # wenn class numeric
+      d[[z]] <- d[[z]] + i              # rechne alles + i
+      }
+    write.table(d, paste("./pruefungsdatensaetze/monster/monster_",i,".csv", sep = ""),  dec = ".", sep = ",", fileEncoding = "UTF-8")
+  }
+
+```
+
+
+
+# Teufelsschlinge
+Die Teufelsschlinge (in Original: Devil's Snare) ist eine magische Killerpflanze, die bereits in Harrys erster Klasse im Fach Kräuterkunde beschrieben wird. Sie hat lange Tentakel, mit denen sie ihr Opfer unentrinnbar fesselt, immer enger umwickelt und schließlich erdrosselt. Am besten gedeiht die Teufelsschlinge in dunklen, feuchten Räumen. Diese Pflanze sieht mit ihren vielen, umher schlängelnden Tentakeln, eigentlich eher eklig aus. Wenn sie als Topfpflanze zurechtgemacht ist, kann sie aber leicht mit einer harmlosen Flitterblume verwechselt werden. 
+
+```{r}
+
+id <- seq(1:100)
+wachstum_in_10d <- as.numeric(c(rnorm(23, mean  = 12, sd = 2), rnorm(27, mean  = 20, sd = 2), rnorm(25, mean  = 40, sd = 2), rnorm(25, mean  = 27, sd = 2)))
+
+wachstum_in_30d <- c(wachstum_in_10d[1:35] + rnorm(35, mean = 30, sd = 5), (wachstum_in_10d[36:100] + rnorm(65, mean = 5, sd = 3)))
+
+wachstums_bedingungen <- c(rep("Sonnenlicht", 23), rep("Baumschatten", 30), rep("feuchter Keller", 25), rep("Eisfach", 22))
+
+
+teufelsschlinge <- data.frame(id, wachstum_in_10d, wachstums_bedingungen)
+teufelsschlinge$anzahl_tentakel <- round(wachstum_in_10d/2 + rpois(100, 7),0)
+
+teufelsschlinge$opfer <-  c(rep("Maus", 15), rep("Ratte", 5), rep("Kaninchen", 13), rep("Ratte", 12), rep("Maus", 5), rep("Kaninchen", 18), rep("Ratte", 17), rep("Maus", 5), rep("Kaninchen", 10))
+teufelsschlinge$farbe <- c(rep("helles giftgrün", 21), rep("helles blaugrün", 26), rep("weißgrün", 44), rep("helles giftgrün",5), rep("helles blaugrün", 4))
+
+teufelsschlinge$gewicht_g <- 40 + rnorm(100, 15*mean(teufelsschlinge$anzahl_tentakel), 4) - 0.25*teufelsschlinge$anzahl_tentakel^2
+
+teufelsschlinge$opfergroesse_cm <- sample(100, 1:20, replace = TRUE)  + 3*teufelsschlinge$anzahl_tentakel - 0.0075* teufelsschlinge$wachstum_in_10d^2
+
+teufelsschlinge$wachstum_in_30d <- c(wachstum_in_10d[1:35] + rnorm(35, mean = 30, sd = 5), (wachstum_in_10d[36:100] + rnorm(65, mean = 5, sd = 3)))
+
+write.table(teufelsschlinge, "./pruefungsdatensaetze/teufelsschlinge.csv", sep = ";", dec = ".", fileEncoding = "UTF-8")
+
+
+```
+
+```{r}
+
+teufelsschlinge <- read.csv2("./pruefungsdatensaetze/teufelsschlinge.csv", sep = ";", dec = ".", encoding = "UTF-8")
+
+v <- seq(2,14,1)
+x <- colnames(teufelsschlinge)
+
+for (i in v) {
+   d <- teufelsschlinge                       # übernimm den normalen haggis datensatz
+   for (z in x) {
+      if (class(d[[z]]) == "numeric")   # wenn class numeric
+      d[[z]] <- d[[z]] + i              # rechne alles + i
+      }
+    write.table(d, paste("./pruefungsdatensaetze/teufelsschlinge/teufelsschlinge_",i,".csv", sep = ""), dec = ".", sep = ",", fileEncoding = "UTF-8")
+  }
+
+```
+
+
+# Dustinkian
+
+Dustinkian ist weltweit bekannt als die übelriechendste essbare Frucht der Welt. In einer Studie fand Ihre Professorin Frau Y. Gritte heraus, dass dies an dem Gehalt von Ethionin liegt und hat nun verschiedene Untersuchungen durchgeführt, um herauszufinden, wie dieser Ethioningehalt mit anderen Faktoren zusammenhängt. Sie hat jetzt aber die Nase voll vom Thema und übergibt Ihnen die Tabelle. 
+
+ - ID - jede Frucht hat eine ID
+ 
+ - fruchtgroesse_mm - die Länge der Frucht in mm
+ 
+ - ethioningehalt - die Konzentration von Ethionin in mg/100g
+ 
+ - bewertung_geruch - auf einer Skala von +10 (sehr angenehm) bis -10 (es gibt nichts ekligeres)
+ 
+ - stacheldichte - wie viele Stacheln auf der Frucht auf einem m² Haut vorkommen
+ 
+ - wachstums_bedingungen - in 4 unterschiedlichen Lichtzuständen gewachsene Pflanze
+ 
+ - fruchtfarbe - eine einfache Kategorisierung der Farbe der Früchte
+
+```{r}
+
+id <- seq(1:100)
+
+fruchtgroesse_mm <- as.numeric(c(rnorm(23, mean  = 12, sd = 2), rnorm(27, mean  = 20, sd = 2), rnorm(25, mean  = 40, sd = 2), rnorm(25, mean  = 27, sd = 2)))
+
+ethioningehalt <- rpois(100, 15)
+  
+bewertung_geruch <- round((rnorm(100, mean = 5, sd = 2) - 0.5*ethioningehalt), 1)  
+
+stacheldichte <- c(bewertung_geruch[1:35] + rnorm(35, mean = 30, sd = 5), (bewertung_geruch[36:100] + rnorm(65, mean = 5, sd = 3)))
+
+wachstums_bedingungen <- c(rep("starkes Sonneneinstrahlung", 25), rep("Halbschatten", 23), rep("Schatten", 30), rep("künstliches Licht", 22))
+
+dustinkian <- data.frame(id, fruchtgroesse_mm, ethioningehalt, bewertung_geruch, wachstums_bedingungen, stacheldichte)
+
+dustinkian$fruchtfarbe <- c(rep("hellgrün", 7), rep("dunkelgrün", 21), rep("graugrün", 15), rep("dunkelgrün", 5), rep("hellgrün", 40),  rep("graugrün", 12))
+
+write.table(dustinkian, "./pruefungsdatensaetze/dustinkian.csv", sep = ",", dec = ".", fileEncoding = "UTF-8")
+
+
+
+```
+
+```{r}
+
+dustinkian <- read.csv2("./pruefungsdatensaetze/dustinkian.csv", sep = ",", dec = ".", encoding = "UTF-8")
+
+v <- seq(5,18,1)
+x <- colnames(dustinkian)
+
+for (i in v) {
+   d <- dustinkian                       # übernimm den normalen datensatz
+   for (z in x) {
+      if (class(d[[z]]) == "numeric")   # wenn class numeric
+      d[[z]] <- d[[z]] + i              # rechne alles + i
+      }
+    write.table(d, paste("./pruefungsdatensaetze/dustinkian/dustinkian_",i,".csv", sep = ""), dec = ".", sep = ",", fileEncoding = "UTF-8")
+  }
+
+```
+

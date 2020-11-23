@@ -1,0 +1,236 @@
+---
+title: "Prüfungsaufgaben zur Teufelsschlinge"
+author: "Sophie C. Schmidt"
+date: "27 8 2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Die Teufelsschlinge
+Die Teufelsschlinge (engl.: Devil's Snare) ist eine magische Killerpflanze. Sie hat lange Tentakel, mit denen sie ihr Opfer unentrinnbar fesselt. Es heißt, am besten gedeiht die Teufelsschlinge in dunklen, feuchten Räumen. 
+
+Ihr Botanikprofessor Sprosse hatte einige Experimente zu der Teufelsschlinge unternommen und dabei 100 Pflanzen an unterschiedlichen Orten aufwachsen lassen und verschiedene Fütterungsexperimente unternommen. Seit ihn die Größte der Pflanzen einmal dabei fast erdrosselt hätte, lässt er lieber die Finger von dem Thema und widmet sich Geranien. Nun hat er Ihnen die Tabelle mit ein paar kurzen Anmerkungen überreicht. 
+
+
+ - ID - jede Pflanze hat eine ID
+ 
+ - wachstum_in_10d - die Größe, die die Pflanzen in 10 Tagen erreicht haben (cm-Angabe)
+ 
+ - wachstum_in_30d - die Größe der Pflanzen nach 30 Tagen Wachstum (cm-Angaben)
+ 
+ - wachstums_bedingungen - Standort der Pflanze während der ersten 10 Tage
+ 
+ - opfer - bevorzugtes Futter der Pflanze
+ 
+ - anzahl_tentakel - Wie viele Tentakel sie hat
+ 
+ - farbe - die Farbe der Teufelsschlinge 
+ 
+ - gewicht_g - das Durchschnittsgewicht der Tentakel der Pflanze in Gramm
+ 
+ - opfer_groesse - das größte Opfer, dass die Pflanze bisher gefressen hat
+
+
+```{r}
+teufelsschlinge <- read.csv2("teufelsschlinge.csv", sep = ";", dec = ".")
+```
+
+## Aufgaben:
+
+1. Gibt es einen Zusammenhang zwischen der Größe, die die Pflanze in einer Wachstumszeit von 10 Tagen erreicht hat und ihrem Standort (Wachstumsbedingungen)?
+  1a: Stellen Sie das visuell dar.
+  1b: Testen Sie den Zusammenhang!
+  1c: Stimmt die eingangs erwähnte These, dass die Pflanze dunkle feuchte Räume am liebsten mag?
+
+
+2. Gibt es einen Zusammenhang zwischen dem Gewicht der Pflanze und der Anzahl der Tentakel?
+  2a: Stellen sie das visuell dar
+  2b: Was für eine Art des Zusammenhangs ist es?
+  
+3. Welches Futter ist am beliebtesten?
+  3a: Stellen sie die Häufigkeiten graphisch dar.
+
+4. Korrelieren das erreichte Wachstum in 10 Tagen mit der Anzahl der Tentakel?
+  4a. Geben Sie eine Grafik mit R², p-Wert und Funktion und interpretieren Sie das Ergebnis!
+
+5. Nachdem Sie schon mitten in der Auswertung sind, ruft Sie Prof. Sprosse noch einmal an, und erzählt, er habe damals das Gefühl gehabt, dass einige Pflanzen nach den ersten 10 Tagen massiv an Wachstumsschnelligkeit verloren hätten. Er habe das nicht getestet, aber Sie mögen dochmal bitte gucken, wie viel die Pflanzen zwischen Tag 10 und Tag 30 gewachsen wären. Ist in der Verteilung etwas auffällig?
+
+
+
+# Lösungen
+
+### 1. Gibt es einen Zusammenhang zwischen der Größe, die die Pflanze in einer Wachstumszeit von 10 Tagen erreicht hat und ihrem Standort (Wachstumsbedingungen)?
+  1a: Stellen Sie das visuell dar.
+  1b: Testen Sie den Zusammenhang!
+  1c: Stimmt die eingangs erwähnte These, dass die Pflanze dunkle feuchte Räume am liebsten mag?
+
+
+
+```{r}
+library(ggplot2)
+ggplot()+
+  geom_boxplot(data = teufelsschlinge, aes(x = wachstums_bedingungen, 
+                                           y = wachstum_in_10d ))
+```
+
+Test:
+
+```{r}
+
+# da keine normalverteilung
+kruskal.test(wachstum_in_10d ~ wachstums_bedingungen, data = teufelsschlinge)
+
+```
+Ja, es gibt einen signifikanten Zusammenhang.
+
+Ja, die Teufelsschlinge mag feuchte Keller am liebsten.
+
+
+### 2. Gibt es einen Zusammenhang zwischen dem Gewicht der Pflanze und der Anzahl der Tentakel?
+  2a: Stellen sie das visuell dar
+  2b: Was für eine Art des Zusammenhangs ist es?
+
+```{r}
+shapiro.test(teufelsschlinge$gewicht_g)
+hist(teufelsschlinge$gewicht_g)
+
+# keine normalverteilung
+```
+
+
+```{r}
+ggplot(data = teufelsschlinge, aes(y = gewicht_g,
+                                   x = anzahl_tentakel))+
+  geom_point()+
+      stat_smooth(method = "lm", formula = y ~ x + I(x^2))
+
+```
+
+nicht-linearer Zusammenhang
+
+```{r}
+fit <- lm(gewicht_g ~ anzahl_tentakel + I(anzahl_tentakel^2), data = teufelsschlinge)
+
+summary(fit)
+
+```
+
+### 3. Welches Futter ist am beliebtesten?
+  3a: Stellen sie die Häufigkeiten graphisch dar.
+  
+```{r}
+ggplot()+
+  geom_bar(data = teufelsschlinge,
+           aes(x = opfer))
+```
+  
+  
+  
+### 4. Korrelieren das erreichte Wachstum in 10 Tagen mit der Anzahl der Tentakel?
+
+Shapiro Wilk:
+
+```{r}
+shapiro.test(teufelsschlinge$wachstum_in_10d)
+```
+
+nicht normalverteilt.
+
+Korrelation
+
+```{r}
+cor.test(teufelsschlinge$anzahl_tentakel, teufelsschlinge$wachstum_in_10d, method = "kendall")
+
+```
+
+hochsignifikanter Zusammenhang
+
+
+  
+```{r}
+library(ggpubr)
+library(ggpmisc)
+ggplot(data = teufelsschlinge)+
+  geom_point(data = teufelsschlinge, aes(y = anzahl_tentakel,
+                                         x = wachstum_in_10d,
+                                         col = wachstums_bedingungen))+
+  geom_smooth(data = teufelsschlinge, aes(y = anzahl_tentakel,
+                                         x = wachstum_in_10d),
+              method = "glm")+
+    stat_poly_eq(aes(x = wachstum_in_10d, 
+                   y = anzahl_tentakel, 
+                   label =  paste(..eq.label..,     # kopier die Formel (equation)
+                                  ..adj.rr.label.., # kopier R²adjusted
+                   sep = "~~~~")), # Trenn es mit 4 Leerzeichen
+             rr.digits = 4, # vier Nachkommastellen für R²
+             formula = y~x, # lineare Gleichung nach der Formel y auf x
+             parse = TRUE, # zeig es an
+             size = 5,     # in Schriftgröße 5
+             color = "gray50", # Farbe
+             label.y.npc = 0.8) +  # Platzierung  auf Y-Achse
+  stat_fit_glance(method = "lm",  # es wird eine lineare regression berechnet
+                   method.args = list(formula = y ~ x), # y abhängig von X
+                   geom = "text",       # es handelt sich um eine Geometrie der Art "Text"
+                   aes(x = wachstum_in_10d, 
+                       y = anzahl_tentakel, 
+                       label = paste("p-Wert: ", # kopier die Angabe "p-Wert:"
+                                      signif(..p.value.., # kopier den p-Wert
+                                      digits = 5),  # 5 Nachkommastellen für p
+                                      sep = "")),   # diesmal keine "Lücke"
+                  label.y = 30,        # Platzierung  auf Y-Achse (in absoluten Zahlen)
+                  label.x = 'right',   # Platzierung auf der x-Achse am rechten Rand
+                  size = 4,            # Schriftgröße 5
+                  color = "gray50")    # Farbe
+```
+
+Residualanalyse -> lin reg ist keine gute idee
+```{r}
+f <- lm(wachstum_in_10d ~ anzahl_tentakel, data = teufelsschlinge)
+
+summary(f)
+
+plot(f,which=1, col=c("blue"))
+
+plot(f,which=2, col=c("blue"))
+
+plot(f,which=3, col=c("blue"))
+
+plot(f, which=5, col=c("blue")) 
+
+
+plot(f, which=4, col=c("blue")) 
+
+```
+
+
+
+4. Zusammenhang Farbe und Aufzucht
+
+```{r}
+chi <- chisq.test(table(teufelsschlinge$farbe, teufelsschlinge$wachstums_bedingungen))
+
+chi$residuals
+
+chi
+```
+
+
+5. Knobelaufgabe: Wachstum in 30 tagen langsamer
+
+```{r}
+library(ggplot2)
+ggplot()+
+  geom_point(data = teufelsschlinge, 
+             aes(x = wachstum_in_10d,
+                 y = wachstum_in_30d))
+```
+
+```{r}
+diff <- teufelsschlinge$wachstum_in_30d -  teufelsschlinge$wachstum_in_10d 
+
+ggplot()+
+  geom_histogram(aes(x = diff))
+```

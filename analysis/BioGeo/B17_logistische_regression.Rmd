@@ -137,7 +137,7 @@ Achtet auf den Unterschied zwischen Semikolon und Komma im Code!
 ```{r}
 library(glm.predict)
 
-predicts(model = mylogit, values = "1,0,-1;6;1", position = 1) # position = 1 bedeutet der erste Wert wird verändert
+predicts(model = mylogit, values = "-1,0,1;6;1", position = 1) # position = 1 bedeutet der erste Wert wird verändert
 
 # -1,0,1 -- beschreibt den ersten Parameter also college. Da für numerische Daten immer ein Anfangs und ein Endwert angegeben werden muss, muss ich hier "tricksen" und die Kategorie -1-0 und 0-1 erstellen.
 
@@ -146,11 +146,11 @@ predicts(model = mylogit, values = "1,0,-1;6;1", position = 1) # position = 1 be
 # 1 legt das Geschlecht als "other" fest
 
 ```
-Die diskrete Änderung wird für die erste Variable durchgeführt, weshalb esdort immer min. zwei Werte braucht (position = 1). Die Funktion gibt ein data.frame zurück.
+Die diskrete Änderung wird für die erste Variable durchgeführt, weshalb es dort immer min. zwei Werte braucht (position = 1). Die Funktion gibt ein data.frame zurück.
 
-Dieser data.frame hat zwei Zeilen für die beiden Colleges und gibt uns mit mean den Mittelwert der Vorhersage, lower und upper markieren das 95%-Konfidenzintervall für jeweils Wert 1 (kein) und Wert 2 (ein Kopftuch). Wir können das so interpretieren. Hat der Pirat 6 Tattoos, definiert sich als "other" und ging in College 0 (JSFFP), gibt es eine Chance von 42%, dass er kein Kopftuch trägt und eine Chance von 28%, dass er eins trägt -- man sieht, diese beiden Werte müssen nicht gemeinsam 100% ergeben!
+Dieser data.frame hat zwei Zeilen für die beiden Colleges und gibt uns mit mean den Mittelwert der Vorhersage, lower und upper markieren das 95%-Konfidenzintervall für jeweils Wert 1 (kein) und Wert 2 (ein Kopftuch). Wir können das so interpretieren. Hat der Pirat 6 Tattoos, definiert sich als "other" und ging in College 0 (JSFFP), gibt es eine Chance von 18%, dass er kein Kopftuch trägt und eine Chance von 28%, dass er eins trägt -- man sieht, diese beiden Werte müssen nicht gemeinsam 100% ergeben!
 
-Wenn ein "gleicher" Pirat auf dem College CCCC gewesen wäre, wäre seine Chance kein Kopftuch zu tragen 28% und eins zu tragen 18%. 
+Wenn ein "gleicher" Pirat auf dem College CCCC gewesen wäre, wäre seine Chance kein Kopftuch zu tragen 28% und eins zu tragen 43%. 
 
 Wir hatten ja oben gesehn, dass die Anzahl der Tattoos von Bedeutung zu gewesen scheint. Nehmen wir also die Tattoos als sich verändernden Wert. 
 
@@ -175,7 +175,7 @@ Interessant.
 
 Eine weitere Möglichkeit das Ergebnis zusammengefasst zu betrachten ist die Odds Ratio. Wir erinnern uns, ist die odds-ratio über 1, steigt die Chance, dass die abhängige Variable 1 ist mit jedem Schritt, der unabhängigen Variable. Ist die odds-ratio kleiner als 1, singt die Chance mit jeder Iteration.
 
-```{r}
+```{r,}
 exp(coef(mylogit))
 
 ```

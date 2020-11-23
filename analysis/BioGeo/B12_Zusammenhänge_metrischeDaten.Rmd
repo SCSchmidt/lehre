@@ -259,7 +259,7 @@ wir fügen beide Variablen mit einem cbind (column bind) zusammen und setzen die
 library(yarrr)
 data(pirates)
 
-res.man <- manova(cbind(pirates$height, pirates$weight) ~ pirates$sex, data = pirates)
+res.man <- manova(cbind(height, weight) ~ sex, data = pirates)
 
 summary(res.man)
 ```
