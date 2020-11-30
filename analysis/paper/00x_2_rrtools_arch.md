@@ -312,6 +312,59 @@ sozusagen “on the fly” im Text für mich ausgerechnet.
 Das ist suuuuper praktisch, weil ich mir so keine Zahlen merken muss und
 so eine Fehlerquelle reduziere.
 
+### Style guide für innerhalb der Code-Chunks
+
+Damit man seinen eigenen Code später auch noch gut lesen kann und auch
+andere Leute ihn gut lesen können, gibt es ein paar Hinweise, wie er
+geschrieben wird, sogenannte “style guides”. Ich orientiere mich an dem
+Style Guide der “Initiative für Statistische Analysen in Archäologie
+Kiel”
+(<a href="https://github.com/ISAAKiel/StyleGuide" class="uri">https://github.com/ISAAKiel/StyleGuide</a>)
+und gebe euch hier ein paar Hinweise:
+
+1.  Leerzeichen um jeden Operator (`=, +, -, <-`, etc.)) herum, kein
+    Leerzeichen vor einem Komma, aber eins dahinter. Kein Leerzeichen
+    zwischen einer Funktion und der Klammer (zB `mean()` nicht
+    `mean ()`)
+
+2.  Namen von Datensätzen und Variablen sollten keine Sonderzeichen
+    enthalten. Leerzeichen sollten mit einem Unterstrich \_ ersetzt
+    werden. “Sprechende” Namen, die einen Sinn ergeben, sind nützlich
+    (zB `mean_body_mass_g` und nicht einfach nur `m`).
+
+3.  Eine Zeile Code sollte nicht länger als 80 Zeichen sein. Stattdessen
+    ist es sinnvoll, den Code hinter jedem Komma “umzubrechen”, denn
+    dann hat an einen besseren Überblick und kann ihn viel besser
+    kommentieren (siehe 4.). Rstudio “setzt” das auch von alleine
+    sinnvoll, in dem die neue Zeile innerhalb einer Klammer dann auf der
+    gleichen “Höhe” beginnt, wie der vorhergehende Eintrag.
+
+4.  Kommentiert den Code mit einem Hashtag (\#)-Symbol.
+
+-   VOR dem Code und in eine eigene Zeile kommen längere Hinweise, was
+    der folgende Code machen soll: zB “\# Histogramm erstellen, um
+    Verteilung der Größe der Pinguine einzuschätzen”
+-   IN DIE GLEICHE ZEILE wie Code kommen kurze Hinweise auf die genutzte
+    Funktionen und Argumente, zB:
+
+``` r
+library(ggplot2)
+library("palmerpenguins")
+data("penguins")
+
+# Histogramm erstellen, um Verteilung der Größe der Pinguine einzuschätzen
+ggplot()+
+  geom_histogram(data = penguins, aes(x = body_mass_g), 
+                 binwidth = 100, # Klassengröße 100g zeigt klare Verteilungsstrukturen
+                 na.rm = TRUE) # zwei NA-Sätze müssen entfernt werden
+```
+
+-   Tipp: lieber zu viel als zu wenig kommentieren.
+
+1.  Lasst ein bisschen Platz zwischen verschiedenen Sinneinheiten im
+    Code. Eine Leerzeile zwischen `data("penguins")` und dem Kommentar
+    im Bsp erleichtert das Lesen ungemein.
+
 ### Bilder einfügen
 
 Die Bilder im Text habe ich per Markdown eingefügt. Sie sind online
@@ -446,10 +499,9 @@ citation("ggplot2")
 Das kann ich dann in meine bib-Datei kopieren und ihm dort eine eigene
 ID geben. Seht ihr, dass das was bei dem Beispiel oben “legendre\_2012”
 war, hier fehlt? Statt “Book{,” würde ich z. B. “Book{ggplot2,”
-schreiben und dann innerhalb meiner Texte immer auf mit (<span
-class="citeproc-not-found" data-reference-id="ggplot2">**???**</span>)
-das Paket zitieren können. Das ist besonders wichtig bei den Paketen,
-die man von anderen kostenlos herunterladen konnte. Wenn man die
+schreiben und dann innerhalb meiner Texte immer auf mit @ggplot2 das
+Paket zitieren können. Das ist besonders wichtig bei den Paketen, die
+man von anderen kostenlos herunterladen konnte. Wenn man die
 Programmierer schon nicht in Geld bezahlt, sollte man sie wenigstens mit
 Reputation bezahlen.
 
