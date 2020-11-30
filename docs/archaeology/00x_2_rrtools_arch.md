@@ -446,8 +446,7 @@ citation("ggplot2")
 Das kann ich dann in meine bib-Datei kopieren und ihm dort eine eigene
 ID geben. Seht ihr, dass das was bei dem Beispiel oben “legendre\_2012”
 war, hier fehlt? Statt “Book{,” würde ich z. B. “Book{ggplot2,”
-schreiben und dann innerhalb meiner Texte immer auf mit (<span
-class="citeproc-not-found" data-reference-id="ggplot2">**???**</span>)
+schreiben und dann innerhalb meiner Texte immer mit @ggplot2
 das Paket zitieren können. Das ist besonders wichtig bei den Paketen,
 die man von anderen kostenlos herunterladen konnte. Wenn man die
 Programmierer schon nicht in Geld bezahlt, sollte man sie wenigstens mit
