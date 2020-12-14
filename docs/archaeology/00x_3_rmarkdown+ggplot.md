@@ -58,7 +58,6 @@ library(ggplot2)
 library(archdata)
 ```
 
-    ## Warning: package 'archdata' was built under R version 4.0.2
 
 ``` r
 data("BACups")
@@ -359,7 +358,17 @@ Elegant wär es, erst die Daten so umzuformen, dass sich in ggplot dann
 mit möglichst wenig Befehlen meine Grafik darstellen lassen kann.
 
 Wir brauchen also eine Daten-Umformung. Wir nutzen dafür das Paket
-`tidyr`. Der Schritt ist relativ einfach. Ich nehm die Spalten, die mich
+`tidyr`. Wer es noch nicht installiert hat, bitte mit 
+`install.packages("tidyr")` installieren. Dieser Befehl sollte aber nur einmal
+ausgeführt werden und nicht in einem Code-Chunk stehen bleiben, da jedes mal, 
+wenn R das Dokument dann umwandeln möchte, er alle Code-Zeilen von oben nach unten 
+ausführt. Dabei würde er jedes mal das Paket neu installieren und das ist Quatsch. 
+Zwei Möglichkeiten gibt es: Entweder der install-Befehl wird in den Code-Chunk 
+geschrieben und dann nach der ersten Ausführung "auskommentiert" 
+(d.h. eineRaute davor geschrieben) oder er kommt gar nicht ins Rmd-Dokument,
+sondern das Paket wird nur in der DESCRIPTION-Datei unter "Imports" aufgelistet.
+
+Der Umofrmungsschritt ist relativ einfach. Ich nehm die Spalten, die mich
 interessieren und sortiere die Werte dieser Spalten neu, so dass ich
 eine Spalte habe, in der steht die ehemalige Überschrift der Spalte und
 einen Spalte, in der der dazugehörige Wert steht. Das ist der
