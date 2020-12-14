@@ -263,11 +263,15 @@ Das funktioniert zwar, aber es ist nicht gerade "elegant".
 
 Elegant wär es, erst die Daten so umzuformen, dass sich in ggplot dann mit möglichst wenig Befehlen meine Grafik darstellen lassen kann.
 
-Wir brauchen also eine Daten-Umformung. Wir nutzen dafür das Paket `tidyr`. Der Schritt ist relativ einfach. Ich nehm die Spalten, die mich interessieren und sortiere die Werte dieser Spalten neu, so dass ich eine Spalte habe, in der steht die ehemalige Überschrift der Spalte und einen Spalte, in der der dazugehörige Wert steht. Das ist  der `gather`-Befehl. Hinter `key = ` schreibe den Namen der neuen Spalte, in der die Überschriften der Spalten. `value = ` bezeichnet den Namen der Spalte, in dem die eigentlichen Werte aus den ursprünglichen Spalten eingefügt werden. Dahinter nenne ich einfach die Spaltennamen, die so zusammengefasst werden sollen in Hochkommas: "RD", "ND","SD".
+Wir brauchen also eine Daten-Umformung. Wir nutzen dafür das Paket `tidyr`. Wenn das Paket noch nicht installiert ist, installieren Sie es mit `install.packages("tidyr")`. Dieser Befehl sollte aber nur einmal ausgeführt werden und nicht in einem Code-Chunk stehen bleiben, da jedes mal, wenn R das Dokument dann umwandeln möchte, er alle Code-Zeilen von oben nach unten ausführt. Dabei würde er jedes mal das Paket neu installieren und das ist Quatsch. Zwei Möglichkeiten gibt es: Entweder der install-Befehl wird in den Code-Chunk geschrieben und dann nach der ersten Ausführung "auskommentiert" (d.h. eineRaute davor geschrieben) oder er kommt gar nicht ins Rmd-Dokument, sondern das Paket wird nur in der DESCRIPTION-Datei unter "Imports" aufgelistet.
+
+Der Umwandlungsschritt, für den wir tidyr brauchen, ist relativ einfach. Ich nehm die Spalten, die mich interessieren und sortiere die Werte dieser Spalten neu, so dass ich eine Spalte habe, in der steht die ehemalige Überschrift der Spalte und einen Spalte, in der der dazugehörige Wert steht. Das ist  der `gather`-Befehl. Hinter `key = ` schreibe den Namen der neuen Spalte, in der die Überschriften der Spalten. `value = ` bezeichnet den Namen der Spalte, in dem die eigentlichen Werte aus den ursprünglichen Spalten eingefügt werden. Dahinter nenne ich einfach die Spaltennamen, die so zusammengefasst werden sollen in Hochkommas: "RD", "ND","SD".
 
 Die so zusammengefassten Werte kann ich direkt in ggplot einspeisen, in dem ich sie mit der *pipe* verbinde. In ggplot brauche ich dann nicht mehr `data = ` unterzubringen und muss nur in den aesthetics für x die Spalte angeben, die die ursprünglichen Werte beinhaltet und die Density-Kurven je nach ursprünglichen Spaltennamen einfärben:
 
 ```{r density daten tidy, fig.height= 8, fig.width = 8}
+
+
 library(tidyr)
 BACups%>%
   gather(key = "Durchmesser", value = "Wert", "RD", "ND","SD") %>%
