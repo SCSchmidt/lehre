@@ -1,0 +1,187 @@
+---
+title: "Dustinkian_Lösungen"
+author: "Sophie C. Schmidt"
+date: "28 8 2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Dustinkian - Lösungen
+
+# Aufgabenstellungen:
+
+Dustinkian ist weltweit bekannt als die übelriechendste essbare Frucht der Welt. In einer Studie fand Ihre Professorin Frau Y. Gritte heraus, dass dies an dem Gehalt von Ethionin liegt und hat nun verschiedene Untersuchungen durchgeführt, um herauszufinden, wie dieser Ethioningehalt mit anderen Faktoren zusammenhängt. Sie hat jetzt aber die Nase voll von dem Thema und übergibt Ihnen die Tabelle zur Analyse. 
+
+ - ID - jede Frucht hat eine ID
+ 
+ - fruchtgroesse_mm - die Länge der Frucht in mm
+ 
+ - ethioningehalt - die Konzentration von Ethionin in mg/100g
+ 
+ - bewertung_geruch - auf einer Skala von +10 (sehr angenehm) bis -10 (es gibt nichts ekligeres)
+ 
+ - stacheldichte - wie viele Stacheln auf der Frucht auf einem cm² Haut vorkommen
+ 
+ - wachstums_bedingungen - bei 4 unterschiedlichen Lichtzuständen gewachsene Pflanze
+ 
+ - fruchtfarbe - eine einfache Kategorisierung der Farbe der Früchte
+ 
+
+
+```{r}
+d <- read.csv2("dustinkian.csv", sep = ";", dec = ".")
+
+```
+ 
+## Aufgaben
+
+1. Finden Sie heraus, wie der Ethioningehalt mit der Bewertung des Geruchs korreliert. Hat Ihre Professorin recht?
+  1a: Erstellen Sie eine Grafik mit R², p-Wert und Funktion und interpretieren Sie das Ergebnis!
+  
+2. Sie haben die Vermutung, dass sowohl die Größe der Frucht als auch wie dicht auf ihr die Stacheln wachsen von den Wachstumsbedingungen der Pflanze abhängt. Testen Sie das!
+
+3. Wie häufig tritt welche Fruchtfarbe unter den unterschiedlichen Wachstumsbedingungen auf?
+  3a: Erstellen Sie eine Grafik
+  3b: Gibt es einen signifikanten Zusammenhang?
+  
+4. Sie schauen sich die Früchte an und denken, dass die hellgrünen besonders eklig aussehen und deshalb vielleicht auch besonders eklig riechen. Überprüfen Sie, ob ein Zusammenhang zwischen der Bewertung des Geruchs und der Farbe besteht!
+  4a: Erstellen Sie eine Grafik
+  4b: Testen Sie!
+
+5. Sie schauen sich die Früchte an und denken darüber nach, einen Ekelfaktor zu erstellen. Dafür würden Sie gern sowohl die Dichte der Stacheln als auch die Bewertung des Geruchs einbeziehen. Sie stellen fest, dass Sie dafür die Bewertungsskala für den Geruch und die Dichte der Stachel irgendwie vereinheitlichen müssen, damit sie die Werte addieren können.
+ 5a: Berechnen Sie einen Ekelfaktor aus Dichte der Stachel + Bewertung des Geruchs
+ 5b: Was können Sie anhand der Lagemaße über diese Verteilung sagen?
+
+
+# Lösungen
+
+### 1. Finden Sie heraus, wie der Ethioningehalt mit der Bewertung des Geruchs korreliert. 
+
+Hat Ihre Professorin recht?
+  1a: Erstellen Sie eine Grafik mit R², p-Wert und Funktion und interpretieren Sie das Ergebnis!
+  
+```{r}
+shapiro.test(dustinkian$ethioningehalt)
+
+shapiro.test(dustinkian$bewertung_geruch)
+
+```
+  
+  
+```{r}
+library(ggplot2)
+library(ggpubr)
+ggplot(data = dustinkian,
+             aes(x = ethioningehalt,
+                 y = bewertung_geruch))+
+  geom_point()+
+  geom_smooth(method = "lm",
+              se = FALSE)+
+  stat_poly_eq(aes(x = ethioningehalt,
+                 y = bewertung_geruch,
+                 label =  paste(..eq.label..,     # kopier die Formel (equation)
+                              ..adj.rr.label.., # kopier R²adjusted
+                   sep = "~~~~")), # Trenn es mit 4 Leerzeichen
+             rr.digits = 4, # vier Nachkommastellen für R²
+             formula = y~x, # lineare Gleichung nach der Formel y auf x
+             parse = TRUE, # zeig es an
+             size = 5,     # in Schriftgröße 5
+             color = "gray50", # Farbe
+             label.y.npc = 0.8) +  # Platzierung  auf Y-Achse
+  stat_fit_glance(method = "lm",  # es wird eine lineare regression berechnet
+                   method.args = list(formula = y ~ x), # y abhängig von X
+                   geom = "text",       # es handelt sich um eine Geometrie der Art "Text"
+                   aes(label = paste("p-Wert: ", # kopier die Angabe "p-Wert:"
+                                      signif(..p.value.., # kopier den p-Wert
+                                      digits = 5),  # 5 Nachkommastellen für p
+                                      sep = "")),   # diesmal keine "Lücke"
+                  label.y = 30,        # Platzierung  auf Y-Achse (in absoluten Zahlen)
+                  label.x = 'right',   # Platzierung auf der x-Achse am rechten Rand
+                  size = 4,            # Schriftgröße 5
+                  color = "gray50")    # Farbe
+                  
+
+```
+
+
+### 2. Sie haben die Vermutung, dass sowohl die Größe der Frucht als auch wie dicht auf ihr die Stacheln wachsen von den Wachstumsbedingungen der Pflanze abhängt. Testen Sie das!
+
+
+2. Stacheldichte zu Größe und Wachstumsbedingugnen
+
+```{r}
+library(ggplot2)
+ggplot()+
+  geom_point(data = dustinkian,
+             aes(x = fruchtgroesse_mm,
+                 y = stacheldichte,
+             col = wachstums_bedingungen))
+
+```
+
+```{r}
+man_d <- manova(cbind(fruchtgroesse_mm, stacheldichte) ~ wachstums_bedingungen, data = dustinkian)
+
+summary.aov(man_d)
+
+```
+
+Ja, hängt beides ab.
+
+
+### 3. Wie häufig tritt welche Fruchtfarbe unter den unterschiedlichen Wachstumsbedingungen auf?
+  3a: Erstellen Sie eine Grafik
+  3b: Gibt es einen signifikanten Zusammenhang?
+  
+```{r}
+ggplot()+
+  geom_bar(data = dustinkian,
+           aes(x = wachstums_bedingungen,
+               fill = fruchtfarbe))
+```
+
+```{r}
+c <- chisq.test(table(dustinkian$fruchtfarbe, dustinkian$wachstums_bedingungen)) 
+
+c$expected
+c$p.value
+```
+
+ja. gibt es.
+
+### 4. Sie schauen sich die Früchte an und denken, dass die hellgrünen besonders eklig aussehen und deshalb vielleicht auch besonders eklig riechen. Überprüfen Sie, ob ein Zusammenhang zwischen der Bewertung des Geruchs und der Farbe besteht!
+  4a: Erstellen Sie eine Grafik
+  4b: Testen Sie!
+
+```{r}
+library(ggplot2)
+ggplot()+
+  geom_boxplot(data = dustinkian,
+             aes(x = fruchtfarbe,
+                 y = bewertung_geruch))
+```
+
+```{r}
+anova_stink <- aov(bewertung_geruch ~ fruchtfarbe, data = dustinkian )
+
+summary(anova_stink)
+```
+
+Kein Zusammenhang.
+
+
+###5. Sie schauen sich die Früchte an und denken darüber nach, einen Ekelfaktor zu erstellen. Dafür würden Sie gern sowohl die Dichte der Stacheln als auch die Bewertung des Geruchs einbeziehen. Sie stellen fest, dass Sie dafür die Bewertungsskala für den Geruch und die Dichte der Stachel irgendwie vereinheitlichen müssen, damit sie die Werte addieren können.
+ 5a: Berechnen Sie einen Ekelfaktor aus Dichte der Stachel + Bewertung des Geruchs
+ 5b: Was können Sie anhand der Lagemaße über diese Verteilung sagen?
+
+```{r}
+dustinkian$baeh <- scale(sqrt(dustinkian$bewertung_geruch^2)) + scale(dustinkian$stacheldichte)
+
+hist(dustinkian$baeh)
+mean(dustinkian$baeh)
+median(dustinkian$baeh)
+
+```

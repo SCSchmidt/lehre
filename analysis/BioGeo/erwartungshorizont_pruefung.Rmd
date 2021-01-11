@@ -1,0 +1,85 @@
+---
+title: "Prüfung im Modul 11"
+date: "Abgabetermin: 14.09.2020"
+output: pdf_document
+---
+
+# Erwartungshorizont
+
+## Abgabeformat:
+
+ - eine zip-Datei benannt "Nachname_Vorname_Abgabe" (bitte hier Ihren Namen einsetzen) eines R-Projektordners per E-Mail an: scschmidt@uni-koblenz.de 
+ 
+ - darin ist eine Ordnerstruktur, in der die Daten von der Hausarbeit getrennt abgelegt wurden
+ 
+ - die Hausarbeit wurde in R-Markdown geschrieben und in eine PDF "gestrickt" (knitted)
+ 
+ - die PDF befindet sich auch in dem Ordner
+ 
+ - in der PDF wird bitte kein Code abgedruckt
+ 
+
+## Erwartungen an Grafiken:
+
+ - alle Grafiken haben einen Titel
+ 
+ - alle Grafiken haben korrekt beschriftete Achsen und Legenden (d.h. nicht mehr das automatische, sondern sinnvoll umbenannt)
+ 
+ - die Grafiken sind in der PDF so eingebettet, dass die Werte gut lesbar sind (Schriftgröße etc)
+ 
+ - die Grafiken sind für das Skalenniveau richtig ausgewählt und visualisieren die Daten für die Fragestellung angemessen
+
+ - die Grafik wird richtig interpretiert
+ 
+
+## Erwartungen an Teste
+
+ - der Test ist geeignet für Fragestellung, Skalenniveau und Verteilungsform
+ 
+ - diese Testauswahl wird im Text begründet
+ 
+ - eventuelle Vor-Teste sind durchgeführt worden (im Text reicht die Erwähnung dessen und des Ergebnisses, in der Rmd-Datei wird der Code dafür auch abgelegt mit eval = FALSE)
+ 
+ - der Test wird im Code richtig implementiert
+ 
+ - das Testergebnis wird richtig interpretiert
+ 
+
+## Erwartungen an den Text
+
+ - das wichtigste ist, dass Sie immer darlegen, warum Sie diese Methode zu der Beantwortung der Frage wählen und das Ergebnis richtig interpretieren
+ 
+ - Beantworten Sie die Fragestellung explizit. 
+ 
+ - bitte schreiben Sie nicht mehr als 2500 Worte (es gibt ein rstudio-addin namens "wordcountaddin", das Ihnen behilflich sein kann: https://github.com/benmarwick/wordcountaddin ist über devtools::install_github() installierbar)
+ 
+ - bitte achten Sie auf Ihre Rechtschreibung und Grammatik, formulieren Sie die Sätze aus
+ 
+ - Nutzen Sie die Formatierungsmöglichkeiten von (R)Markdown und setzen Sie Zwischen-Überschriften für die einzelnen Fragestellungen
+ 
+ - Sie brauchen keine Literatur zitieren, es ist eine technische Prüfung, die schaut, ob Sie die Methodik richtig verstanden haben und in R umsetzen können
+ 
+ - wenn Sie einen Witz machen wollen, machen Sie einen Witz. Dafür gibt es aber leider keine extra Punkte. ;-)
+ 
+
+## "Knobelaufgabe"
+
+Jede/r von Ihnen hat eine Knobelaufgabe bekommen, die etwas Kreativität von Ihnen abverlangt. Diese Aufgabe können Sie lösen, aber es kann sein, dass Sie darüber etwas länger nachdenken müssen. Wenn Sie es nicht schaffen, Sie zu lösen, können Sie trotzdem Ideen zur Lösung aufschreiben, die ich Ihnen gutschreiben kann. Die Aufgabe hat den geringsten Einfluss auf Ihre Endnote, sollten Sie sie nich schaffen (in Zahlen: 0,3 Notenpunkte).
+ 
+## Allgemeine Hinweise:
+
+ - es ist nicht immer alles signifikant! 
+ 
+ - es gibt nicht immer überall Zusammenhänge!
+ 
+ - nicht alle Gruppen sind wirklich unterschiedlich!
+ 
+ - nicht immer ist alles normalverteilt!
+ 
+ - Denken Sie nicht zu viel darüber nach, ob die Dinge biologisch Sinn haben...
+ 
+ - Beachten Sie alle Voraussetzungen der Verfahren, auch die, die erst im Nachhinein geprüft werden können! Sollte sich dann herausstellen, dass ein Verfahren nicht geht, schreiben Sie in Ihre Begründung, dass Sie dies herausgefunden haben und beschreiben und nutzen Sie die Methode, die Sie anwenden können. Den Code, den Sie zur "Prüfung" des ersten Verfahrens geschrieben haben, lassen Sie im Rmarkdown stehen und setzen den Code Chunk auf eval = FALSE. So kann ich sehen, was Sie alles geleistet haben, aber es nimmt Ihnen nicht so viel Platz im Dokument.
+ 
+ - Wenn Sie weniger als 2500 Worte brauchen um alles zu sagen, was es zu sagen gibt, schreiben Sie bitte weniger.
+ 
+ 

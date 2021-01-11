@@ -9,6 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Lösung für MANOVA
+
+
+**Aufgabe: Berechnet und interpretiert eine multivariate ANOVA für das Gewicht der Pinguine und ihrer Flossenlänge in Abhängigkeit von der Spezies!**
+
+```{r}
+
+data(penguins)
+
+shapiro.test(penguins$flipper_length_mm)
+
+res.pen <- manova(cbind(flipper_length_mm, body_mass_g) ~ species, data = penguins)
+
+summary.aov(res.pen)
+
+```
+
 ## Lösung Pearson Bravais R
 
 
@@ -130,14 +147,12 @@ penguins$sex <- as.numeric(as.character(penguins$sex))
 2. Logit berechnen: 
 
 **Aufgabe** Füllt diese Syntax aus und berechnet das logit!
-```
 
-mylogit <- glm(sex ~ body_mass_g + flipper_length_mm, data = penguins, family = "binomial")
 
-```
 3. **Aufgabe** Die Summary-Statistik des Logit auswerfen lassen:
 
 ```{r}
+mylogit <- glm(sex ~ body_mass_g + flipper_length_mm, data = penguins, family = "binomial")
 
 
 summary(mylogit)

@@ -248,5 +248,103 @@ Wir können also festhalten: Eine Lineare Regression ist für die Beschreibung d
  
  2. welcher der beiden Parameter eher von dem anderen abzuhängen scheint!
 
+```{r}
 
+c <- subset(penguins, penguins$species == "Chinstrap")
+
+f1 <- lm(bill_length_mm ~ bill_depth_mm, data = c)
+
+f2 <- lm(bill_depth_mm ~ bill_length_mm, data = c)
+
+summary(f1)
+```
+
+```{r}
+summary(f2)
+
+ggplot(data = c)+
+  geom_point(aes(x = bill_length_mm,
+                 y = bill_depth_mm))+
+  geom_smooth()
+```
+```{r}
+library(ggpmisc)
+ggplot(data = c,
+       aes(x = bill_depth_mm,
+           y = bill_length_mm))+
+  geom_point()+
+    geom_smooth(aes(x = bill_depth_mm, 
+                    y = bill_length_mm), method = "lm",
+              se = FALSE)+
+  stat_poly_eq(aes(x = bill_depth_mm, 
+                   y = bill_length_mm, 
+                   label =  paste(..eq.label..,     # kopier die Formel (equation)
+                                  ..adj.rr.label.., # kopier R²adjusted
+                   sep = "~~~~")), # Trenn es mit 4 Leerzeichen
+             rr.digits = 4, # vier Nachkommastellen für R²
+             formula = y~x, # lineare Gleichung nach der Formel y auf x
+             parse = TRUE, # zeig es an
+             size = 5,     # in Schriftgröße 5
+             color = "gray50", # Farbe
+             label.y.npc = 0.8) +  # Platzierung  auf Y-Achse
+  stat_fit_glance(method = "lm",  # es wird eine lineare regression berechnet
+                   method.args = list(formula = y ~ x), # y abhängig von X
+                   geom = "text",       # es handelt sich um eine Geometrie der Art "Text"
+                   aes(x = bill_depth_mm, 
+                       y = bill_length_mm, 
+                       label = paste("p-Wert: ", # kopier die Angabe "p-Wert:"
+                                      signif(..p.value.., # kopier den p-Wert
+                                      digits = 5),  # 5 Nachkommastellen für p
+                                      sep = "")),   # diesmal keine "Lücke"
+                  label.y = 30,        # Platzierung  auf Y-Achse (in absoluten Zahlen)
+                  label.x = 'right',   # Platzierung auf der x-Achse am rechten Rand
+                  size = 4,            # Schriftgröße 5
+                  color = "gray50")    # Farbe
+                  
+
+```
+
+```{r}
+library(ggpmisc)
+ggplot(data = c,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm))+
+  geom_point()+
+    geom_smooth(aes(x = bill_length_mm, 
+                    y = bill_depth_mm ), method = "lm",
+              se = FALSE)+
+  stat_poly_eq(aes(x = bill_length_mm, 
+                   y = bill_depth_mm, 
+                   label =  paste(..eq.label..,     # kopier die Formel (equation)
+                                  ..adj.rr.label.., # kopier R²adjusted
+                   sep = "~~~~")), # Trenn es mit 4 Leerzeichen
+             rr.digits = 4, # vier Nachkommastellen für R²
+             formula = y~x, # lineare Gleichung nach der Formel y auf x
+             parse = TRUE, # zeig es an
+             size = 5,     # in Schriftgröße 5
+             color = "gray50", # Farbe
+             label.y.npc = 0.8) +  # Platzierung  auf Y-Achse
+  stat_fit_glance(method = "lm",  # es wird eine lineare regression berechnet
+                   method.args = list(formula = y ~ x), # y abhängig von X
+                   geom = "text",       # es handelt sich um eine Geometrie der Art "Text"
+                   aes(x = bill_length_mm, 
+                       y = bill_depth_mm, 
+                       label = paste("p-Wert: ", # kopier die Angabe "p-Wert:"
+                                      signif(..p.value.., # kopier den p-Wert
+                                      digits = 5),  # 5 Nachkommastellen für p
+                                      sep = "")),   # diesmal keine "Lücke"
+                  label.y = 30,        # Platzierung  auf Y-Achse (in absoluten Zahlen)
+                  label.x = 'right',   # Platzierung auf der x-Achse am rechten Rand
+                  size = 4,            # Schriftgröße 5
+                  color = "gray50")    # Farbe
+                  
+
+```
+
+
+
+```{r}
+plot(f2, which=3, col=c("blue"))  # Scale-Location Plot
+
+```
 
