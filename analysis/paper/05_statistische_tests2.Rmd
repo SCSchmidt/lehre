@@ -1,5 +1,5 @@
 ---
-title: "Teste 2"
+title: "Test auf Normalverteilung und non-parametrische Verfahren"
 author:
   - Schmidt, Sophie C.
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -31,150 +31,165 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-library(archdata)
-data("BACups")
-data("Fibulae")
-data("Acheulean")
-data("Bornholm")
-data("Snodgrass")
-
-if (!require("nortest")) install.packages("nortest")
-library(nortest)
-
-if (!require("ggpubr")) install.packages("ggpubr")
-library(ggpubr)
-
-if (!require("dgof")) install.packages("dgof")
-library(dgof)
-
 ```
 
-## Test auf Normalverteilung mit Chi-Quadrat
+# Sind meine Daten normalverteilt?
 
-Im Hintergrund ist die Berechnung hochkomplex, aber in R relativ simpel, wenn man das richtige Paket gefunden hat, in dem es die Funktion gibt, die man braucht... 
+## Q-Q-plot
 
-Wir benutzen den Acheulean-Datensatz, da dort die Anzahlen von zB HA = Handaxes (Faustkeile) pro Fundplatz (rownames, die Namen der Zeilen) praktischerweise schon ausgezählt sind.
+Optisch die Normalverteilung abzuschätzen ist sinnvoll, dann hat man schon einmal eine Idee. 
 
-Ich muss nur 
+Ein Q-Q-plot ist ein "Quantil-Quantil-Plot": Die Beobachtungswerte eines Merkmals werden der Größe nach geordnet und abgetragen. Als Vergleich dienen die Quantile der Normalverteilung (theoretische Verteilung), diese werden als Linie abgetragen. Wenn die abgetragene Messwertreihe normalverteilt ist, stimmen die empirischen und die theoretischen Quantile annähernd überein, d. h. die Werte liegen auf einer Diagonalen.
 
-1. einen Vektor erstellen, der die ausgezählten Häufigkeiten meiner nominalskalierten Daten darstellt
+Große systematische Abweichungen von dieser Diagonalen geben einen Hinweis darauf, die Messwerte doch nicht normalverteilt sind. Das Quantil-Quantil-Diagramm kann keinen Verteilungstest ersetzen. 
 
-2. die Anzahl der Klassen wissen. Die kann ich mir aber auch einfach von R noch einmal ausrechnen lassen: Die Funktion length zählt, wie lang ein Vektor ist (wie viele Werte drin sind)
-```{r}
-#pearson.test stammt aus dem nortest-package
-pearson.test(Acheulean$HA, n.classes = length(Acheulean$HA), adjust = TRUE) 
-pearson.test(Acheulean$HA, n.classes = length(Acheulean$HA), adjust = FALSE)
+Das Paket, in dem Q-Q-plots für R umgesetzt wurden, heißt `ggpubr`, installieren wir es also:
+
+```{r,eval = FALSE}
+install.packages("ggpubr")
 ```
 
-Was bedeutet "adjust"? Warum habe ich das einmal mit TRUE und einmal mit FALSE ausgeführt? 
-
-Ein Blick in die Hilfe hilft. Sucht einmal nach pearson.test und schaut was da steht.
-
-Achtet insbesondere auf die Warnungen unter "Note"!
-
-Das Ergebnis müssen wir jetzt aber auch noch interpretieren.
-
-Die Regel war: Wenn p > 0.05 sind die Daten normalverteilt.
-
-Das heißt?
-
-Wer hätte das gedacht? Schauen wir uns die Daten doch noch einmal optisch an:
-
-```{r Acheulean anschauen}
-ggplot(data = Acheulean)+
-  geom_col(aes(y = HA, x = rownames(Acheulean))) # geom_col nehme ich, weil die Daten schon ausgezählt sind
-```
-Man kann sich vorstellen: Wenn man die Reihenfolge auf der x-Achse verändert, sind die Daten tatsächlich normalverteilt! 
-
-Wie, Reihenfolge verändern?
-
-Nicht vergessen: Das sind nominale Daten, die Reihenfolge ist egal!
-
-Das ändert sich bei den...
-
-## Ordinalen Daten
-## K-S-Test
-
-Der K-S-Test benötigt mindestens ordinal skalierte Daten, man kann ihn als Anpassungstest verwenden (und damit den Datensatz auf normalverteilung testen ) und als Zweichstichproben-Test nutzen.
-
-
-Zuerst als Anpassungstest. Nehmen wir eine ordinale Variable, sagen wir die Perioden in dem Bornholmer Datensatz und ob es vllt eine Normalverteilung in der Häufigkeit der Belegung gibt.
-```{r}
-Bornholm$Period <- ordered(Bornholm$Period) # zuerst stelle ich sicher, dass R weiß, dass es sich um ordinale Daten handelt
-per <- table(Bornholm$Period) # dann zähl ich die Häufigkeiten
-
-ks.test(per, "pnorm" ) # und vergleiche die Häufigkeiten mit der Normalverteilung "pnorm"
-```
-Der p-Wert ist sehr sehr klein, das heißt? 
-
-Daran denken: Die Nullhypothese ist, dass die beiden Verteilungen gleich sind. Wir testen in die "andere Richtung", wenn p > 0.05 sind die Daten normalverteilt.
-
-Schauen wir uns doch die Daten noch einmal kurz an, um zu überprüfen, ob wir das richtig verstanden haben:
-
-```{r optische überprüfung}
-barplot(per) # das ist der base-R-Befehl um ein Säulendiagramm zu erstellen. Nicht schön, aber schnell und wenig zu tippen. 
-```
-
-Alles klar?
-
-Dann weiter mit 
-
-## metrischen Daten!
-## Test auf Normalverteilung: optisch und mit Shapiro-Wilk
-
-Optisch die normalverteilung abzuschätzen ist sinnvoll, dann kann man sich viele Tests sparen. 
-
-Deswegen schauen wir doch einmal, ob sich die Höhe der Gefäße im Datensatz BACups normalverteilt. Fangen wir mit einem Q-QPlot an!
+Und wenden es an. Wir schauen uns die Randdurchmesser der bronzezeitlichen Tassen aus Italien an, die im Datensatz `BACups` liegen:
 
 ```{r Q-Q-Plot}
-ggqqplot(BACups$H)
+library(ggpubr)
+library(archdata)
+data("BACups")
+ggqqplot(BACups$RD)
 ```
 Man sieht: auf der x-Achse wird die theoretische Verteilung abgetragen und auf der y-Achse die unserer Stichprobe (sample). Die Linie zeigt den Idealverlauf an.
 
-Fast alle Punkte liegen in der grauen Zone, die das Konfidenzintervall von 95% darstellt. Das sieht also nicht ganz schlecht aus (wenn auch nicht so ganz exakt).
+Wie man sieht, weichen einige Punkte deutlich von der Linie und dem 95%-konfidenzintervall (das ist der graue Bereich) ab. Wir können also _nicht_ davon ausgehen, dass die Daten normalverteilt sind.
 
-Schauen wir deshalb doch mit der Visualisierung als Dichte-Grafik weiter. Und differenzieren wir besser mal die zwei Gruppen, von denen wir wissen, dass sie im Datensatz stecken:
+Testen wir das jetzt mit dem richtigen Test: Shapiro, los geht's!
 
+## Shapiro-Wilk-Test
 
-```{r density visualisierung BACups}
-ggplot(BACups) +
-  geom_density(aes(x = H, col = Phase)) # kurz überlegen: was genau passiert hier?
-```
-Wenn ich mir das anschaue, ist die Höhe der Protoappeninen Tassen ja nicht ganz der Normalverteilung unähnlich, die subappenine Phase aber gar nicht. Testen wir also die protoappeninen Gefäße jetzt mit dem richtigen Test: Shapiro, los geht's!
-
-
-```{r test BAcups}
-
-BACups_p <- BACups %>%
-  filter(Phase == "Protoapennine") # ich kreiiere einen neuen Datensatz, in dem nur die BACups vorkommen, die Protoappenin in der Spalte "Phase" stehen haben
-
-BACups_s <- BACups %>%
-  filter(Phase == "Subapennine") # ich kreiiere einen neuen Datensatz, in dem nur die BACups vorkommen, die Subappenin in der Spalte "Phase" stehen haben
-
-  shapiro.test(BACups_p$H)
-
-```
-Hmmmh. Das Ergebnis ist etwas enttäuschend. p ist KLEINER als 0.05, deswegen sind die Daten wohl nicht normalverteilt (Ich nehme die Alternativhypothese mit großer Wahrscheinlichkeit an.) 
-
-Die Sache mit den Gruppen ist total wichtig. Damit man nicht jedes mal einen neuen Datensatz anlegen muss, gibt es einen Trick: Man benutzt tapply. Tapply macht aus meinem Datensatz Gruppen und wendet für jede Gruppe den Test an, den ich auswähle:
-
-```{r tapply}
-  # tapply(datensatz$testvariable, datensatz$gruppenvariable, shapiro.test)
-  
-  # Probiert es aus!
-
-tapply(BACups$H, BACups$Phase, shapiro.test)
-
-```
-Ok. Das Ergebnis bleibt aber doch das gleiche.
-
-
-Dann schauen wir doch einmal in einen anderen Datensatz. Es gibt ja noch den zu den Fibeln. Testen wir doch einmal, ob die Dicke des Bogens sich vielleicht normalverteilt. Zuerst der Q-Q-Plot
-
-```{r QQ fibulae}
-ggqqplot(Fibulae$BT)
+```{r test shapiro BACups_Randdurchmesser}
+  shapiro.test(BACups$RD)
 ```
 
+Ok, ok, was ist hier passiert? 
+
+Der Shapiro-Wilk Test testet, ob es einen signifikanten Unterschied zwischen der Normalverteilung und den z-transformierten Daten der eigenen Messwertreihe gibt. Da der Test die Daten selber transformiert, müssen wir ihm nicht die z-transformierten Werte geben. 
+
+Nehmen wir das Ergebnis einmal auseinander.
+
+R sagt:
+
+```
+	Shapiro-Wilk normality test
+
+data:  BACups$RD
+W = 0.89773, p-value = 0.0001088
+```
+
+ - In der ersten Zeile noch einmal, welchen Test wir angewandt haben
+ - in der zweiten Zeile, auf welchen Datensatz
+ - und die dritte Zeile wird spannend. Da steht
+  - W = 0.89773
+  - p = 0.0001088
+
+_W_ ist die in der Vorlesung erwähnte Testgröße, die mit einer theoretischen Verteilung im Bezug auf die Wahrscheinlichkeit abgeglichen wird, dass dieser Wert entsteht.
+
+_p_ ist die Wahrscheinlichkeit, dass wir uns irren, wenn wir die H_0 - Hypothese ablehnen.
+
+Was war H_0 noch einmal? 
+
+H_0 ist: Es gibt keinen signifikatanten Unterschied zwischen der Normalverteilung und meiner Messwertreihe.
+
+Wir irren uns also mit einer Chance von etwa 0,01 %, wenn wir das ablehnen und behaupten würden, es gäbe einen Unterschied zwischen der Normalverteilung und der Messwertreihe.
+
+Umgedreht: Wir irren uns mit einer Wahrscheinlichkeit von 0,01%, wenn wir H_1 annehmen. Und H_1 war die Hypothese, DASS es einen Unterschied zwischen der theoretischen Verteilung und meinen Daten gibt. 
+
+Ok. 
+
+Der Test sagt also im Klartext: Hörmal, die Daten sind nicht normalverteilt. Die Chance, dass du dich irrst, wenn du davon ausgehst, dass sie NICHT normalverteilt sind, ist super gering.
+
+Jetzt wissen wir aber, dass in unserem Datensatz zwei unterschiedliche Pasen enthalten sind. Wieso könnte das ein Problem sein? -- Diskutiert das in eurer Gruppe!
+
+Wir untersuchen jetzt einmal nur die protoappeninen Tassen. Das heißt, wir filtern oder subsetten den originalen Datensatz:
+```{r}
+BACups_pa <- subset(BACups, BACups$Phase == "Protoapennine")
+```
+Und nutzen diesen noch einmal in dem Shapiro-Wilk-Test:
+
+```
+shapiro.test(BACups_pa$RD)
+```
+
+**Aufgabe: Was kommt hierbei heraus? Wie kann man das Ergebnis interpretieren? Wieso ist plötzlich das Thema des Signifikanzniveaus von Bedeutung? -- Diskutiert das in eurer Gruppe!**
+
+Wenn wir herausgefunden haben, ob unsere Daten normalverteilt sind oder nicht, können wir ein geeignetes Testverfahren auswählen. Wir beginnen jetzt mit den Testverfahren, die wir nehmen können, wenn die Daten NICHT normalverteilt sind, den sogenannten non-parametrischen oder "verteilungsfreien" Testen:
+
+# Gruppenunterschiede testen
+
+## non-parametrische Teste
+
+### U-Test
+
+Der U-Test heißt in R `wilcox,test` und wir brauchen für ihn die beiden Gruppen als zwei unterschiedliche Datensätze. Nehmen wir doch einfach noch einmal die BACups und unterteilt in die beiden Phasen. Sind sie im Randdurchmesser unterschiedlich?
+
+BACups_pa haben wir ja schon erstellt. Das noch einmal parallel für die Subappeninen Tassen:
+
+```{r}
+BACups_sa <- subset(BACups, BACups$Phase == "Subapennine")
+```
+
+und jetzt der Test:
+
+```{r}
+wilcox.test(BACups_pa$RD, BACups_sa$RD)
+```
+
+Ok, wie interpretieren wir das?
+Als erstes sagt uns R noch einmal, welchen Test er gemacht hat. "continuity correction" macht er, weil wir den U-Test mit metrischen Daten durchgeführt haben. 
+Dann gibt er die berechneten W und p - Werte und sagt uns netter Weise noch einmal, was die Alternativhypothese ist: `alternative hypothesis: true location shift is not equal to 0`. Die H_1 ist also, die beiden Gruppen sind unterschiedlich. p gibt uns die Irrtumswahrscheinlichkeit dafür.
+
+Das Ergebnis ist also: Ja die beiden Gruppen unterscheiden sich höchstsignifikant (p < 0,01) voneinander im Randdurchmesser! Yay! Ein schönes Ergebnis!
+
+Doch in welche Richtung unterscheiden sie sich?
+
+Wir haben die Möglichkeit, mit dem Argument `alternative =` anzugeben, ob man schon davon ausgeht, dass eine Gruppe größer ist als die andere. Das heißt, ich kann eine gerichtet Alternativhypothese angeben. Man sagt immer "der erste Datensatz, den ich angebe" (x) ist "less", also kleiner, oder "greater", also größer, als der zweite. Oder man nimmt das Argument weg und berechnet einen "two.sided" Test, der keine vorherige Annahme trifft. Das haben wir eben gemacht.
+
+Probieren wir also einmal aus, was passiert, wenn wir davon ausgehen, dass die protoappenninen Tassen kleiner sind als die subappenninen Tassen:
+
+```{r}
+wilcox.test(BACups_pa$RD, BACups_sa$RD, alternative = "less")
+```
+Und jetzt noch einmal andersherum: 
+```{r}
+wilcox.test(BACups_pa$RD, BACups_sa$RD, alternative = "greater")
+```
+
+**Aufgabe: Was bedeuten diese Ergebnisse? Visualisiert die Randdurchmesser doch einmal als Boxplotdiagramme. Versteht ihr die drei unterschiedlichen p-Werte jetzt besser? -- Diskutiert das in der Gruppe!** 
+
+
+
+### K-S-Test
+
+Der K-S-Test benötigt mindestens ordinal skalierte Daten (d.h. metrische gehen auch), man kann ihn als Anpassungstest verwenden und als Zweichstichproben-Test nutzen.
+
+Wir nehmen ihn, um zwei Gruppen miteinander zu vergleichen. Auch hier kann man mit der `alternative` arbeiten.
+
+Anhand des U-Tests und des Boxplot-Diagramms haben wir eben herausgefunden, welche Gruppe die größeren Randdurchmesser hat. Bauen wir das also in die Test-Berechnung ein und schauen, ob wir das gleiche Ergebnis wie mit dem U-Test bekommen:
+
+```{r}
+ks.test(BACups_pa$RD, BACups_sa$RD, alternative = "greater")
+```
+
+Zuerst sagt uns R wieder, welchen Test wir berechnet haben und welche Daten wir benutzt haben. Dann den D-Wert, der hier als `D^+` markiert ist, weil wir gesagt haben, dass wir mit der gerichteten Hypothese arbeiten, dass der erste Datensatz größer ist als der zweite. Genau das sagt uns R auch noch einmal: `alternative hypothesis: the CDF of x lies above that of y` , d.h. die CDF = "cumulative distribution function", die kumulative Verteilungsfunktion von x ist größer als die von y. 
+
+Der p-Wert liegt noch immer unter 0,05, damit können wir einen hochsignifikanten Zusammenhang annehmen. Man merkt aber, dass das Ergebnis etwas "konservativer", also etwas vorsichtiger ist als das Ergebnis des U-Tests. 
+
+
+
+
+# Rekapitulieren:
+
+Um zu rekapitulieren: Wenn ich einen Datensatz analysieren möchte, muss ich erst gucken, ob er normalverteilt ist. Dafür kann ich ein QQ-Plot nutzen und den Shapiro-Test berechnen. Wenn die Daten nicht normalverteilt sind, muss ich einen non-parametrischen Test benutzen, zB den U-Test oder den KS-Test. Bei
+
+## Hausaufgabe
 
 ```{r density Fibel Dicke des Bogens}
 
@@ -191,16 +206,11 @@ Aha! Ein p-Wert von 0.58. Wie kann der interpretiert werden?
 
 Super, jetzt wissen wir, wie wir am Anfang einmal überprüfen, ob unsere Daten normalverteilt sind. Wichtig wichtig für viele Testverfahren! 
 
-Jetzt vergleichen wir zwei Gruppen miteinander.
-
-
-## Vergleich zweier Gruppen
-
-## U-Test
+--- 
 
 Nehmen wir doch einfach die Area-Angaben aus dem Snodgrass-Datensatz und schauen, ob die Gruppen "innerhalb der Mauer" und "außerhalb der Mauer" signifikant unterschiedlich sind:
 ```{r}
-snod_in <- subset(Snodgrass, Inside == "Inside" )
+snod_in <- subset(Snodgrass, Inside == "Inside")
 snod_out <- subset(Snodgrass, Inside == "Outside" )
 
 wilcox.test(snod_in$Area, snod_out$Area)
@@ -215,47 +225,3 @@ ggplot(data = Snodgrass)+
   
 ```
 Ich bin überzeugt. Das können wir wirklich stichhaltig interpretieren!
-
-### K-S-Test mit zwei Verteilungen:
-
-Kriegen wir das gleiche Ergebnis mit dem K-S-Test?
-
-```{r}
-ks.test(snod_in$Area, snod_out$Area)
-
-```
-
-Ja! Goil! 
-
-
-
-## F-Test
-Der F-Test vergleicht die Varianzen von metrischen Variablen. Schauen wir uns doch noch einmal die Höhe der BACups an:
-```{r}
-var.test(x = BACups_p$H,
-         y = BACups_s$H,
-         alternative = "two.sided")
-```
-Die Alternativhypothese ist, dass das Verhältnis der beiden Varianzen zueinander nicht 1 entspricht -- sie also unterschiedlich sind.
-
-Allerdings lässt der p-Wert keine Annahme der Alternativhypothese zu... 
-
-
-## t-test
-
-Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass wir von zwei unterschiedlichen Gruppen ausgehen können:
-```{r}
-t.test(x = BACups_p$H,
-         y = BACups_s$H,
-         alternative = "two.sided")
-```
-Es wurde ein Welch-Test durchgeführt, weil die Varianzen nicht gleich sind (auch wenn wir oben die Alternativhypothese nicht annehmen konnten, war das Ergebnis auch nicht eindeutig so, dass das Varianzverhältnis 1 entspricht).
-
-Der p-Wert erlaubt es uns wieder nicht, die Alternativhypothese sicher anzunehmen.
-
-
-Tcha. Das passiert manchmal.
-
-Tatsächlich haben wir in der Archäologie selten normalverteilte Daten. Deswegen sind der Mann-Whitney-Test und der K-S-Test wichtiger für uns.
-
-
