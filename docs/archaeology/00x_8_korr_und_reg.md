@@ -419,11 +419,11 @@ Damit die Umsetzung in der Zukunft klappt, noch einmal eine Übungsaufgabe:
 Hausaufgabe
 -----------
 
-1.  Erstellen Sie sich ein neues R-Projekt.
+1.  Erstellen Sie sich ein neues R-Projekt (Das Skript zu dem Thema fand sich hier: <https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_2_rrtools_arch.md>) .
 
 2.  In diesem Projekt legen Sie die Daten Bsp\_Graeber.csv im "analysis/data/raw\_data/"-Ordner ab (Sie finden sie in ILIAS im Ordner "Daten").
 
-3.  In ihrem "paper.Rmd" laden Sie die Daten mit einem relativen Pfad ein `read.csv2("../data/data_raw/Bsp_Graeber.csv", row.names = "X"` (erweitern Sie diesen Code mit der Zuweisung auf eine Variable ihrer Wahl).
+3.  In ihrem "paper.Rmd" laden Sie die Daten mit einem relativen Pfad ein `read.csv2("../data/data_raw/Bsp_Graeber.csv", row.names = "X")` (erweitern Sie diesen Code mit der Zuweisung auf eine Variable ihrer Wahl, zB mit "Bsp\_Graeber &lt;-" ). Der Code muss im RMD in einem Code- Chunk geschrieben sein und von dort ausgeführt werden, damit der relative Pfad funktioniert. Relative Pfade gehen ja von dem Ort aus, von denen sie ausgeführt werden. Hier also von der RMD, die im Ordner paper liegt, eine Ordnerstruktur-Etage nach oben (..) - das ist dann der Ordner "analysis" - dann von dort in den Ordner "data" und dort in den Order "data\_raw" und darin muss dann die Bsp\_Graeber.csv abgelegt worden sein.
 
 In diesem Datensatz gibt es die folgenden Variablen:
 

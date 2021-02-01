@@ -170,7 +170,7 @@ Wie in der Vorlesung erwähnt, muss die Verteilung der Residuen bei einer linear
 
 Mit dem Befehl von oben `summary(fit)` konnten wir auch schon ein paar Informationen zu den Residuen abfragen. Hier gab es den Minimalwert (Min), das 1. Quartil (1Q), den Median, das 3. Quartil (3Q) und den Maximalwert (Max), die einen Hinweis darauf geben, ob die Residuen normalverteilt sind. 
 
-Außerdem gibt es ncoh ein paar andere Möglichkeiten, die Residuen zu analysieren.
+Außerdem gibt es noch ein paar andere Möglichkeiten, die Residuen zu analysieren.
 
 Den Q-Q-plot (genau wie bei dem Test auf Normalverteilung), dann einen Plot, der die Residuen zu den vorhergesagten Werten vergleicht, um deren Verteilung zu zeigen, ein Plot, anhand dessen man die Homoskedastizität überprüfen kann und ein letzter Plot, der für die best-fit-Linie besonders einflussreiche Punkte identifiziert.
 
