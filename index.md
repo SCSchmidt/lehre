@@ -12,7 +12,7 @@
 12. [Gruppenunterschiede bei normalverteilten Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_7_statistische_tests3.md)
 13. [Korrelation und Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_8_korr_und_reg.md)
 
-![](amphorae-2291971_1280_kl.jpg)
+![](https://github.com/SCSchmidt/lehre/blob/gh-pages/amphorae-2291971_1280_kl.jpeg)
 
 ### Biologie
 
