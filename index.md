@@ -12,8 +12,10 @@
 12. [Gruppenunterschiede bei normalverteilten Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_7_statistische_tests3.md)
 13. [Korrelation und Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_8_korr_und_reg.md)
 
+![](https://cdn.pixabay.com/photo/2017/05/07/09/43/amphorae-2291971_1280.jpg)
 
 ### Biologie
+
 1. [Basics](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B01_basics.md)
 2. [Skalenniveaus in R](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B02_Skalenniveaus.md)
 3. [Visualisierung von Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B03_basics_ggplot.md)
