@@ -1,5 +1,19 @@
-## Herzlich Willkommen bei der Scriptsammlung für Statistik in den BioGeoWissenschaften! 
+## Herzlich Willkommen bei der Scriptsammlung für Statistik in der Archäologie und den BioGeoWissenschaften! 
 
+### Archäologie
+
+1. [Basics](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B01_basics.md)
+2. [Skalenniveaus in R](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_Skalenniveaus_arch.md)
+3. [Lagemaße und erste Visualisierung von Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x1_Lagema%C3%9Fe_ggplot_arch.md)
+4. [Werkzeuge für Reproduzierbarkeit](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_2_rrtools_arch.md)
+5. [ggplot und Datenmanagement](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x4_ggplot%2Bdata_wrangling.md)
+6. [Erste Testverfahren](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_5_statistische_tests1.md)
+7. [Test auf Normalverteilung und Gruppenunterschiede bei ordinalen Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_6_statistische_tests2.md)
+12. [Gruppenunterschiede bei normalverteilten Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_7_statistische_tests3.md)
+13. [Korrelation und Regression](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/archaeology/00x_8_korr_und_reg.md)
+
+
+### Biologie
 1. [Basics](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B01_basics.md)
 2. [Skalenniveaus in R](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B02_Skalenniveaus.md)
 3. [Visualisierung von Daten](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B03_basics_ggplot.md)
