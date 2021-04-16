@@ -1,0 +1,77 @@
+---
+title: "Prüfungsaufgaben zur Teufelsschlinge"
+date: "Abgabetermin: 14.09.2020" 
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+t <- read.csv2("teufelsschlinge.csv", sep = ";", dec = ".", 
+               encoding = "UTF-8", stringsAsFactors = TRUE)
+```
+
+# Die Teufelsschlinge
+Die Teufelsschlinge (engl.: Devil's Snare) ist eine magische Killerpflanze. Sie hat lange Tentakel, mit denen sie ihr Opfer unentrinnbar fesselt. Es heißt, am besten gedeiht die Teufelsschlinge in dunklen, feuchten Räumen. 
+
+Ihr Botanikprofessor Sprosse hatte einige Experimente zu der Teufelsschlinge unternommen und dabei 100 Pflanzen an unterschiedlichen Orten aufwachsen lassen und verschiedene Fütterungsexperimente unternommen (natürlich mit ordentlichen Zufallsverteilungen). Seit ihn die größte der Pflanzen einmal dabei fast erdrosselt hätte, lässt er lieber die Finger von dem Thema und widmet sich Geranien. Nun hat er Ihnen die Tabelle mit ein paar kurzen Anmerkungen überreicht. Gehen Sie davon aus, dass dies eine Zufallsstichprobe darstellt, die für die Grundgesamtheit repräsentativ ist!
+
+
+ - ID - jede Pflanze hat eine ID
+ 
+ - wachstum_in_10d - die Größe, die die Pflanzen in 10 Tagen erreicht haben (cm-Angabe)
+ 
+ - wachstum_in_30d - die Größe der Pflanzen nach 30 Tagen Wachstum (cm-Angaben)
+ 
+ - wachstums_bedingungen - Standort der Pflanze während der ersten 10 Tage: `r levels(t$wachstums_bedingungen)`
+ 
+ - opfer - bevorzugtes Futter der Pflanze: `r levels(t$opfer)`
+ 
+ - anzahl_tentakel - Wie viele Tentakel sie nach 10 Tagen hat
+ 
+ - farbe - die Farbe der Teufelsschlinge: `r levels(t$farbe)` 
+ 
+ - gewicht_g - das Durchschnittsgewicht der Tentakel der Pflanze in Gramm
+ 
+ - opfer_groesse - das größte Opfer, dass die Pflanze bisher gefressen hat
+
+
+
+
+## Aufgaben:
+
+1. Gibt es einen Zusammenhang zwischen der Größe, die die Pflanze in einer Wachstumszeit von 10 Tagen erreicht hat und ihrem Standort (Wachstumsbedingungen)?
+
+   1. Stellen Sie das visuell dar.
+
+   2. Testen Sie den Zusammenhang und seine Stärke!
+
+   3. Stimmt die eingangs erwähnte These, dass die Pflanze dunkle feuchte Räume am liebsten mag?
+
+
+2. Gibt es einen Zusammenhang zwischen dem Gewicht der Pflanze und der Anzahl der Tentakel?
+
+   1. Stellen sie das visuell dar
+
+   2. Was für eine Art des Zusammenhangs ist es?
+  
+
+3. Welches Futter ist am beliebtesten?
+
+   - Stellen sie die Häufigkeiten graphisch dar.
+  
+
+4. Korrelieren das erreichte Wachstum in 10 Tagen mit der Anzahl der Tentakel?
+
+   - Testen Sie!
+
+
+5. Knobelaufgabe:
+
+Nachdem Sie schon mitten in der Auswertung sind, ruft Sie Prof. Sprosse noch einmal an, und erzählt, er habe damals das Gefühl gehabt, dass einige Pflanzen nach den ersten 10 Tagen massiv an Wachstumsschnelligkeit verloren hätten. Er habe das nicht getestet, aber Sie mögen dochmal bitte gucken, wie viel die Pflanzen zwischen Tag 10 und Tag 30 gewachsen wären. Ist in der Verteilung etwas auffällig?
+
+
+
+

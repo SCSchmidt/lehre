@@ -1,0 +1,82 @@
+---
+title: "Prüfungsaufgaben zum Haggis"
+date: "Abgabetermin: 14.09.2020" 
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+h <- read.csv2("haggis.csv", sep = ",", dec = ".", 
+               encoding = "UTF-8", stringsAsFactors = TRUE)
+```
+
+
+# Der Haggis
+
+Der Haggis ist bekannt als der Nationalbraten der Schotten. Als seltenes Nagetier lebt er in den schottischen Highlands. Da es dort sehr hügelig ist, hat er eine besondere Anpassung entwickelt: Eines der Beinpaare ist länger als das andere (also linke oder rechte Beine), damit er auf Hängen gut geradeaus laufen kann. So sind zwei Arten entstanden: Der linksdrehende (linke Beine kürzer) und der rechtsdrehende (rechte Beine kürzer) Haggis.
+
+In einer entbehrungsreichen Expedition reisen Sie in die entlegensten Winkel Schottlands und fangen in monatelanger Kleinarbeit 100 Haggisse, vermessen und notieren die folgenden Maße:
+
+
+ - ID - jedes Tier hat eine ID
+ 
+ - laenge_linkesBein - die Länge des linken Vorderbeines
+ 
+ - laenge_rechtesBein - die Länge des rechten Vorderbeines
+ 
+ - landschaften - in welcher Region der Haggis gefangen wurde: `r levels(h$landschaften)`
+ 
+ - sex - sein Geschlecht (`r levels(h$sex)`)
+ 
+ - hautfarbe - die Hautfarbe des Tiers: `r levels(h$hautfarbe)` 
+ 
+ - gewicht_g - sein Gewicht in Gramm
+ 
+ - alter_monate - sein Alter in Monaten
+ 
+ - zahnlaenge_mm - die Länge der oberen Nagezähne in mm
+
+
+Gehen Sie davon aus, dass der Datensatz eine Zufallsstichprobe darstellt, der für die Grundgesamtheit repräsentativ ist!
+
+
+## Aufgaben:
+
+
+
+1. Gibt es einen Zusammenhang zwischen dem Gewicht der Tiere und der Landschaft, in der sie leben?
+
+   1. Stellen sie den Zusammenhang auch visuell dar.
+
+   2. Testen Sie!
+
+
+2. Gibt es bei den Tieren, die am Hang des Ben Nevis leben, einen Geschlechtsdimorphismus im Bezug auf Hautfarbe?
+  
+   1. Testen Sie!
+   
+   2. Sollte es einen geben, bewerten Sie die Stärke des Zusammenhangs!
+
+
+3. Gibt es im Gesamt-Haggis-Datensatz einen Geschlechtsdimorphismus im Bezug auf Körpergewicht? 
+   
+   1. Testen Sie!
+   
+   2. Visualisieren Sie den (eventuellen) Zusammenhang.
+   
+
+4. Wie gestaltet sich der Zusammenhang zwischen der Zahnlänge und dem Alter der Tiere?
+
+   1. Visualisieren Sie ihn.
+   
+   2. Was für eine Art des Zusammenhangs ist es?
+   
+ 
+5. Kobelaufgabe:
+
+Klassifizieren Sie Ihre Tiere in links- und rechtsseitig drehend! Wie häufig haben Sie Tiere, die links längere Beine haben (rechtsdrehender Haggis) und wie viele Tiere haben rechts längere Beine?
+
+   - Visualisieren Sie das Ergebnis.

@@ -1,0 +1,75 @@
+---
+title: "Prüfungsaufgaben zu den menschenähnlichen Großaffen"
+date: "Abgabetermin: 14.09.2020" 
+output: pdf_document
+---
+
+```{r setup, echo=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
+```
+
+
+# "Menschenähnliche Großaffen"
+
+```{r}
+m <- read.csv2("./monster/monster_2.csv", encoding = "UTF-8", sep = ",", dec = ".", stringsAsFactors = TRUE)
+```
+
+
+Sie ist eine Legende unter den Biolog*innen und sie hat Ihnen ihren Datensatz hinterlassen: Lara Rachel Carlson ist bekannt für Ihre abenteuerlichen Expeditionen in die entlegendsten Ecken der Welt. 
+Auf der letzten großen Fahrt hat sie sowohl die Himalaya-Region als auch den nordamerikanischen Kontinent nach den legendären menschenähnlichen Großaffen (so ihre Theorie) durchsucht und verschiedene Informationen zu ihnen gesammelt. Sie übergibt Ihnen die folgende Tabelle, die Sie nun auswerten dürfen, da Lara schon wieder lieber in der Welt unterwegs ist, um neue Daten zu sammeln... allerdings, wo Sie hier die Beschreibung lesen, sind Sie sich nicht so sicher, ob es sich wirklich um "Großaffen" handelt...
+
+Gehen Sie davon aus, dass der Datensatz eine Zufallsstichprobe darstellt, der für die Grundgesamtheit repräsentativ ist!
+
+
+ - ID - jedes Tier hat eine eindeutige ID bekommen
+ 
+ - fellfarbe - Die Farbe des Felles wurde in einfachen beschreibenden Termini aufgenommen: `r levels(m$fellfarbe)`
+ 
+ - groesse - die Größe wurde in cm aufgenommen
+ 
+ - art - die Spezies (`r levels(m$art)`)
+ 
+ - opfer - die Lieblingsspeise des jeweiligen Tieres (aus Erzählungen der lokalen Bevölkerung: `r levels(m$opfer)`)
+ 
+ - gewicht_kg - das Gewicht der Tiere in kg
+ 
+ - landschaft - in welcher Landschaft das Tier beobachtet wurde (nicht-häufbar, da nur kurzfristige Beobachtungen:  `r levels(m$landschaft)`)
+ 
+ - sex - das Geschlecht, soweit erkennbar ( `r levels(m$sex)`)
+ 
+ - hauerlaenge - die Länge des rechten Eckzahns
+ 
+## Aufgaben
+
+1. Gibt es einen Zusammenhang zwischen der Art und ihrer Lieblingsspeise? 
+
+   1. Stellen Sie die Zahlen visuell dar.
+
+   2. Testen Sie auf den Zusammenhang und seine Stärke!
+
+
+2. Korreliert die Größe der Tiere mit ihrer Hauerlänge? 
+
+   1. Visualisieren Sie den Zusammenhang
+
+   2. Was für eine Art des Zusammenhangs ist es?
+
+
+3. Gibt es bei den Bigfoots einen Geschlechtsdimorphismus im Bezug auf die Größe? 
+
+   - Testen Sie, ob und welches Geschlecht im Mittel größer ist als das andere.
+
+
+4. In einem Gespräch am Telefon aus dem tiefsten Dschungel Indiens gibt Lara zu, dass sie eigentlich das Gewicht der Tiere nur anhand der Größe geschätzt habe, weil sie keine Waage den Himalaya hochschleppen wollte. Sie sind natürlich schwer enttäuscht.
+   
+   - Finden Sie die Formel heraus, mit der die Schätzung ungefähr vorgenommen wurde.
+   
+   - Untersuchen Sie dabei die beiden Arten getrennt.
+
+
+5. Knobelaufgabe:
+
+In dem gleichen Gespräch, geht Lara noch einmal darauf ein, dass sie bei den hellbraunen Tieren nicht sicher ist, zu welcher Art sie gehören. Sie rät Ihnen anhand der Größe noch einmal nachzuschauen, ob sie nicht eher in die Gruppe der Yetis passen würden. Finden Sie es heraus!
+
+

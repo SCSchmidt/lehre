@@ -1,12 +1,12 @@
 Package: lehre
-Title: In diesem Paket wird Lehrmaterial zu Statistischen Methoden zur Verfügung gestellt.
+Title: In diesem Paket wird Lehrmaterial zu Statistischen Methoden zur VerfÃ¼gung gestellt.
 Version: 0.0.0.9000
 Authors@R:
     person(given = "Sophie C.",
            family = "Schmidt",
            role = c("aut", "cre"),
            email = "s.c.schmidt@uni-koeln.de")
-Description: Verschiedene Rmd-Dateien mit Hinweisen zu ggplot, statistischen Tests, reproduzierbarer Wissenschaft in Archäologie und Biologie.
+Description: Verschiedene Rmd-Dateien mit Hinweisen zu ggplot, statistischen Tests, reproduzierbarer Wissenschaft in ArchÃ¤ologie und Biologie.
 License: MIT + file LICENSE
 ByteCompile: true
 Encoding: UTF-8

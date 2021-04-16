@@ -1,0 +1,73 @@
+---
+title: "Prüfungsaufgaben zur Dustinkian - Pflanze"
+date: "Abgabetermin: 14.09.2020" 
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+d <- read.csv2("dustinkian.csv", sep = ",", dec = ".", encoding = "UTF-8",
+               stringsAsFactors = TRUE)
+```
+
+# Die "weltberüchtigte" Dustinkian
+
+Dustinkian ist weltweit bekannt als die übelriechendste essbare Frucht der Welt. In einer Studie fand Ihre Professorin Frau Y. Gritte heraus, dass dies an dem Gehalt von Ethionin liegt und hat nun verschiedene Untersuchungen durchgeführt, um herauszufinden, wie dieser Ethioningehalt mit anderen Faktoren zusammenhängt. Sie hat jetzt aber die Nase voll von dem Thema und übergibt Ihnen die Tabelle zur Analyse. Gehen Sie davon aus, dass der Datensatz eine Zufallsstichprobe darstellt, der für die Grundgesamtheit repräsentativ ist!
+
+
+ - ID - jede Frucht hat eine ID
+ 
+ - fruchtgroesse_mm - die Länge der Frucht in mm
+ 
+ - ethioningehalt - die Konzentration von Ethionin in mg/100g
+ 
+ - bewertung_geruch - auf einer Skala von +10 (sehr angenehm) bis -10 (es gibt nichts ekligeres)
+ 
+ - stacheldichte - wie viele Stacheln auf der Frucht auf einem cm² Haut vorkommen
+ 
+ - wachstums_bedingungen - bei 4 unterschiedlichen Lichtzuständen gewachsene Pflanze: `r levels(d$wachstums_bedingungen)`
+ 
+ - fruchtfarbe - eine einfache Kategorisierung der Farbe der Früchte: `r levels(d$fruchtfarbe)`
+ 
+
+
+
+ 
+## Aufgaben
+
+1. Finden Sie heraus, wie der Ethioningehalt mit der Bewertung des Geruchs korreliert. Hat Ihre Professorin recht?
+   
+   1. Testen Sie! 
+   
+   2. Bewerten Sie die Stärke des Zusammenhangs falls einer besteht.
+   
+   3. Erstellen Sie eine aussagekräftige Grafik.
+   
+  
+2. Sie haben die Vermutung, dass sowohl die Größe der Frucht als auch wie dicht auf ihr die Stacheln wachsen von den Wachstumsbedingungen der Pflanze abhängt. 
+
+   - Testen Sie das!
+
+3. Wie häufig tritt welche Fruchtfarbe unter den unterschiedlichen Wachstumsbedingungen auf?
+   
+   1. Erstellen Sie eine Grafik
+   
+   2. Gibt es einen signifikanten Zusammenhang?
+  
+4. Sie schauen sich die Früchte an und denken, dass die hellgrünen besonders eklig aussehen und deshalb vielleicht auch besonders eklig riechen. Überprüfen Sie, ob ein Zusammenhang zwischen der Bewertung des Geruchs und der Farbe besteht!
+   
+   1.  Erstellen Sie eine Grafik
+   
+   2. Testen Sie!
+
+5. Knobelaufgabe:
+
+Sie schauen sich die Früchte an und denken darüber nach, für sie einen expliziten Ekelfaktor zu entwickeln, eine Maßzahl, wie eklig die Frucht ist. Dafür würden Sie gern sowohl die Dichte der Stacheln (je dichter, desto ekliger) als auch die Bewertung des Geruchs einbeziehen. Sie stellen fest, dass Sie dafür die Bewertungsskala für den Geruch und die Dichte der Stachel irgendwie vereinheitlichen müssen, damit sie die Werte addieren können.
+
+  -  Berechnen Sie einen Ekelfaktor aus Dichte der Stachel + Bewertung des Geruchs
+
+  -  Was können Sie anhand der Lagemaße über diese Verteilung sagen?
