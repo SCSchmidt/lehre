@@ -1,5 +1,4 @@
-RRtools - Tools für Reproduzierbare Wissenschaft
-================================================
+# RRtools - Tools für Reproduzierbare Wissenschaft
 
 rrtools ist von Ben Marwick et al entwickelt worden, um es einfach zu
 machen ein R-Paket zu erstellen, in dem man alle seine Daten, seine
@@ -7,7 +6,7 @@ Analyse und sein “paper” zusammen ablegt. Dieses Paket kann man dann
 auch einfach anderen Menschen zur Verfügung stellen, damit diese die
 eigenen Analysen nachvollziehen können und es lassen sich
 unterschiedliche Versionen leicht über github kontrollieren:
-<a href="https://github.com/benmarwick/rrtools" class="uri">https://github.com/benmarwick/rrtools</a>
+<https://github.com/benmarwick/rrtools>
 
 Das Bereitstellen von Code und Daten (open access) ist wichtig für die
 Wissenschaftlichkeit einer Analyse, da sie so reproduzierbar wird (wenn
@@ -21,12 +20,13 @@ fand und selber ausprobieren möchte.
 
 Deswegen ist Code teilen toll und wichtig.
 
-**Für die Cloud-User: rrtools läuft nicht gut in der Cloud! In dem in der Cloud ein neues Projekt angelegt wird, entsteht eine Kopie eines Basisprojektes, das ich vorbereitet habe und in dem die folgenden Schritte schon durchgeführt wurden. Ihr müsst nichts installieren und keine Funktion ausführen!**
+**Für die Cloud-User ist es am einfachsten, ihr kopiert das
+Beispielpaket von mir! rrtools läuft nicht gut in der Cloud!**
 
 #### für die nicht-Cloud nutzer:
 
 Also. Wir installieren rrtools. Weitere Infos dazu gibt es hier:
-<a href="https://github.com/benmarwick/rrtools" class="uri">https://github.com/benmarwick/rrtools</a>.
+<https://github.com/benmarwick/rrtools>.
 
 ``` r
 devtools::install_github("benmarwick/rrtools") #devtools:: ruft das Paket devtools. ich brauch es nur einmal, deswegen habe ich es nicht mit library ins Boot geholt.
@@ -82,7 +82,7 @@ Imports: bookdown
 
 Wenn wir jetzt mit rrtools weiter arbeiten wollen, müssen wir es noch
 einmal laden, weil wir in einem neuen Projekt unterwegs sind als ganz am
-Anfang. Deswegen **nur** für die nicht-Cloud-User:
+Anfang. Deswegen für die nicht-Cloud-User:
 
 ``` r
 library(rrtools)
@@ -115,24 +115,27 @@ Ordner angelegt wurden:
 
 -   Das `paper.Rmd` kann sofort genutzt werden und mit `bookdown`
     ge-render-t. In ihm steht schon:
+
     -   ein “YAML header” , der auf die `references.bib` (die Ablage der
         Literatur) und eine `csl` verweist
-    -   ein Kolophon, in dem automatisch Details zu dem letzten git
+    -   ein Kolophpn, in dem automatisch Details zu dem letzten git
         commit des papers geschrieben werden. Damit wird das ausgegebene
         Dokument (HTML/PDF/Word) immer zu einem bestimmten Stand des
         Codes auf github verlinkt.
+
 -   Das `references.bib` Dokument hat nur einen einzigen Eintrag, um das
     Format zu zeigen. Weitere Literaturangaben können einfach
     hinzugeschrieben werden.
+
 -   Das angegbene `csl` - Dokument kann auch einfach ersetzt werden
-    (viele weitere unter:
-    <a href="https://github.com/citation-style-language/" class="uri">https://github.com/citation-style-language/</a>)
+    (viele weitere unter: <https://github.com/citation-style-language/>)
+
 -   Empfohlen wird das [citr addin](https://github.com/crsh/citr) und
     [Zotero](https://www.zotero.org/) für die Literaturverwaltung zu
     nutzen
 
-Bitte arbeitet ab sofort in diesem RMarkdown-Dokuments. 
-Hier könnt ihr euch den Code gleich in
+Bitte arbeitet ab sofort in eurem neuen R-Projekt und dort innerhalb des
+RMarkdown-Dokuments. Hier könnt ihr euch den Code gleich in
 “normal-Text” dokumentieren (Was soll die Berechnung? Welche Vorgaben
 gab es? Wie kann das Ergebnis interpretiert werden?).
 
@@ -140,10 +143,9 @@ Die Prüfungsleistung wird mir am Ende als R-Projekt (mit Daten im Ordner
 data und den Text im paper.Rmd abgegeben! Bitte übt das also schon
 während des Kurses.
 
-Hinweise
----------------
+## Hilfestellungen zur Literaturverwaltung
 
-Empfohlen wird für rrtools die Zusammenarbeit mit [zotero](https://www.zotero.org/). Zotero
+Empfohlen wurde für rrtools [zotero](https://www.zotero.org/). Zotero
 ist ein Programm mit dem Literatur verwaltet werden kann, ähnlich wie
 Citvai, nur freie und offene Software und allein schon deshalb besser.
 Ich empfehle es sehr, sich spätestens für die Abschlussarbeit ein
@@ -193,14 +195,13 @@ Ich füge den Literaturhinweis im Fließtext so ein: R ist eine tolle
 Skriptsprache (Legendre & Legendre, 2012).
 
 In Wirklichkeit habe ich geschrieben: R ist eine tolle Skriptsprache
-\[@legendre\_2012\].
+\[@legendre_2012\].
 
 Und Pandoc hat das automatisch in die richtige Art und Weise formatiert,
-sowohl im Text als auch unter “Bibliographie”.
+sowohl im Text als auch unter “Bibliographie.”
 
 Als csl habe ich für dieses Beispeil einen Ziterstil namens
-“Geoboiology” von
-<a href="https://www.zotero.org/styles/geobiology" class="uri">https://www.zotero.org/styles/geobiology</a>
+“Geoboiology” von <https://www.zotero.org/styles/geobiology>
 heruntergeladen und einfach in dem Ordner abgelegt, in dem dieses Rmd
 liegt. Je nachdem, welchen Zitierstil man für die Abgabe des Manuskripts
 bei einer Zeitschrift benötigt, kann man von dem [Zotero Style
@@ -243,16 +244,44 @@ citation("ggplot2")
     ##   }
 
 Das kann ich dann in meine bib-Datei kopieren und ihm dort eine eigene
-ID geben. Seht ihr, dass das was bei dem Beispiel oben “legendre\_2012”
+ID geben. Seht ihr, dass das was bei dem Beispiel oben “legendre_2012”
 war, hier fehlt? Statt “Book{,” würde ich z. B. “Book{ggplot2,”
-schreiben und dann innerhalb meiner Texte immer auf mit (<span
-class="citeproc-not-found" data-reference-id="ggplot2">**???**</span>)
+schreiben und dann innerhalb meiner Texte immer auf mit (**ggplot2?**)
 das Paket zitieren können. Das ist besonders wichtig bei den Paketen,
 die man von anderen kostenlos herunterladen konnte. Wenn man die
 Programmierer schon nicht in Geld bezahlt, sollte man sie wenigstens mit
 Reputation bezahlen.
 
-Bibliographie
-=============
+### neuste tolle Nice-igkeit
+
+Der neue Rstudio visual Rmarkdown editor vereinfacht die
+Literaturverwaltung ENORM. Als ich das mitbekommen hab, hab ich
+Sternchen in den Augen bekommen. Ungelogen. Der Clou: Wenn auf eurem
+Rechner zotero installiert ist und ihr darin eure Literatur eingetragen
+habt, dann könnt ihr im visual editor - Modus einfach ein “@” eintippen
+und er beginnt zotero zu durchsuchen. Man tippt also “@” und den Beginn
+des Autorennamen und Rstudio schlägt einem aus der Literaturdatenbank
+zotero die passenden Artikel vor. Daraus sucht man sich dann den
+richtigen aus, klickt drauf und er wird AUTOMATISCH in das \*.bib-file
+eingetragen – ich muss das also nicht mehr selber tun. Suuuper
+praktisch! Der Rest passiert dann ganz genauso – im Hintergrund wird das
+Markdown-Dokument geschrieben und dann in das Format umgewandelt, das
+man spezifiziert hat und mit den Informationen aus der csl-Datei wird
+auch die Bibliographie schön formatiert.
+
+Sollten Sie eine Abschlussarbeiten schreiben müssen, in der Sie mit
+Daten arbeiten müssen und Literatur zitieren – wärmste Empfehlung für
+zotero in Kombination mit RMarkdown. Sie machen sich das Leben
+einfacher.
+
+# Bibliographie
+
+<div id="refs" class="references csl-bib-body">
+
+<div id="ref-legendre_2012" class="csl-entry">
 
 Legendre P, Legendre L (2012) *Numerical ecology*. Elsevier, Amsterdam.
+
+</div>
+
+</div>
