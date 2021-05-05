@@ -33,6 +33,10 @@ library(openxlsx)
 mydata <- read.xlsx("Pfad/zur/Datei/meineDatei.xlsx", sheet = 1)
 ```
 
+Achtung!! Der `data()`-Befehl, wie wir ihn bei ` data(penguins)` benutzen lädt auch 
+Daten ein -- allerdings welche, die im Rdata-Format in einem Paket vorliegen. 
+Wenn wir unsere eigenen Daten aus einer csv- oder xls-Datei einladen, benötigen wir ihn nicht!
+
 Speichern von Daten
 -------------------
 
