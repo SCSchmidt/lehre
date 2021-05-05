@@ -196,9 +196,8 @@ Anschließend probiert einmal folgendes aus:
 
 -   im YAML-header steht ein großes Stück Code
 
-```{=html}
 <!-- -->
-```
+
     output: 
        bookdown::word_document2:
          fig_caption: yes
