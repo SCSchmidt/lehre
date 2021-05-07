@@ -1,5 +1,4 @@
-Lineare Regression
-==================
+# Lineare Regression
 
 Vorhin hatten wir das Thema Korrelation und dabei den R-Wert von
 Pearson-Bravais von der Größe und des Gewichts der Piraten und der
@@ -13,8 +12,7 @@ library(yarrr)
 data(pirates)
 ```
 
-Lineare Regression
-------------------
+## Lineare Regression
 
 Die lineare Regression legt eine “best-fit”-Linie zwischen die Punkte.
 Sie soll möglichst gut den Punktverlauf abbilden.
@@ -65,9 +63,9 @@ Wahrscheinlichkeit (mit einem F-Test getestet).
 
 Es ist vor allem jedoch imm hilfreich, diese “best fit”-Linie zu
 visualisieren. In R ist das ziemlich einfach, in dem ich einem
-Streudiagramm den geom\_smooth-Befehl mit der Methode “lm” (linear
-model) hinzufüge. Der Befehl “se = FALSE” sagt aus, dass ich jetzt gern
-*kein* Konfidenzintervall (standard error) dazu visualisieren möchte.
+Streudiagramm den geom_smooth-Befehl mit der Methode “lm” (linear model)
+hinzufüge. Der Befehl “se = FALSE” sagt aus, dass ich jetzt gern *kein*
+Konfidenzintervall (standard error) dazu visualisieren möchte.
 
 ``` r
 library(ggplot2)
@@ -195,8 +193,7 @@ welcher der beiden Faktoren den anderen beeinflusst. Dann ist es
 sinnvoll zwei unterschiedliche Regressionen zu berechnen und die
 Abhängigkeit der Variablen umzudrehen.
 
-Residualanalyse
----------------
+## Residualanalyse
 
 Wie in der Vorlesung erwähnt, muss die Verteilung der Residuen bei einer
 linearen Regression bestimmte Voraussetzungen erfüllen. Dies testen wir
@@ -208,7 +205,7 @@ Informationen zu den Residuen abfragen. Hier gab es den Minimalwert
 Maximalwert (Max), die einen Hinweis darauf geben, ob die Residuen
 normalverteilt sind.
 
-Außerdem gibt es ncoh ein paar andere Möglichkeiten, die Residuen zu
+Außerdem gibt es noch ein paar andere Möglichkeiten, die Residuen zu
 analysieren.
 
 Den Q-Q-plot (genau wie bei dem Test auf Normalverteilung), dann einen
@@ -291,8 +288,7 @@ Ein gutes und ein schlechtes Beispiel wären diese:
 gleichmäßig verteilte Residuen und das schlechte rechts, wo die Residuen
 in der linken Ecke deutliich näher an der roten Linie liegen als weiter
 rechts, wo sie mehr streuen (Bildquelle und empfehlenswerte Anleitung:
-<a href="https://rpubs.com/iabrady/residual-analysis" class="uri">https://rpubs.com/iabrady/residual-analysis</a>
-).
+<https://rpubs.com/iabrady/residual-analysis> ).
 
 ### Residuen gegen Ausreißer
 
