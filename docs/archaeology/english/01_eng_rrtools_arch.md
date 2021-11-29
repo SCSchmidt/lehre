@@ -380,7 +380,7 @@ to the PDF or docx file). You can write those in “html-style” with
 “arrows”: \<!– This here would be the comment –\>
 
 You can have a look in my Rmd document (unter
-<https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/analysis/01_eng_rrtools_arch.Rmd>)
+<https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/analysis/paper/01_eng_rrtools_arch.Rmd>)
 to see what I commented in the next line.
 
 <!-- Haha. This is invisible -->
