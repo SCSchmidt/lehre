@@ -181,7 +181,7 @@ The parameter of a code chunk are really helpful setting options. You can make s
 You can learn more about these different parameters here: <https://rmarkdown.rstudio.com/lesson-3.html> and here: <https://yihui.org/knitr/options/>. You can set the parameters as well with clicking on the little cogwheel symbol you will see on the right hand side of every code chunk.
 
 One small example for a code chunk with code shown:
-```{r example show code, echo = TRUE}
+```{r example show code, echo = TRUE, eval = TRUE}
 x <- 5+5
 x
 ```
@@ -198,7 +198,7 @@ Outside of a code chunk, everything will be regarded as normal text. I can write
 
 install.packages("knitr") doesn't do anything.
 
-What I can do, though, is call on variables that I defined and embed small calculations within the normal text. I need a tick mark \` r "variable name / function call" and again a tick mark \´ just right inside my sentences. So the variable x I defined is `r x`. I didn't write the number itself but \` r x \`. I can also write \` r x + 10 \` and the result will be ` r x + 10` and the program will calculate it "on the fly" for me. It is not recommended to put difficult or large calculations like this in the text.
+What I can do, though, is call on variables that I defined and embed small calculations within the normal text. I need a tick mark \` r "variable name / function call" and again a tick mark \´ just right inside my sentences. So the variable x I defined is `r x`. I didn't write the number itself but \` r x \`. I can also write \` r x + 10 \` and the result will be `r x+10` and the program will calculate it "on the fly" for me. It is not recommended to put difficult or large calculations like this in the text.
 
 But it is very useful, because this way I don't make typo errors when transcribing results. Also, should I have to change my data set a little bit, the result may change by a small number and it will be updated in my text all by itself. Of course I need to check whether my interpretation has to change as well, but at least I may keep a few sentences of what I wrote before.
 
@@ -241,7 +241,7 @@ ggplot()+
 
 I added images in the text via Markdown. Because they are online I could add the first one via this code: `![](https://d33wubrfki0l68.cloudfront.net/44f781299f23419d5314e5322e7c44393f7190d3/c5915/images/markdownchunk.png)`. To add images that are on my PC somewhere, the structure is more or less the same: `![](path/to/image/picture.jpg`). It is always first an exclamation mark, then empty square brackets and then in rounded brackets the path to the image.
 
-You can add links as [hyper links in the text](https://rmarkdown.rstudio.com/authoring_quick_tour.html) (Code: `[hyper links in the text](https://rmarkdown.rstudio.com/authoring_quick_tour.html)
+You can add links as [hyper links in the text](https://rmarkdown.rstudio.com/authoring_quick_tour.html) (Code: `\[hyper links in the text](https://rmarkdown.rstudio.com/authoring_quick_tour.html`)
 
 or simply like this: <https://rmarkdown.rstudio.com/authoring_quick_tour.html>. 
 

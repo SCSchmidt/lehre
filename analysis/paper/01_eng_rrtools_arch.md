@@ -288,9 +288,9 @@ small calculations within the normal text. I need a tick mark \` r
 “variable name / function call” and again a tick mark ´ just right
 inside my sentences. So the variable x I defined is 10. I didn’t write
 the number itself but \` r x \`. I can also write \` r x + 10 \` and the
-result will be `r x + 10` and the program will calculate it “on the fly”
-for me. It is not recommended to put difficult or large calculations
-like this in the text.
+result will be 20 and the program will calculate it “on the fly” for me.
+It is not recommended to put difficult or large calculations like this
+in the text.
 
 But it is very useful, because this way I don’t make typo errors when
 transcribing results. Also, should I have to change my data set a little
@@ -367,8 +367,7 @@ brackets the path to the image.
 
 You can add links as [hyper links in the
 text](https://rmarkdown.rstudio.com/authoring_quick_tour.html) (Code:
-\`[hyper links in the
-text](https://rmarkdown.rstudio.com/authoring_quick_tour.html)
+`\[hyper links in the text](https://rmarkdown.rstudio.com/authoring_quick_tour.html`)
 
 or simply like this:
 <https://rmarkdown.rstudio.com/authoring_quick_tour.html>.
