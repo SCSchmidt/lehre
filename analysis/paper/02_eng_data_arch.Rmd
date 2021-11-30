@@ -1,0 +1,237 @@
+---
+title: "Data in R"
+author:
+  - Sophie C. Schmidt:
+      email: s.c.schmidt@uni-koeln.de
+      correspondence: true
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+always_allow_html: true
+bibliography: references.bib
+csl: RGK_archaeology_DGUF.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      include = TRUE)
+
+```
+
+
+
+# Saving and loading data
+
+R is able to work with a lot of data formats, but it's always best to save the data in the end in an Rdata-format.
+
+## Load data 
+
+Let's focus on the most important tabular data formats for now.
+
+1. CSV-data: 
+
+comma-separated values, these are text files, in which columns are seperated by commas. This is the easiest and most versatile data format. I recommend using it for long term data storage.
+
+The code to read a csv and give it's content to a variable is:
+
+ `mydata <- read.csv2("path/to/my/data/mydata.csv")`
+
+AS WE NOW KNOW the PERFECT data structure, we put our data in the analysis/data/raw_data folder.
+
+In our great and amazing paper.Rmd we can use this simplified relative path to our data set:
+
+ `mydata <- read.csv2("../data/raw_data/mydata.csv")`
+ 
+for example
+ 
+  `BACups <- read.csv2("../data/raw_data/BACups.csv")`
+
+
+
+2. Excel-data: 
+
+We need a new R pacakge to load in excel-data. It is called `xlsx`:
+
+```
+install.packages("xlsx")
+library(xlsx)
+```
+
+Now we can load the data like this:
+`mydata <- read.xlsx("path/to/my/data/myexcel.xlsx", sheet = 1)`,
+`sheet = 1` is an argument, that tells R, to use the first sheet in the excel file (you know, it can have different table sheets). You can also use the name of the sheet:
+
+`mydata <- read.xlsx("c:/...path.../myexcel.xlsx", sheetName = "mysheet")` 
+
+REMEMBER: wen can use the beautiful short relative path, because we put our data in the data/raw_data folder:
+
+`mydata <- read.xlsx("../data/raw_data/mydata.xlsx, sheet = 1)`
+ 
+
+3. RData
+
+RData-data can be loaded with an easy `load()`-command. I recommend creating an Rdata file always after you've done some changes to your data set and want to continue working with it. Rdata is loaded much faster and it will have all the changes you already implemented in there.
+
+Just remember to save it in the derived_data folder so you can load it via:
+
+```
+load("../data/derived_data/dataBACups.Rdata")
+```
+
+Did you notice something?
+
+You don't have to give a variable name! This is saved in the Rdata format. If you load csv or xslx files you will always have to "name" the resulting data frame. Not so for Rdata data. 
+
+
+## Saving data
+
+1. CSV data:
+
+To write a csv-file you can give this simple command:
+```
+ write.csv(data, "path/to/save/to/data.csv")
+```
+
+But remember we got the great relative path:
+
+`write.csv(data, "../data/derived_data/data.csv")`
+
+
+2. Excel data
+
+We use the same package as above for loading excel files:
+
+```
+library(xlsx)
+```
+
+Than we can use more or less the same syntax again:
+
+```
+write.xlsx(data, "path/to/save/to/data/data.xls, sheetName = "Sheet1")
+```
+or in relative path:
+```
+write.xlsx(data, "../data/derived_data/data.xls, sheetName = "Sheet1")
+```
+
+3. RData:
+
+As mentioned before, there's the Rdata-format, which is great for saving a data set if you want to continue working on it. The code is simple:
+
+ `save(data, file = "../data/derived_data/data.RData")` 
+
+The first data means the variable of the data set you want to save. Then I put the relative path which we can use from our paper file. "data.RData" should be named something sensible for you to remember what this data included.
+
+## Example data
+
+We can use an R package, which provides a number of different archaeological data sets.
+
+The name is "archdata".
+
+We install it first (remember: When installing a package you need to quotation marks):
+```
+install.packages("archdata")
+```
+Then we need to load it (for loading we don't need the quotation marks):
+
+```{r}
+library(archdata)
+```
+Now we can have a look, what's in it, by using the help function:
+
+```
+?archdata
+```
+
+All the different datasets can be loaded using `data()`
+
+```{r}
+data(Snodgrass)
+```
+
+Now in our environment there's a big data set, called Snodgrass, which describes house pits at the Mississippian Snodgrass site in Butler County, Missouri, U.S.A..
+
+
+
+## Some filtering
+
+For the next step we are going to use a new compilation of packages, which will grant us a powerful set of tools for data manipulation and visualisation: the **tidyverse**. It consists of several packages that work well together. It is like some kind of dialect in R. Some people love it, others dislike it. As it makes things easier I like it. ;-)
+
+We first need to install the packages. I will install them one by one with you, because the "bulk download" we could do via `install.packages("tidyverse")` would take quite long and we don't have time for that.
+
+So please do:
+
+```
+install.packages("dplyr")
+install.packages("magrittr")
+
+```
+Dplyr is the package for the filtering and grouping we will do. Magrittr offers a special sign `%>%` which makes linking different steps easy. 
+
+After installing we need to load the package to be able to use the functions inside
+
+```{r}
+library(dplyr)
+library(magrittr)
+```
+
+Let's take the function `select` to choose columns in our Snodgrass dataset. We could, for example want to just use the columns giving the East and South coordinates.
+
+`%>%` is called a "pipe" and it takes the input before it and sends it to the next line of code. It is always at the end of an code expression.
+
+```{r}
+Snodgrass %>% # send the data set Snodgrass to the next line
+  select(East, # select these two columns
+         South)
+```
+
+As you can see, this works fine. We can also use `select` with rules:
+
+```{r}
+Snodgrass %>%
+  select_if(is.integer)
+```
+
+What we just did, was selecting columns. But of course we can also filter our data to just show certain rows!
+
+```{r}
+Snodgrass %>%
+  filter(Ceramics > 1)
+```
+
+What did I do here? I told R to filter my dataset Snodgrass to include only those rows, in which the Ceramics column has got a number higher than 1.
+
+The nice thing about the pipe is, it's easy to combine several steps. So let's just take the Snodgrass data set, look only at the columns, that are in the factor data format and filter them to those that include effigies.
+
+```
+Snodgrass %>%
+  select_if(is.factor) %>%
+  filter(Effigies > 0)
+```
+Why does this throw an error?
+
+Right. It cannot filter for Effigies, because we removed the column Effigis from the dataset before!
+
+```{r}
+Snodgrass %>%
+    filter(Effigies > 0)%>%
+    select_if(is.factor)
+
+```
+
+This way it works!
+
+## Visualisations
+
+The most powerful visualisation toolbox in R is called `ggplot`. We will install the package `ggplot2` and load it:
+
+```{r, eval = FALSE}
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+Now we can use this to create plots.
+
+# Bibliographie
