@@ -116,6 +116,7 @@ or in relative path:
 write.xlsx(data, "../data/derived_data/data.xls, sheetName = "Sheet1")
 ```
 
+
 3. RData:
 
 As mentioned before, there's the Rdata-format, which is great for saving a data set if you want to continue working on it. The code is simple:
@@ -227,11 +228,55 @@ This way it works!
 
 The most powerful visualisation toolbox in R is called `ggplot`. We will install the package `ggplot2` and load it:
 
-```{r, eval = FALSE}
-install.packages("ggplot2")
+```{r}
+#install.packages("ggplot2")
 library(ggplot2)
 ```
 
-Now we can use this to create plots.
+Now we can use this package to create plots.
 
-# Bibliographie
+
+We can create plots with three information: data, what kind of plot is supposed to be created (starting with geom_) and which aesthetics should be shown. This means, what is supposed to be on the x-axis, this is supposed to be on the y-axis,, this variable will set the colour.
+
+```{r}
+
+ggplot()+
+  geom_histogram(data = Snodgrass, aes(x = Width, 
+                                  col = Inside), binwidth = 0.1,
+                 alpha = 0.5)
+
+```
+
+
+A density plot can be created using geom_density
+```{r}
+
+ggplot()+
+  geom_density(data = Snodgrass, aes(x = Width, 
+                                  col = Inside), alpha = 0.5)
+```
+
+To create a bar plot: use geom_bar
+
+```{r}
+ggplot()+
+  geom_bar(data = Snodgrass, aes(x = Inside, 
+                                 fill = Segment))
+```
+
+For a scatter plot we can use geom_point. We visualise here not just the points on an x and y - axis, but we colour the points according to whether they are inside the wall or outside the wall and the size according to the area of the house.
+
+We can change the colours with scale_color_manual and the name of the legend for the color. 
+
+```{r}
+ggplot(Snodgrass)+
+  geom_point(aes(x = East,
+                 y = South,
+                 col = Inside, # colour the points according to the column inside
+                 size = Area))+ # change size of the points according to the area
+  scale_color_manual(values = c("red", "blue"), # make dots red and blue
+    name = "Inside or outside the wall")
+
+```
+
+
