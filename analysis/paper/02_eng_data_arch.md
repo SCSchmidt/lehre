@@ -31,10 +31,10 @@ for example
 
 1.  Excel-data:
 
-We need a new R pacakge to load in excel-data. It is called `xlsx`:
+We need a new R pacakge to load in excel-data. It is called `openxlsx`:
 
-    install.packages("xlsx")
-    library(xlsx)
+    install.packages("openxlsx")
+    library(openxlsx)
 
 Now we can load the data like this:
 `mydata <- read.xlsx("path/to/my/data/myexcel.xlsx", sheet = 1)`,
@@ -48,6 +48,8 @@ REMEMBER: wen can use the beautiful short relative path, because we put
 our data in the data/raw_data folder:
 
 `mydata <- read.xlsx("../data/raw_data/mydata.xlsx, sheet = 1)`
+
+If this doesn’t work, you can try the function `read_xlsx`.
 
 1.  RData
 
@@ -84,7 +86,7 @@ But remember we got the great relative path:
 
 We use the same package as above for loading excel files:
 
-    library(xlsx)
+    library(openxlsx)
 
 Than we can use more or less the same syntax again:
 
