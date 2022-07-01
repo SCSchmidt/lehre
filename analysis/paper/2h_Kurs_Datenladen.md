@@ -103,3 +103,7 @@ beschreibt die Tasse mit einer Variablen:
 -   Phase – Phase
 -   Temp – Magerung (hinzugedichtet)
 -   TempCoarse – Grobheit der Magerung (hinzugedichtet)
+
+Jetzt haben wir die Daten “im Programm”, jetzt können wir mit der
+Visualisierung weitermachen, mit [ggplot und
+Säulendiagrammen](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/analysis/paper/2h_Kurs_ggplot_S%C3%A4ulen.md)!

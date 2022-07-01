@@ -130,3 +130,5 @@ Mit x kann ich jetzt weiterrechnen:
 ```{r}
 y <- x+2
 ```
+
+Auch ganze Datensätze werden Variablen zugewiesen, damit wir mit ihnen arbeiten können. Wie das geht -- eine Tabelle einzuladen, um damit im Programm weiterarbeiten zu können, wird [hier](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/analysis/paper/2h_Kurs_Datenladen.md) erklärt.

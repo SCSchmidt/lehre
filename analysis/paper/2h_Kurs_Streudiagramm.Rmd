@@ -25,9 +25,9 @@ BACups <- read.csv2("../data/BACups_tempered.csv", sep = ";")
 
 ## Streudiagramme
 
-Bei Streudiagrammen kann ich zwei Variablen einer Einheit gegeneinander plotten.
+Bei Streudiagrammen kann ich zwei metrische (aka echte Zahlen) Variablen gegeneinander plotten. Das heißt, wir haben auf der X- und auf der Y-Achse metrische Variablen und setzen pro Objekt im Datensatz einen Punkt an die Stelle, wo sich die Werte in den beiden gewählten Variablen (Spalten) treffen. 
 
-Wir tragen auf der X- und auf der Y-Achse metrische Daten ab. Das gehört zu den aesthetics-Elementen, deshalb tun wir die Info in die Klammern hinter aes(): 
+Der Befehl für ein Streudiagramm ist `geom_point`. Welche Variablen abgetragen werden sollen, gehört zu den aesthetics-Elementen, deshalb tun wir die Info in die Klammern hinter `aes`: 
 
 ```{r Streudiagramm basics}
 
@@ -59,17 +59,69 @@ Welches Merkmal, das ich in der Tabelle als Spalte aufgenommen habe die Form der
 ```{r Streudiagramm mit schönen Punkten, fig.height=5, fig.width=5}
 
 ggplot(data = BACups)+
-  geom_point(aes(x = H, 
-                 y = SD, 
+  geom_point(aes(x = RD, 
+                 y = ND, 
                  shape = Temper, # Form der Punkte
                  color = TempCoarse)) + # Farbe d. Punkte
-  labs(x =" Höhe des Gefäßes",
-       y ="Schulterdurchmesser",
-       title = "Höhe des Gefäßes im Verhältnis zum Schulterdurchmesser")+
+  labs(x =" Randdurchmesser",
+       y ="Nackendurchmesser",
+       title = "Rand- und Nackendurchmesserim Verhältnis zueinander")+
   theme_bw()
 
 ```
+Wie man sieht,ist jetzt die Legendenbeschriftung aber noch nicht soo toll: englisch und abgekürzt.
 
+Auch das können wir ändern. Diesmal mit `scales`. Wir sagen, nimm die Legende, die diskrete (discrete) Farben (color) zuweist,  `scale_color_discrete` und ändere den Namen. Genause mit der Form (shape):
+
+```{r Legende umbenennen}
+ggplot(data = BACups)+
+  geom_point(aes(x = RD, 
+                 y = ND, 
+                 shape = Temper, # Form der Punkte
+                 color = TempCoarse)) + # Farbe d. Punkte
+  labs(x =" Randdurchmesser",
+       y ="Nackendurchmesser",
+       title = "Rand- und Nackendurchmesserim Verhältnis zueinander")+
+  scale_color_discrete(name  ="Magerungsgröße")+
+  scale_shape_discrete(name  ="Magerungsart")+
+  theme_bw()
+```
+
+Wir können die Beschriftung ändern. Dafür nutzen wir den `scales`-Befehl und das Argument `label` und führen die gewünschten labels in der Reihenfolge, wie sie erscheinen, auf:
+
+```{r Legendenbeschriftung umbenennen}
+ggplot(data = BACups)+
+  geom_point(aes(x = RD, 
+                 y = ND, 
+                 shape = Temper, # Form der Punkte
+                 color = TempCoarse)) + # Farbe d. Punkte
+  labs(x =" Randdurchmesser",
+       y ="Nackendurchmesser",
+       title = "Rand- und Nackendurchmesserim Verhältnis zueinander")+
+  scale_color_discrete(name  ="Magerungsgröße",
+                       labels = c("grob", "fein", "mittel", "sehr fein")) +
+  scale_shape_discrete(name  ="Magerungsart",
+                       labels = c("anorganisch", "organisch") )+
+  theme_bw()
+```
+
+Und die Farben, die sind vllt auch nicht so ganz publikationsreif. Es gibt viele Möglichkeiten, Hexcodes, Namen, vordefinierte Paletten u.ä. (siehe zB [hier](https://r-graph-gallery.com/ggplot2-color.html)), wie man mit Farben in R umgehen kann. Wir wählen mal das einfachste und nennen die Farben (`values`) in der Reihenfolge, wie wir sie den Werten zuweisen möchten. Dazu müssen wir noch eine Sache ändern: Wenn wir eine Legendenfarbe "händisch" ändern, muss der `scale` Befehl angepasst werden zu `scale_color_manual`:
+```{r Farben aendern}
+ggplot(data = BACups)+
+  geom_point(aes(x = RD, 
+                 y = ND, 
+                 shape = Temper, # Form der Punkte
+                 color = TempCoarse)) + # Farbe d. Punkte
+  labs(x =" Randdurchmesser",
+       y ="Nackendurchmesser",
+       title = "Rand- und Nackendurchmesserim Verhältnis zueinander")+
+  scale_color_manual(name  ="Magerungsgröße",
+                       labels = c("grob", "fein", "mittel", "sehr fein"),
+                       values = c("blue", "orange", "red", "yellow")) +
+  scale_shape_discrete(name  ="Magerungsart",
+                       labels = c("anorganisch", "organisch") )+
+  theme_bw()
+```
 
 
 ## Facettierung!
@@ -78,14 +130,44 @@ Jetzt wird es nochmal richtig cool. Das Streudiagramm eben, den nochmal nach unt
 
 Dafür können wir `facet_grid` nehmen. In die Klammer dahinter können wir zwei unterschiedliche Variablen setzen, die dann gegeneinander abgetragen werden. Der Einfachheit halber, nehmen wir hier mal nur eine und ersetzen die zweite mit einem Punkt.
 
-```{r density facettieren, fig.height= 8, fig.width = 8}
+```{r geom_point facettieren, fig.height= 5, fig.width = 5}
   ggplot(data = BACups)+
-  geom_point(aes(x = H, y = SD, shape = Temper, color = TempCoarse)) + 
+  geom_point(aes(x = RD, 
+                 y = ND, 
+                 shape = Temper, # Form der Punkte
+                 color = TempCoarse)) + # Farbe d. Punkte
+  labs(x =" Randdurchmesser",
+       y ="Nackendurchmesser",
+       title = "Rand- und Nackendurchmesserim Verhältnis zueinander")+
+    scale_color_manual(name  ="Magerungsgröße",
+                       labels = c("grob", "fein", "mittel", "sehr fein"),
+                       values = c("blue", "orange", "red", "yellow")) +
+  scale_shape_discrete(name  ="Magerungsart",
+                       labels = c("anorganisch", "organisch") )+
   facet_grid(.~Phase)+ #Aufspalten der Grafik in zwei Teil nach Phase
   theme_bw()
 ```
 Nur eine einzige Zeile Code mehr und ich habe meine Daten aufgesplittet und in exakt gleichen Plots nebeneinander dargestellt. Super praktisch!
 
+## Speichern!
+
+Eins fehlt noch, das ist wichtig: Grafiken abspeichern. Auch hier gibt es eine ganze Reihe von Möglichkeiten. Am intuitivsten finde ich `ggsave`. ggsave nimmt die letzte ggplot-Grafik und speichert sie an dem angegebenen Ort. DPI und Größe lassen sich einstellen:
+
+```{r grafik speichern, eval=FALSE}
+
+ggsave("Pfad/wohin/grafik.png", dpi = 300, width = 15, height = 10, units = "cm")
+
+```
+
+
+## Zusammenfassung
+Ganz kurz zur Rekapitulation des Kurses:
+
+- mit R-Skripten lassen sich Abfolgen von Befehlen automatisieren und wiederholen so häufig man möchte
+- wenn man mit einem Datensatz arbeiten will, muss man ihn einer Variablen zuweisen (`<-`)
+- ein Paket muss einmal installiert und nach jedem Neustart des Programms wieder neu eingeladen werden (`library()`)
+- mit dem Paket ggplot2 lassen sich leicht druckreife Grafiken erstellen
+- wer mehr wissen möchte, hier gibt es eine ganze Reihe an Skriptsammlungen: [https://scschmidt.github.io/lehre/](https://scschmidt.github.io/lehre/) und außerdem:
 
 ## "Nachschlagewerke"
 

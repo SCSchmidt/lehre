@@ -95,7 +95,8 @@ Oder die Säulen bunt einfärben:
 
 ``` r
 ggplot(data = BACups)+ 
-  geom_bar(aes(x = Phase, fill = Temper))+ # fill gibt den Balken unterschiedliche Farben, je nach den Angaben in der Spalte Temper
+  geom_bar(aes(x = Phase, 
+               fill = Temper))+ # fill gibt den Balken unterschiedliche Farben, je nach den Angaben in der Spalte Temper
   labs(y = "Häufigkeit",
        title = "Vorkommen der zwei Phasen")+
   theme_bw() 
@@ -104,4 +105,5 @@ ggplot(data = BACups)+
 ![](2h_Kurs_ggplot_Säulen_files/figure-markdown_github/erstes%20Säulendiagramm%20und%20jetzt%20bunt!-1.png)
 
 Super, wenn das alles geklappt hat! Weiter geht es mit dem Thema
-Streudiagramme, Facettierung und Speichern.
+[Streudiagramme, Facettierung und Speichern von
+Bildern](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/analysis/paper/2h_Kurs_Streudiagramm.md).
