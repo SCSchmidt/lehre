@@ -54,12 +54,7 @@ gibt, zählt R dann von alleine aus:
 
 ``` r
 library(ggplot2) # 1. "Laden" des Pakets, einmal pro Sitzung!
-```
 
-    ## Warning in register(): Can't find generic `scale_type` in package ggplot2 to
-    ## register S3 method.
-
-``` r
 ggplot(data = BACups)+ # data = Datensatz, der visualisiert werden soll
   geom_bar(aes(x = Phase)) #geom_bar bedeutet, ich hätte gern ein Balkendiagramm, in der aesthetic wird festgelegt, dass auf der X-Achse die Angaben aus der Spalte Phase abgetragen werden
 ```
