@@ -63,7 +63,7 @@ ggplot(data = BACups)+ # data = Datensatz, der visualisiert werden soll
 
 Jetzt kann man viele Dinge verschönern
 
-1.  B. Den Achsen eine andere Beschriftung geben:
+z. B. Den Achsen eine andere Beschriftung geben:
 
 ``` r
 ggplot(data = BACups)+ 
