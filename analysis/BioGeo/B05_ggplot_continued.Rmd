@@ -4,13 +4,14 @@ author:
   - Sophie C. Schmidt:
       email: s.c.schmidt@uni-koeln.de
       correspondence: true
+contributors:
+  - Sara Schiesberg
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   md_document:
     variant: markdown_github
 always_allow_html: true
 ---
-
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(
