@@ -87,18 +87,19 @@ einmal zur Erinnerung:
 
 -   Q1 = 1. Quartil. Bis hier liegen die ersten 25% meiner Werte, wenn
     ich sie aufsteigend sortiere
--   (Q2 =) Median, den kennen wir schon. Bis hier liegen 50 % meiner
+-   Q2 = Median, den kennen wir schon. Bis hier liegen 50 % meiner
     Werte, wenn ich sie aufsteigend sortiere
 -   Q3 = 3. Quartil, bis hier liegen 75% meiner Werte, wenn ich sie
     aufsteigend sortiere
--   Q3 - Q1 ist der Quartilsabstand: In diesem Bereich um den Median
-    herum liegen 50% der “mittleren” Werte. Er wird durch die Box
+-   Q3 - Q1 ist der Interquartilsabstand: In diesem Bereich um den
+    Median herum liegen 50% der “mittleren” Werte. Er wird durch die Box
     gekennzeichnet
--   Bartenden sind das 1,5fache des Quartilsabstandes vom Median aus
-    gerechnet (oder am Ende der Verteilung)
--   Extreme liegen außerhalb der Bartenden
--   Ausreißer sind mehr als das 3fache des Quartilsabstandes vom Median
-    entfernt
+-   Bartenden bzw. “Whisker” kennzeichen den geben den minimalen und den
+    maximalen Wert an.
+-   *Aber:* Bei der Berechnung des Minimus und des Maximums bleiben
+    Ausreißer unberücksichtigt. Ausreisser sind Werte, die mehr als das
+    1.5fache vom oberen bzw. unteren Quartil entfernt sind. So macht es
+    zumindest ggplot, in anderen Programmen wird das anders definiert!
 
 Ein Boxplottdiagramm eignet sich sehr gut, um mehrere Verteilungen EINER
 Variablen zu vergleichen. Also mehrere Gruppen in meinem Datensatz, aber
@@ -216,8 +217,8 @@ Was bedeutet das alles?
 
 Mit `scale_colour_discrete` kann ich Legenden (`scales`) verändern, die
 mit `color` innerhalb des aesthetics-Bereichs meines Codes für die
-Graphik definiert werden und die DISKRET sind (also nominale / ordinale
-Daten).
+Graphik definiert werden und die DISKRET sind (also in erster Linie
+nominale / ordinale Daten).
 
 Hier benenne ich den Legendentitel mit `name =` um.
 
