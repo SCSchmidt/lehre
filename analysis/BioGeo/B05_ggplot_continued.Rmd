@@ -17,8 +17,7 @@ always_allow_html: true
 knitr::opts_chunk$set(
   warning = FALSE, # keine Warnungen
   message = FALSE, # keine Nachrichten
-  echo = TRUE, # Code wird auch abgebildet
-  fig.path = "../figures/" # hier werden Bilder gespeichert
+  echo = TRUE # Code wird auch abgebildet
   )
 ```
 
@@ -92,7 +91,7 @@ Ich hatte ja schon erläutert, was ein Boxplotdiagramm ist. Hier noch einmal zur
  - Q2 = Median, den kennen wir schon. Bis hier liegen 50 % meiner Werte, wenn ich sie aufsteigend sortiere
  - Q3 = 3. Quartil, bis hier liegen 75% meiner Werte, wenn ich sie aufsteigend sortiere
  - Q3 - Q1 ist der Interquartilsabstand: In diesem Bereich um den Median herum liegen 50% der "mittleren" Werte. Er wird durch die Box gekennzeichnet
- - Bartenden bzw. "Whisker" kennzeichen den geben den minimalen und den maximalen Wert an. 
+ - Bartenden bzw. "Whisker" geben den minimalen und den maximalen Wert an. 
  - *Aber:* Bei der Berechnung des Minimus und des Maximums bleiben Ausreißer unberücksichtigt. Ausreisser sind Werte, die mehr als das 1.5fache vom oberen bzw. unteren Quartil entfernt sind. So macht es zumindest ggplot, in anderen Programmen wird das anders definiert!
 
 Ein Boxplottdiagramm eignet sich sehr gut, um mehrere Verteilungen EINER Variablen zu vergleichen. Also mehrere Gruppen in meinem Datensatz, aber immer die gleiche Variable. Die Gruppen werden dann auf der x-Achse abgetragen.
@@ -195,7 +194,7 @@ Voll gut!
 
 ## Letzte Hinweise ggplot
 
-GGplot hat noch viel viel mehr Möglichkeiten. Um einen Überblick zu bekommen, empfehle ich den Blogpost hier zu lesen, der vorführt, wie sich so eine Visualisierung entwickeln kann und am Ende richtig richtig gut aussieht:
+ggplot hat noch viel viel mehr Möglichkeiten. Um einen Überblick zu bekommen, empfehle ich den Blogpost hier zu lesen, der vorführt, wie sich so eine Visualisierung entwickeln kann und am Ende richtig richtig gut aussieht:
 https://cedricscherer.netlify.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/
 
 Hilfen, um mit R und ggplot zurechtzukommen sind: 

@@ -42,7 +42,7 @@ ggplot(data = penguins) +
   geom_histogram(aes(x = body_mass_g), na.rm = TRUE)
 ```
 
-![](../figures/Histogramm_gewicht_peng-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/Histogramm_gewicht_peng-1.png)
 
 Wenn ihr das ausgeführt habt, sollte eine Meldung aufgeploppt sein:
 “`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.”
@@ -60,7 +60,7 @@ ggplot(data = penguins) +
   geom_histogram(aes(x = body_mass_g), binwidth = 5, na.rm = TRUE) 
 ```
 
-![](../figures/hist_peng2-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/hist_peng2-1.png)
 
 Versucht doch einmal andere Werte und schaut, was passiert!
 
@@ -70,7 +70,7 @@ ggplot(data = penguins)+
   geom_histogram(aes(x = body_mass_g), binwidth = 500, na.rm = TRUE)
 ```
 
-![](../figures/hist_peng3-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/hist_peng3-1.png)
 
 Versucht doch einmal andere Werte und schaut, was passiert!
 
@@ -94,8 +94,8 @@ einmal zur Erinnerung:
 -   Q3 - Q1 ist der Interquartilsabstand: In diesem Bereich um den
     Median herum liegen 50% der “mittleren” Werte. Er wird durch die Box
     gekennzeichnet
--   Bartenden bzw. “Whisker” kennzeichen den geben den minimalen und den
-    maximalen Wert an.
+-   Bartenden bzw. “Whisker” geben den minimalen und den maximalen Wert
+    an.
 -   *Aber:* Bei der Berechnung des Minimus und des Maximums bleiben
     Ausreißer unberücksichtigt. Ausreisser sind Werte, die mehr als das
     1.5fache vom oberen bzw. unteren Quartil entfernt sind. So macht es
@@ -120,7 +120,7 @@ ggplot(data = penguins) +
   theme_bw()
 ```
 
-![](../figures/ein_Boxplotdiagramm-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/ein_Boxplotdiagramm-1.png)
 
 Ich kann gut erkennen, dass die Pinguin-Art Gentoo deutlich schwerer ist
 als die anderen beiden.
@@ -149,7 +149,7 @@ ggplot(data = penguins, aes(x = bill_depth_mm, y = bill_length_mm)) +
   geom_point(na.rm = TRUE)
 ```
 
-![](../figures/Streudiagramm_basics-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/Streudiagramm_basics-1.png)
 
 Jetzt können wir damit wieder die Dinge tun, die wir mit dem
 Balkendiagramm gemacht hatten, also die Achsen beschriften, einen Titel
@@ -165,7 +165,7 @@ ggplot(data = penguins) +
   theme_bw()
 ```
 
-![](../figures/Streudiagramm_mit_titel-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/Streudiagramm_mit_titel-1.png)
 
 Was kann man noch tolles machen? Die Form der Punkte von einer Variablen
 bestimmen lassen! Und die Farbe!
@@ -186,7 +186,7 @@ ggplot(data = penguins, aes(x = bill_depth_mm, y = bill_length_mm,
   theme_bw()
 ```
 
-![](../figures/StreudiagrammSchoenePunkten-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/StreudiagrammSchoenePunkten-1.png)
 
 Oooooh, schaut euch mal das Ergebnis an! Da könnte man schon fast was
 interpretieren!
@@ -211,7 +211,7 @@ ggplot(data = penguins, aes(x = bill_depth_mm, y = bill_length_mm, shape = speci
  scale_shape_discrete(name  ="Art")
 ```
 
-![](../figures/Streudiagramm_Legendenbeschriftung-1.png)
+![](B05_ggplot_continued_files/figure-markdown_github/Streudiagramm_Legendenbeschriftung-1.png)
 
 Was bedeutet das alles?
 
@@ -233,7 +233,7 @@ Voll gut!
 
 ## Letzte Hinweise ggplot
 
-GGplot hat noch viel viel mehr Möglichkeiten. Um einen Überblick zu
+ggplot hat noch viel viel mehr Möglichkeiten. Um einen Überblick zu
 bekommen, empfehle ich den Blogpost hier zu lesen, der vorführt, wie
 sich so eine Visualisierung entwickeln kann und am Ende richtig richtig
 gut aussieht:
