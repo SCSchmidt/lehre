@@ -1,18 +1,17 @@
-Skalenniveaus
-=============
+# Datentypen in R
 
-Wir hatten über **Skalenniveaus** geredet und ich hatte auch erwähnt,
-dass es dafür äquivalente in R gibt.
+In dem Vorlesungsvideo ging es um **Skalenniveaus** und Ihr habt auch
+schon die Datentypen in R kennengelernt. Diese Datentypen wollen wir uns
+nun genauer anschauen!
 
-Der class-Befehl zeigt, welches Datenformat die Daten haben.
+Der `class()`-Befehl zeigt, welches Datenformat die Daten haben.
 
 -   `boolean`: Das sind TRUE / FALSE - Angaben, man braucht sie häufig
     innerhalb von Funktionen, um bestimmte Parameter einzustellen
 
 -   `factor` und `character` sind nominal, wobei `character` Buchstaben
     enthalten muss, `factor` nicht. Ein `factor` hat `level`, das sind
-    die Werte, die in dem Vektor, der die `class factor` hat, enthalten
-    sind
+    die Merkmalsausprägungen der Variablen
 
 -   `ordered factor` ist ordinal
 
@@ -21,7 +20,7 @@ Der class-Befehl zeigt, welches Datenformat die Daten haben.
 -   Es gibt zwei Typen bei den metrischen Daten, nämlich: `integer`
     (ganze Zahlen) und `double` (Kommazahlen, Dezimalzahlen)
 
-Diese Typen findet man mit dem Befehl `typeof` heraus.
+Diese Typen findet man mit dem Befehl `typeof()` heraus.
 
 Um das alles einmal auszuprobieren, nehmen wir wieder den
 Pinguin-Datensatz:
@@ -29,28 +28,32 @@ Pinguin-Datensatz:
 Zuerst laden wir das Paket:
 
 ``` r
+# Paket laden
 library(palmerpenguins)
 ```
 
 Und dann die Daten:
 
 ``` r
+# Daten laden
 data("penguins")
 ```
 
-Schauen wir uns als erstes den Gesamten Datensatz an:
+Schauen wir uns als erstes den gesamten Datensatz an:
 
 ``` r
+# Datentyp abfragen
 class(penguins)
 ```
 
-Der Output erzählt uns, dass es sich um eine Tabelle, einen `Data frame`
+Der Output erzählt uns, dass es sich um eine Tabelle, einen `data.frame`
 handelt.
 
 Jetzt nehmen wir doch einmal nur eine Spalte der Tabelle, die erste,
-“species”
+`species`
 
 ``` r
+# Datentyp abfragen
 class(penguins$species)
 ```
 
@@ -59,6 +62,7 @@ Skalenniveau. Finden wir doch einmal heraus, welche Werte in dieser
 Spalte stehen:
 
 ``` r
+# Merkmalsausprägungen abfragen
 levels(penguins$species)
 ```
 
@@ -66,13 +70,14 @@ Ok, es sind genau 3 unterschiedliche Werte, die in dieser Spalte
 vorkommen: “Adelie”, “Chinstrap” und “Gentoo”. Jetzt wissen wir schon,
 dass es nicht mehr als drei Spezies in dem Datensatz gibt.
 
-**Aufgabe:** Finde das gleiche zu der Spalte “island” heraus!
+**Aufgabe:** Finde das gleiche zu der Spalte `island` heraus!
 
 Wie gesagt, gibt es Unterschiede bei metrischen Daten. Schauen wir uns
-also einmal die Schnabellänge (bill\_length\_mm) und die
-Flügel-Flossenlänge (flipper\_length\_mm) an:
+also einmal die Schnabellänge (`bill_length_mm`) und die
+Flügel-Flossenlänge (`flipper_length_mm`) an:
 
 ``` r
+# Datentypen abfragen
 class(penguins$bill_length_mm)
 class(penguins$flipper_length_mm)
 ```
@@ -83,20 +88,22 @@ angegeben.
 
 Ordinale Daten sind irgendwie logischerweise in R einfach
 `factor`-Daten, deren Werte (`level`) eine Ordnung zugewiesen bekommen
-haben. Das kann man recht einfach mit dem Befehl `ordered`. In dem
+haben. Das kann man recht einfach mit dem Befehl `ordered()`. In dem
 Pinguin-Datensatz gibt es dafür leider keine geeignete Spalte. Wir
 spielen das trotzdem mit einer der nominalen Informationen durch, da das
 für die Diagramm-Erstellung später durchaus sinnvoll sein kann.
 
-Nehmen wir die Spalte “island”:
+Nehmen wir die Spalte `island`:
 
 ``` r
+# Datentyp abfragen
 class(penguins$island)
 ```
 
 Sie ist ein `factor`. Jetzt finden wir die `levels` heraus:
 
 ``` r
+# Merkmalsausprägungen abfragen
 levels(penguins$island)
 ```
 
@@ -106,17 +113,19 @@ Reihenfolge Torgersen - Dream - Biscoe viel sinnvoller ist, weil die
 Inseln dann von Nord nach Süd aufgelistet werden. Das tun wir so:
 
 ``` r
+# Reihenfolge der Merkmalsausprägungen verändern
 penguins$island <- ordered(penguins$island, levels = c("Torgersen", "Dream", "Biscoe"))
 ```
 
-Wir überschreiben mit der Zuweisung den bisherigen Stand der Dinge (\<-
-). Die Funktion `ordered` braucht als Input als erstes welchen Datensatz
-wir ordnen wollen und dann die Reihenfolge der `levels`. Diese “sammeln”
-wir in einer Klammer hinter einem c: `c()`.
+Wir überschreiben mit der Zuweisung den bisherigen Stand der Dinge
+(`<-`). Die Funktion `ordered()` braucht als Input als erstes welchen
+Datensatz wir ordnen wollen und dann die Reihenfolge der `levels`. Diese
+“sammeln” wir in einer Klammer hinter einem c: `c()`.
 
 Schauen wir uns das Ergebnis an:
 
 ``` r
+# Merkmalsausprägungen abfragen
 levels(penguins$island)
 ```
 
@@ -130,6 +139,7 @@ Information zum Gewicht der Pinguine durcheinander. Wir gucken sie uns
 vorher an:
 
 ``` r
+# Datentyp abfragen
 class(penguins$body_mass_g)
 ```
 
@@ -138,12 +148,14 @@ Alles klar, integer.
 Jetzt wandeln wir die Spalte in eine Text-Spalte um:
 
 ``` r
+# Datentyp ändern
 penguins$body_mass_g <-  as.character(penguins$body_mass_g)
 ```
 
 Und gucken uns das Ergebnis an:
 
 ``` r
+# Datentyp abfragen
 class(penguins$body_mass_g)
 ```
 
@@ -151,6 +163,7 @@ Das dumme ist nur, jetzt können wir damit keinen Mittelwert mehr
 errechnen:
 
 ``` r
+# Mittelwert berechnen
 mean(penguins$body_mass_g)
 ```
 
@@ -161,12 +174,12 @@ kommt, den Text in Zahlen umzuwandeln, gibt er uns den Fehler aus.
 Aber, naja, wir wollen ja nicht, dass wir in der Folge falsche
 Ergebnisse bekommen, deshalb benutzen wir jetzt folgenden Trick:
 
-Der Vektor penguins$body\_mass\_g wurde von uns mit einem anderen
+Der Vektor `penguins$body_mass_g` wurde von uns mit einem anderen
 Datentyp überschrieben als er vorher war.
 
 Was passiert, wenn wir einfach die Daten noch einmal neu einladen?
 
-Also den data-Befehl noch einmal benutzen?
+Also den `data()`-Befehl noch einmal benutzen?
 
 Ha! Damit überschreiben wir die falschen Daten einfach wieder. Solange
 wir unsere Originaldaten irgendwo haben und diese NICHT ÜBERSCHREIBEN
