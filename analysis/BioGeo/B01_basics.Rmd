@@ -87,7 +87,7 @@ Mit x kann ich jetzt weiterrechnen:
 
 ```{r}
 # Variable y definieren
-y <- x+2
+y <- x + 2
 ```
 
 Mit dem Befehl `class()` kann ich testen, welcher Datentyp eine Variable hat (also z. B. ob es eine Zahl oder ein Buchstabe ist):
@@ -144,7 +144,7 @@ Was den Daten noch fehlt, ist eine sinnvolle Bezeichnung der Spalten, `z` und `a
 colnames(df) <- c("gewicht", "tier") 
 ```
 
-Colnames bezeichnet "column names". Wir sagen R also, die Spaltennamen von dem Datensatz `df` sollen jetzt "gewicht" und "tier" heißen. Die Reihenfolge ist hier wichtig! Ich muss wissen, wie meine Spalten aneinander gereiht sind, damit dann am Ende auch die Spalten richtig heißen. Schaut ihn euch noch einmal an.
+Colnames bezeichnet "column names". Wir sagen R also, die Spaltennamen von dem Datensatz `df` sollen jetzt `gewicht` und `tier` heißen. Die Reihenfolge ist hier wichtig! Ich muss wissen, wie meine Spalten aneinander gereiht sind, damit dann am Ende auch die Spalten richtig heißen. Schaut ihn euch noch einmal an.
 
 Cool! Wir haben jetzt schöne tabellarische Daten! 
 
@@ -173,13 +173,15 @@ Testet das!
 Die Spaltennamen sind auch sehr praktisch, weil ich diese auch zur Auswahl nutzen kann. Ich kann den Vektor der Tiere, den ich in meinen Dataframe eingebaut habe, auch wieder ganz einfach auslesen:
 
 ```{r}
+# Vektor auslesen
 df$tier
 ```
 
-Das Dollarzeichen (\$) sagt "in dem Dataframe df die Spalte tier". Und ausgegeben werden die "Hund" und "Katze", die in diesem Vektor (die Spalte ist ein Vektor) liegen.
+Das Dollarzeichen `$` sagt "in dem Dataframe df die Spalte tier". Und ausgegeben werden die "Hund" und "Katze", die in diesem Vektor (die Spalte ist ein Vektor) liegen.
 Das gleiche kann ich auch mit dem Gewicht machen:
 
 ```{r}
+# Vektor auslesen
 df$gewicht
 ```
 
@@ -205,7 +207,7 @@ Wie oben wird durch die Zuweisung der Variablen `mean_gewicht` jetzt das Ergebni
 
 ### Pakete
 
-Nun benutzen wir echte biologische Daten. Diese wurden von Dr. Kristen Gorman und der Palmer Station, Antarctica LTER zur Verfügung gestellt und von Allison Horst veröffentlicht. Wir schreiben in die Konsole install.packages("palmerpenguins") um diese Daten zu installieren. 
+Nun benutzen wir echte biologische Daten. Diese wurden von Dr. Kristen Gorman und der Palmer Station, Antarctica LTER zur Verfügung gestellt und von Allison Horst veröffentlicht. Wir schreiben in die Konsole install.packages("palmerpenguins") um diese Pakete zu installieren. 
 
 ```{r, eval = FALSE}
 # Paket installieren
@@ -319,24 +321,25 @@ Häufig möchte man jedoch z.B. nur den Mittelwert der Pinguine einer bestimmten
 
 Dafür (wie so für so vieles) gibt es unterschiedliche Wege in R. Schauen wir uns zwei kurz an: 
 
-1. *subset*:
+1. `*subset()*`:
 
-Diese Funktion gehört zu base R. Ich erstelle einen neuen Datensatz, der besteht aus dem alten Datensatz, da wo in der Spalte species genau (Operator "==") "Chinstrap" steht. Ich hab den Code mal kommentiert: 
+Diese Funktion gehört zu base R. Ich erstelle einen neuen Datensatz, der besteht aus dem alten Datensatz, da wo in der Spalte species genau (Operator `==`) "Chinstrap" steht. Ich hab den Code mal etwas ausführlicher kommentiert: 
 
 ```{r}
-# erstellen eines neuen Datensatzes nur der Penguinspezies Chinstrap
-chinstraps <- subset(penguins, penguins$species == "Chinstrap")
+# Daten nach Merkmalsausprägung auswählen
+chinstraps <- subset(penguins, penguins$species == "Chinstrap") # erstellen eines 
+# neuen Datensatzes nur der Penguinspezies Chinstrap
 
 # Mittelwert berechnen:
 mean(chinstraps$body_mass_g)
 ```
 
-2. *filter*
+2.`*filter()*`
 
-Die Filter-Funktion gehört zum sogenannten "tidyverse". Das Tidyverse ist wie ein bestimmter Dialekt von R. Eine Reihe von Paketen folgt diesem Dialekt und diese Pakete arbeiten besonders gut miteinander. Da diese neuen Pakete auch einiges vereinfachen, erfreuen sie sich zunehmender Beliebtheit und wenn man nach Lösungen googelt, findet man Anleitungen, die "tidy" Lösungen erklären. Im Tidyverse gibt es eine Besonderheit, die man kennen sollte: Die sogenannte "*pipe*". Mit dem Befehl `%>%` wird das Ergebnis einer Zeile in die nächste überführt. Wir benötigen zwei Pakete als nächstes: "dplyr" und "magrittr", die mit *install.packages* installiert werden müssen.
+Die Filter-Funktion gehört zum sogenannten "tidyverse". Das Tidyverse ist wie ein bestimmter Dialekt von R. Eine Reihe von Paketen folgt diesem Dialekt und diese Pakete arbeiten besonders gut miteinander. Da diese neuen Pakete auch einiges vereinfachen, erfreuen sie sich zunehmender Beliebtheit und wenn man nach Lösungen googelt, findet man Anleitungen, die "tidy" Lösungen erklären. Im Tidyverse gibt es eine Besonderheit, die man kennen sollte: Die sogenannte "*pipe*". Mit dem Befehl `%>%` wird das Ergebnis einer Zeile in die nächste überführt. Wir benötigen zwei Pakete als nächstes: `dplyr` und `magrittr`, die mit `install.packages` installiert werden müssen.
 
-#### nur für nicht-Cloud-user!
 ```{r, eval = FALSE}
+# Pakete installieren
 install.packages("dplyr")
 install.packages("magrittr")
 ```
@@ -345,21 +348,22 @@ install.packages("magrittr")
 Im Beispiel schicke ich damit den gesamten Datensatz penguins in den Filter, der in der nächsten Zeile beschrieben wird, "filtere" ihn und schick ihn gefiltert weiter in die nächste Zeile, in der ich die Spalte definiere und in die letzte, wo es dann um die Berechnung des Mittelwertes geht:
 
 ```{r}
-# filter funktion
-library(dplyr)
-# zur Vereinfachung der Pipe gibt es 
-library(magrittr)
+# Pakete laden
+library(dplyr) # filter funktion
+library(magrittr) # zur Vereinfachung der Pipe
 
+# Pipe zur Mittelwertsberechnung
 penguins %>%
-  filter(species == "Chinstrap") %>% # filter aus dem Datensatz nur die raus, wo in der Spalte species "Chinstrap" steht
-  use_series(body_mass_g) %>%    #  nimm die Spalte body_mass_g, braucht Paket magrittr
+  filter(species == "Chinstrap") %>% # filter aus dem Datensatz nur die raus, 
+  # wo in der Spalte species "Chinstrap" steht
+  use_series(body_mass_g) %>% # nimm die Spalte body_mass_g, braucht Paket magrittr
   mean() # und berechne daraus den Mittelwert
-
 ```
 
-Wie man sieht, ist der "Kernbefehl" ("species == "Chinstrap" ") fast genau gleich wie bei der subset-Funktion. Es sind auch nicht weniger Zeilen Code. Es ist aber eventuell lesbarer. Und wenn ich mir vorstelle, dass ich meine Daten vlt. noch nach 20 anderen Variablen filtern möchte, will ich nicht jedesmal einen extra Datensatz erstellen müssen. Manchmal wird es dann schwierig, sich sinnvolle Namen für die Datensätze auszudenken. So sehe ich immer, welche Filter ich genau angewandt habe. Allerdings: Brauche ich diese Datensätze noch für andere Berechnungen, ist subset die bessere Lösung. Oder ich weise das Gefilterte einer Variablen zu, das geht auch mit der filter-Version:
+Wie man sieht, ist der "Kernbefehl" (`species == "Chinstrap"`) fast genau gleich wie bei der `subset()`-Funktion. Es sind auch nicht weniger Zeilen Code. Es ist aber eventuell lesbarer. Und wenn ich mir vorstelle, dass ich meine Daten vlt. noch nach 20 anderen Variablen filtern möchte, will ich nicht jedesmal einen extra Datensatz erstellen müssen. Manchmal wird es dann schwierig, sich sinnvolle Namen für die Datensätze auszudenken. So sehe ich immer, welche Filter ich genau angewandt habe. Auch mit `filter()` kann ich die Auswahl als neues Objekt speichern. 
 
 ```{r}
+# Objekt mit nach nach Merkmalsausprägung auswählten Daten erstellen
 chinstraps <- penguins %>%
   filter(species == "Chinstrap")
 ```
@@ -370,23 +374,23 @@ chinstraps <- penguins %>%
 
 - mithilfe von Zuweisungen werden Variablen definiert, mit denen weiter gearbeitet und gerechnet werden kann.
 
-- Die Installation von Paketen erweitert die Funktionalitäten in R. CRAN-Pakete werden mit "install.packages("Paketname")" installiert.
+- Die Installation von Paketen erweitert die Funktionalitäten in R. CRAN-Pakete werden mit Daten `install.packages("Paketname")` installiert.
 
-- Ein Paket muss jede Sitzung neu geladen werden (einfach im Skript den library-Befehl reinschreiben)
+- Ein Paket muss jede Sitzung neu geladen werden (einfach im Skript den `library()`-Befehl reinschreiben)
 
 ### Zusammenfassend noch einmal grundlegende Zeichen:
 
-- <-  mit einem kleinen Pfeil weisen wir einen Wert / eine Berechnunge / einen Vektor oder sogar einen Dataframe einer Variablen zu. Wie im Mathe-Unterricht, wo Formeln mit f(x) und y = a*x + b beschrieben wurden. R merkt sich NICHTS, es sei denn, ich weise es einer Variablen zu. Das heißt auch, wenn ich einen Befehl / eine Formel auf einen Datensatz anwende, bleibt das nur langfristig bestehen, wenn ich mit dem Befehl gleichzeitig entweder meinen alten Datensatz überschreibe ODER einen neuen entstehen lasse.
+- `<-`  mit einem kleinen Pfeil weisen wir einen Wert / eine Berechnunge / einen Vektor oder sogar einen Dataframe einer Variablen zu. Wie im Mathe-Unterricht, wo Formeln mit f(x) und y = a * x + b beschrieben wurden. R merkt sich NICHTS, es sei denn, ich weise es einer Variablen zu. Das heißt auch, wenn ich einen Befehl / eine Formel auf einen Datensatz anwende, bleibt das nur langfristig bestehen, wenn ich mit dem Befehl gleichzeitig entweder meinen alten Datensatz überschreibe ODER einen neuen entstehen lasse.
 
-- $  das Dollarzeichen steht zwischen Dataframe (Tabelle) und dem Vector (Spalte) im Dataframe: df\$vector, damit wählen wir also den Vector an.
+- `$`  das Dollarzeichen steht zwischen Dataframe (Tabelle) und dem Vector (Spalte) im Dataframe: `df$vector`, damit wählen wir also den Vector an.
 
--  Klammern ( ) sind grundlegend, weil ich bei jeder Funktion, die ich aufrufe erst den Funktionsnamen / den Befehl schreibe und dahinter in Klammern, worauf er sich bezieht, also auf welche Daten der Befehl angewandt werden soll.
+-  Klammern `()` sind grundlegend, weil ich bei jeder Funktion, die ich aufrufe erst den Funktionsnamen / den Befehl schreibe und dahinter in Klammern, worauf er sich bezieht, also auf welche Daten der Befehl angewandt werden soll.
 
-- in anderen Kontexten umgeben Klammern ( ) immer eine Sinneinheit, zB, wenn ich mehrere Werte zusammenfassen will, nutze ich c()
+- in anderen Kontexten umgeben Klammern `()` immer eine Sinneinheit, z. B., wenn ich mehrere Werte zusammenfassen will, nutze ich `c()`
 
-- Eckige Klammern []: Mit ihnen kann man  Zeilen, Spalten und Felder eines Datensatzes anwählen.
+- Eckige Klammern `[]`: Mit ihnen kann man  Zeilen, Spalten und Felder eines Datensatzes anwählen.
 
-- die Pipe %>%: Ist ein besonderes Zeichen im R-Dialekt "tidyverse" und gibt den Inhalt davor an die nächste Zeile weiter.
+- die Pipe `%>%`: Ist ein besonderes Zeichen im R-Dialekt "tidyverse" und gibt den Inhalt davor an die nächste Zeile weiter.
 
 
 ### trouble shoot Tips
