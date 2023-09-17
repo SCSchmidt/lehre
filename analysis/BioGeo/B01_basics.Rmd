@@ -207,7 +207,7 @@ Wie oben wird durch die Zuweisung der Variablen `mean_gewicht` jetzt das Ergebni
 
 ### Pakete
 
-Nun benutzen wir echte biologische Daten. Diese wurden von Dr. Kristen Gorman und der Palmer Station, Antarctica LTER zur Verfügung gestellt und von Allison Horst veröffentlicht. Wir schreiben in die Konsole install.packages("palmerpenguins") um diese Pakete zu installieren. 
+Nun benutzen wir echte biologische Daten. Diese wurden von Dr. Kristen Gorman und der Palmer Station, Antarctica LTER zur Verfügung gestellt und von Allison Horst veröffentlicht. Wir schreiben in die Konsole `install.packages("palmerpenguins")` um diese Pakete zu installieren. 
 
 ```{r, eval = FALSE}
 # Paket installieren
@@ -216,7 +216,7 @@ install.packages("palmerpenguins")
 
 Achtung! "palmerpenguins" muss in Hochkommas, damit R nicht denkt, dass es ein Objekt ist, dass es in der Environment finden muss.
 
-Pakete sind "Erweiterungen" für `base R`. `base R` ist das zugrunde liegende "einfache" R, das mit der Standardinstallation geladen wird. Es kann schon sehr, sehr viel. Die vielfältige Community um R herum und auch einige professionelle Entwickler denken sich aber ständig neue Funktionalitäten (Funktionen, Möglichkeiten) aus und implementieren sie in Paketen (*packages*). Wenn ich also eine bestimmte Funktion nutzen möchte, muss ich das Paket installieren, in dem sie eingebaut wurde und in meine R-session laden. Pakete liegen meistens auf dem "Comprehensive R Archive Network" (*CRAN*), können aber auch woanders zur Verfügung gestellt werden. Oftmals werden neue Pakete zuerst einmal auf github.com abgelegt, einem unter Software-Entwicklern beliebten versionskontrollierten Repositorium für Code. 
+Pakete sind "Erweiterungen" für *base R*. *base R* ist das zugrunde liegende "einfache" R, das mit der Standardinstallation geladen wird. Es kann schon sehr, sehr viel. Die vielfältige Community um R herum und auch einige professionelle Entwickler denken sich aber ständig neue Funktionalitäten (Funktionen, Möglichkeiten) aus und implementieren sie in Paketen (*packages*). Wenn ich also eine bestimmte Funktion nutzen möchte, muss ich das Paket installieren, in dem sie eingebaut wurde und in meine R-session laden. Pakete liegen meistens auf dem "Comprehensive R Archive Network" (*CRAN*), können aber auch woanders zur Verfügung gestellt werden. Oftmals werden neue Pakete zuerst einmal auf github.com abgelegt, einem unter Software-Entwicklern beliebten versionskontrollierten Repositorium für Code. 
 
 Nach erfolgreicher Installation (roter Text heißt in R nicht, dass Fehler passiert sind!), müssen wir das Paket noch in unsere Sitzung ("R-session") laden, damit wir damit umgehen können:
 
@@ -227,7 +227,7 @@ library(palmerpenguins)
 
 Pakete müssen nur EINMAL installiert, aber in jeder Sitzung / nach jedem Neustart des Programms neu "geladen" werden. Die Befehle fürs Laden heißen entweder `library()` oder `require()`, beides funktioniert gleich gut. In der Regel schreibt man die Ladebefehle für die Pakete, die man in einem Skript braucht, ganz nach oben, damit andere gleich am Anfang sehen, was sie vielleicht nach-installieren müssen. 
 
-In dem Paket Palmerpenguins gibt es zwei Datensätze. Die rufen wir jetzt mit dem Befehl "data" auf und schauen uns den an.
+In dem Paket Palmerpenguins gibt es zwei Datensätze. Die rufen wir jetzt mit dem Befehl `data()` auf und schauen uns den an.
 
 ```{r, eval=TRUE}
 # Daten laden
@@ -261,7 +261,7 @@ Noch ein paar weitere Hinweise zur Auswahl von Daten.
 Negativauswahl gibt es natürlich auch. Also: Gib mir alles außer diese Spalte: 
 
 ```{r}
-# Negarive Auswahl
+# Negative Auswahl
 penguins_alles_ausser_2 <- penguins[, -2]
 ```
 
@@ -321,12 +321,12 @@ Häufig möchte man jedoch z.B. nur den Mittelwert der Pinguine einer bestimmten
 
 Dafür (wie so für so vieles) gibt es unterschiedliche Wege in R. Schauen wir uns zwei kurz an: 
 
-1. `*subset()*`:
+1. **`subset()`**:
 
 Diese Funktion gehört zu base R. Ich erstelle einen neuen Datensatz, der besteht aus dem alten Datensatz, da wo in der Spalte species genau (Operator `==`) "Chinstrap" steht. Ich hab den Code mal etwas ausführlicher kommentiert: 
 
 ```{r}
-# Daten nach Merkmalsausprägung auswählen
+# Objekt mit nach nach Merkmalsausprägung auswählten Daten erstellen
 chinstraps <- subset(penguins, penguins$species == "Chinstrap") # erstellen eines 
 # neuen Datensatzes nur der Penguinspezies Chinstrap
 
@@ -334,7 +334,7 @@ chinstraps <- subset(penguins, penguins$species == "Chinstrap") # erstellen eine
 mean(chinstraps$body_mass_g)
 ```
 
-2.`*filter()*`
+2.**`filter()`**
 
 Die Filter-Funktion gehört zum sogenannten "tidyverse". Das Tidyverse ist wie ein bestimmter Dialekt von R. Eine Reihe von Paketen folgt diesem Dialekt und diese Pakete arbeiten besonders gut miteinander. Da diese neuen Pakete auch einiges vereinfachen, erfreuen sie sich zunehmender Beliebtheit und wenn man nach Lösungen googelt, findet man Anleitungen, die "tidy" Lösungen erklären. Im Tidyverse gibt es eine Besonderheit, die man kennen sollte: Die sogenannte "*pipe*". Mit dem Befehl `%>%` wird das Ergebnis einer Zeile in die nächste überführt. Wir benötigen zwei Pakete als nächstes: `dplyr` und `magrittr`, die mit `install.packages` installiert werden müssen.
 
