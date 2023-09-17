@@ -1,25 +1,22 @@
-Visualisierungen von Daten
-==========================
+# Visualisierungen von Daten
 
 Eine ganz grundlegende Technik ist es, Daten, die man aufgenommen hat,
 auf verschiedene Arten zu visualisieren, um einen Überblick zu bekommen.
 In R gibt es mehrere Möglichkeiten. Ganz einfache “plots” (Grafiken)
-kann mit `base R` erstellen, aber schönere und komplexere Grafiken gehen
+kann mit *base R* erstellen, aber schönere und komplexere Grafiken gehen
 am besten mit dem Paket `ggplot2`.
 
-ggplot- Logik!
---------------
+## `ggplot` - Logik!
 
-ggplot2 ist ein Paket, dase von Hadley Wickham entwickelt wurde, und
+`ggplot2` ist ein Paket, das von Hadley Wickham entwickelt wurde, und
 viele Funktionen zur Visualisierung von Daten bietet (für eine Übersicht
 und Inspirationen siehe z. B:
-<a href="http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html" class="uri">http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html</a>
-und
-<a href="https://www.r-graph-gallery.com/" class="uri">https://www.r-graph-gallery.com/</a>).
-Es folgt einer eigenen Logik, der “Grammatik der Diagramme” und gehört
-zum Tidyverse. Grundlegend ist eine Art “Layer-Konzept”, dass ich mit
-jeder weiteren Zeile Code ein neues Layer zu dem Diagramm hinzufüge, wie
-bei der Bildbearbeitung mit Photoshop oder Gimp.
+<http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html>
+und <https://www.r-graph-gallery.com/>). Es folgt einer eigenen Logik,
+der “Grammatik of Graphics” und gehört zum Tidyverse. Grundlegend ist
+eine Art “Layer-Konzept”. So kann ich mit jeder weiteren Zeile Code ein
+neues Layer zu dem Diagramm hinzufüge, wie bei der Bildbearbeitung mit
+Photoshop oder Gimp.
 
 Erarbeiten wir uns das Schritt für Schritt.
 
@@ -27,37 +24,35 @@ Erarbeiten wir uns das Schritt für Schritt.
 
 -   Welche Daten es benutzen soll ggplot(`data =`),
 
--   welche Art von Diagramm es bauen soll (`geom`) und
+-   wie die einzelnen Variablen im Diagramm umgesetzt werden sollen
+    (`aes()` von aesthetics). Ein Merkmal kann beispielsweise auf der x-
+    oder der y-Achse abgetragen werden oder die Farbgebung bestimmen.
 
--   wie das Diagramm aussehen soll (`aes()` von aesthetics), damit
-    überhaupt etwas entsteht, also z. B., was auf der x- und der y-Achse
-    abgetragen werden soll.
+-   Welche Form soll das Diagramm abbilden soll (`geom_`).
+    Beispielsweise Punkte, Balken oder Linien.
 
-Alles andere danach sind reine Verschönerungsmaßnahmen. Mit `scales`
-lassen sich die Achsen und Legenden verändern, mit `theme`
+Alles andere danach sind in erster Linie Verschönerungsmaßnahmen. Mit
+`scales()` lassen sich die Achsen und Legenden verändern, mit `theme()`
 Hintergrundfarbe u. ä. (für mehr Infos siehe:
-<a href="https://r-intro.tadaa-data.de/book/visualisierung.html" class="uri">https://r-intro.tadaa-data.de/book/visualisierung.html</a>
-)
+<https://r-intro.tadaa-data.de/book/visualisierung.html> )
 
 Nehmen wir uns ein Beispiel vor und erarbeiten es uns der Reihe nach.
 
-Ein Säulen- oder Balkendiagramm
--------------------------------
+## Ein Säulen- oder Balkendiagramm
 
-Ein Säulendiagramm eignet sich zur Darstellung nominaler und ordinaler
-Variablen. Ihr könnt es ja mal mit metrischen probieren, dann seht ihr
-schnell, warum das nicht gut ist.
+Ein Säulendiagramm eignet sich um die Häufigkeiten von nominalen oder
+ordinalen Merkmalsausprägungen darzustellen. Ihr könnt es ja mal mit
+metrischen probieren, dann seht ihr schnell, warum das nicht gut ist
+;-).
 
-Als erstes müssen wir das Paket ggplot2 installieren (*install.packages*
-für die Nicht-Cloud-User) und aufrufen, sowie die Daten, die wir nutzen
-wollen:
+Als erstes müssen wir das Paket `ggplot2` installieren. Macht das bitte
+mit `install.packages()` in der Konsole. Dann laden wird dieses Paket
+gemeinsam mit de `palmerpenguins`-Daten in unseren workspace.
 
 ``` r
+# Pakete und Daten laden
 library(ggplot2)
-
 library(palmerpenguins)
-
-# Daten
 data("penguins")
 ```
 
@@ -67,7 +62,7 @@ Art des Diagramms ist `geom_bar`.
 Die Information `data =` kann entweder direkt in die runden Klammern
 hinter `ggplot()` geschrieben werden ODER dem `geom_` hinzugefügt.
 
-Wie aber soll das Säulendiagramm (`geom_bar`) aussehen, welche Spalte
+Wie aber soll das Säulendiagramm (`geom_bar()`) aussehen, welche Spalte
 des Datensatzes soll genau wie dargestellt werden? Das ist die
 Information die in `aes()` eingegeben werden muss.
 
@@ -77,8 +72,9 @@ die verschiedenen Spezies des penguin-Datensatzes und die Häufigkeiten
 y-Achse zeigt:
 
 ``` r
-ggplot()+ 
-  geom_bar(data = penguins, aes(x = species)) 
+# Säulendiagramm erstellen
+ggplot(data = penguins, aes(x = species)) + 
+  geom_bar() 
 ```
 
 ![](./figures/erstes_saeulendiag-1.png)
@@ -91,12 +87,13 @@ und einfach angezeigt.
 
 Aber schön ist es noch nicht.
 
-Geben wir den Achsen eine andere Beschriftung. Mit dem `labs`-Befehl
+Geben wir den Achsen eine andere Beschriftung. Mit dem `labs()`-Befehl
 lassen sich die Achsenbeschriftungen und die Überschriften ändern:
 
 ``` r
-ggplot()+ 
-  geom_bar(data = penguins, aes(x = species))+ 
+# Säulendiagramm mit Achsbeschriftung und Titel erstellen
+ggplot(data = penguins, aes(x = species)) + 
+  geom_bar() + 
   labs(y = "Anzahl",
        x = "Art",
        title = "Anzahl Tiere pro Spezies")
@@ -109,10 +106,11 @@ Balken unterschiedliche Farben, je nach den Angaben in der Spalte, die
 ich spezifiziere (hier wieder Spezies):
 
 ``` r
-ggplot()+ 
-  geom_bar(data = penguins, aes(x = species, fill = species))+ 
+# Diagramm mit farbigen Säulen erstellen
+ggplot() + 
+  geom_bar(data = penguins, aes(x = species, fill = species)) + 
   labs(y = "Anzahl",
-      x = "Art",
+       x = "Art",
        title = "Anzahl Tiere pro Spezies")
 ```
 
@@ -124,7 +122,7 @@ nicht nach Größe geordnet ist?
 Ändern wir das doch einmal!
 
 Leider bedeutet das in R, dass wir unseren Datensatz ändern müssen. Da R
-bei geom\_bar während der Diagrammerstellung erst die Häufigkeiten
+bei `geom_bar()` während der Diagrammerstellung erst die Häufigkeiten
 zählt, kann er im Vorhinein nicht die Reihenfolge nach den Häufigkeiten
 sortieren.
 
@@ -136,52 +134,54 @@ dann einen neuen Befehl geben.
 Für das Zählen von Häufigkeiten gibt es einen einfachen Befehl, der
 einer pivot-Table in Excel entspricht, falls jemand das kennt. Ich wähle
 ein oder zwei Variablen aus, deren Zusammenhänge ausgezählt werden, also
-wie häufig kommen sie gemeinsam vor / bzw wie häufig kommt die eine
-Variable vor. Der Befehl heißt (echt simpel) `table`.
+wie häufig kommen sie gemeinsam vor / bzw. wie häufig kommt die eine
+Variable vor. Der Befehl heißt (echt simpel) `table()`.
 
 ``` r
+# Häufigkeitstabelle berechnen
 table(penguins$species)
-#> 
-#>    Adelie Chinstrap    Gentoo 
-#>       152        68       124
 ```
 
 Der Output ist klar, aber um damit arbeiten zu können, müssen wir die
 Tabelle speichern:
 
 ``` r
+# Häufigkeitstabelle erstellen
 species <- table(penguins$species)
 ```
 
-Dummerweise ist das jetzt ein bestimmtes Datenformat, das ggplot nicht
-mag, schaut mal welches:
+Dummerweise ist das jetzt ein bestimmtes Datenformat, das `ggplot2`
+nicht mag, schaut mal welches:
 
 ``` r
+# Datentyp bestimmen
 class(species)
-#> [1] "table"
 ```
 
-ggplot arbeitet am besten mit dataframes. Darum wandeln wir species noch
-einmal in einen Dataframe um. Das geht einfach mit der Funktion
-`as.data.frame` und damit überschreiben wir die alte table:
+`ggplot2` arbeitet am besten mit dataframes. Darum wandeln wir species
+noch einmal in einen Dataframe um. Das geht einfach mit der Funktion
+`as.data.frame()` und damit überschreiben wir die alte table:
 
 ``` r
-species  <- as.data.frame(species)
+# Datentyp ändern
+species <- as.data.frame(species)
 ```
 
-Schaut euch species jetzt einmal an:
+Schaut euch `species` jetzt einmal an:
 
 ``` r
+# Tabelle anschauen
 View(species)
 ```
 
-Wie ihr seht, gibt es jetzt die Spalte “Var1” und die Spalte “Freq”. Wir
+Wie ihr seht, gibt es jetzt die Spalte `Var1` und die Spalte `Freq`. Wir
 hatten R nicht gesagt, wie es die Spalten der neue Tabelle benennen
 sollte. Das holen wir jetzt nach. Nennen wir doch die erste Spalte
 “species” und die zweite “n”. “n” ist eine typische Bezeichnung für
 Häufigkeiten in der Statistik.
 
 ``` r
+# Variablen umbenennen
 colnames(species)  <- c("species", "n")
 ```
 
@@ -189,13 +189,13 @@ Das waren ganz schön viele Zeilen Code. Wir können das auch alles in
 einer Zeile machen und die Aufgaben “verschachteln”:
 
 ``` r
-species <- as.data.frame(table(penguins$species, 
-                               dnn = list("species")), 
+# Häufigkeitstabelle als dataframe erstellen
+species <- as.data.frame(table(penguins$species, dnn = list("species")), 
                          responseName = "n")
 ```
 
-`as.data.frame` ist die “äußerste” Funktion, wird also als letztes
-ausgeführt, darin liegt `table`, welches auf unsere Daten
+`as.data.frame()` ist die “äußerste” Funktion, wird also als letztes
+ausgeführt, darin liegt `table()`, welches auf unsere Daten
 “penguin$species” angewandt wird, mit dem Argument
 `dnn = list("species")`. Innerhalb des as.data.frame-Befehls wird
 `responseName = "n"` gesetzt, um die Spalten richtig zu benennen.
@@ -208,13 +208,15 @@ Codes leichter fällt. Macht das, wie ihr wollt!
 ### x nach Häufigkeiten sortieren
 
 Jetzt können wir endlich die Daten wieder visualisieren. Aber Achtung,
-wenn wir ggplot nicht selber die Häufigkeiten auszählen lassen wollen,
-sondern sie ihm “an die Hand geben”, nehmen wir nicht `geom_bar` sondern
-`geom_col` und spezifizieren mit y die Höhe des Balkens.
+wenn wir `ggplot2` nicht selber die Häufigkeiten auszählen lassen
+wollen, sondern sie ihm “an die Hand geben”, nehmen wir nicht
+`geom_bar()` sondern `geom_col()` und spezifizieren mit y die Höhe des
+Balkens.
 
 ``` r
-ggplot()+ 
-  geom_col(data = species, aes(x = species, y = n, fill = species))+ 
+# Säulendiagramm erstellen
+ggplot(data = species, aes(x = species, y = n, fill = species)) + 
+  geom_col() + 
   labs(y = "Anzahl",
        x = "Art",
        title = "Anzahl Tiere pro Spezies")
@@ -225,18 +227,20 @@ ggplot()+
 “Aber ey!” werdet ihr sagen. Die Balken sind ja noch nicht in der
 richtigen Reihenfolge. Richtig. Aber jetzt können wir das machen, in dem
 wir eine ganz kleine Änderung einfügen: Wir ordnen x um, englisch
-“`reorder`”.
+“`reorder()`”.
 
 ``` r
-ggplot()+ 
-  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+# Geordnetes Säulendiagramm erstellen
+ggplot(data = species, aes(x = reorder(species, n), y = n, fill = species)) + 
+  geom_col() + 
   labs(y = "Anzahl",
        x = "Art",
        title = "Anzahl Tiere pro Spezies")
 ```
 
-![](./figures/ordnung-x-1.png) Die Ansage ist: Nimm als x species, aber
-geordnet nach der Größe von n. 
+![](./figures/ordnung-x-1.png)
+
+Die Ansage ist: Nimm als x species, aber geordnet nach der Größe von n. 
 
 Wunderbar.
 
@@ -244,23 +248,24 @@ Wunderbar.
 
 Jetzt gefällt mir aber nicht, das die Beschriftung so klein ist. Ändern
 wir das doch einmal. Beschriftungsgröße ist etwas, das zu den
-“Verschönerungsoptionen” gehört und in einem `theme` abgehandelt wird.
+“Verschönerungsoptionen” gehört und in einem `theme()` abgehandelt wird.
 Wir öffnen also ein “theme”, spezifizieren darin, dass wir über die
 beiden Achsen-Titel reden wollen (`axis.title`) und die Elemente des
-Textes ändern (`element_text`). Wir können dort angeben, dass der Text
+Textes ändern (`element_text()`). Wir können dort angeben, dass der Text
 dickgedruckt werden soll (`face = "bold"`) und die Größe (`size = 20`).
 Dann machen wir doch das gleiche noch mit der Beschriftung der Werte auf
-den Achsen (`axis.text`). Hier ändern wir vllt nur die Größe. Und am
-Ende noch den Titel von dem ganzen
+den Achsen (`axis.text`). Hier ändern wir vllt. nur die Größe. Und am
+Ende noch den Titel von dem ganzen.
 
 ``` r
-ggplot()+ 
-  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+# Säulendiagramm mit großer Beschriftung erstellen
+ggplot(data = species, aes(x = reorder(species, n), y = n, fill = species)) + 
+  geom_col() + 
   labs(y = "Anzahl",
        x = "Art",
-       title = "Anzahl Tiere pro Spezies")+
-  theme(axis.title = element_text(face="bold", size=20),
-        axis.text  = element_text(size=16),
+       title = "Anzahl Tiere pro Spezies") +
+  theme(axis.title = element_text(face = "bold", size = 20),
+        axis.text  = element_text(size = 16),
         title = element_text(size = 25))
 ```
 
@@ -270,41 +275,43 @@ Ach, werdet ihr sagen, aber diese blöde Legende da rechts. Die gefällt
 mir nicht, sie benutzt den englischen Begriff “species”, das ist doch
 doof.
 
-Auch hierfür lässt sich leicht abhilfe schaffen. Die Legende ist
-“`scale`” im englischen. Und wir wollen die Legende ansprechen, die sich
-mit der “Füllung” beschäftigt, dem was unter `fill =` definiert wurde
-und da es sich um eine “diskrete Variable” handelt, ändern wir den
-Legendennamen mit `scale_fill_discrete`.
+Auch hierfür lässt sich leicht Abhilfe schaffen. Die Legende ist “scale”
+im englischen. Und wir wollen die Legende ansprechen, die sich mit der
+“Füllung” beschäftigt, dem was unter `fill =` definiert wurde und da es
+sich um eine “diskrete Variable” handelt, ändern wir den Legendennamen
+mit `scale_fill_discrete()`.
 
 ``` r
-ggplot()+ 
-  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+# Säulendiagramm mit Legendentitel erstellen
+ggplot(data = species, aes(x = reorder(species, n), y = n, fill = species)) + 
+  geom_col() + 
   labs(y = "Anzahl",
        x = "Art",
-       title = "Anzahl Tiere pro Spezies")+
-  theme(axis.title = element_text(face="bold", size=20),
-        axis.text  = element_text(size=16),
-        title = element_text(size = 25))+
+       title = "Anzahl Tiere pro Spezies") +
+  theme(axis.title = element_text(face = "bold", size = 20),
+        axis.text  = element_text(size = 16),
+        title = element_text(size = 25)) +
   scale_fill_discrete(name = "Pinguinart")
 ```
 
 ![](./figures/legendenbeschriftung-1.png)
 
 Jetzt ist nur noch die Schrift in der Legende zu klein. Schrift gehört
-wieder zu den “theme”-Aspekten, also bauen wir das doch einfach da ein.
-Und wir könnten die Farbe des Textes gleich nochmal ändern…:
+wieder zu den `theme()`-Aspekten, also bauen wir das doch einfach da
+ein. Und wir könnten die Farbe des Textes gleich nochmal ändern…:
 
 ``` r
- ggplot()+ 
-  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+# Säulendiagramm mit spezfischen Schriftfarben erstellen
+ggplot(data = species, aes(x = reorder(species, n), y = n, fill = species)) + 
+  geom_col() + 
   labs(y = "Anzahl",
        x = "Art",
-       title = "Anzahl Tiere pro Spezies")+
-  theme(axis.title = element_text(face="bold", size=20),
-        axis.text  = element_text(size=16),
+       title = "Anzahl Tiere pro Spezies") +
+  theme(axis.title = element_text(face = "bold", size = 20),
+        axis.text  = element_text(size = 16),
         title = element_text(size = 25),
         legend.title = element_text(color = "blue", size = 20),
-        legend.text = element_text(color = "red", size = 16))+
+        legend.text = element_text(color = "red", size = 16)) +
     scale_fill_discrete(name = "Pinguinart")
 ```
 
@@ -315,29 +322,29 @@ Grafik aus.
 
 ### x- und y vertauschen
 
-Wenn wir der Meinung sind, wir hätten lieber ein Balkendigramm, dann
+Wenn wir der Meinung sind, wir hätten lieber ein Balkendiagramm, dann
 können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt
 `coord_flip()` und wird einfach mit einem + unten dran gehängt:
 
 ``` r
- ggplot()+ 
-  geom_col(data = species, aes(x = reorder(species, n), y = n, fill = species))+ 
+# Balkendiagramm erstellen
+ggplot(data = species, aes(x = reorder(species, n), y = n, fill = species)) + 
+  geom_col() + 
   labs(y = "Anzahl",
        x = "Art",
-       title = "Anzahl Tiere pro Spezies")+
-  theme(axis.title = element_text(face="bold", size=20),
-        axis.text  = element_text(size=16),
+       title = "Anzahl Tiere pro Spezies") +
+  theme(axis.title = element_text(face = "bold", size = 20),
+        axis.text  = element_text(size = 16),
         title = element_text(size = 25),
         legend.title = element_text(color = "blue", size = 20),
-        legend.text = element_text(color = "red", size = 16))+
-    scale_fill_discrete(name = "Pinguinart")+
+        legend.text = element_text(color = "red", size = 16)) +
+    scale_fill_discrete(name = "Pinguinart") +
   coord_flip()
 ```
 
 ![](./figures/flip_coord-1.png)
 
-Bilder sichern
-==============
+# Bilder sichern
 
 Jetzt haben wir die Bilder bisher nur in R erstellt, wir haben sie noch
 nicht sinnvoll abgespeichert.
@@ -348,28 +355,29 @@ Den *letzten* Plot, den wir erstellt haben, können wir mit diesem Code
 speichern:
 
 ``` r
+# Bild exportieren
 ggsave("Pfad/Plotname.png", width = 4, height = 4, units = "cm", dpi = 300)
 ```
 
 Wir geben den Namen den die Datei haben soll (das kann auch ein Pfad
 werden, damit es in einem bestimmten Ordner gespeichert wird), wir geben
-mit der Endung das Dateiformat udn sagen mit width und height wie groß
-das Bild in units = cm abgespeichert werden soll. Außerdem die Auflösung
-mit dpi. Super praktisch!
+mit der Endung das Dateiformat und sagen mit `width =` und `height =`
+wie groß das Bild in `units = "cm"` abgespeichert werden soll. Außerdem
+die Auflösung mit \`dpi = V. Super praktisch!
 
 (D. h. ich hab das Bild als png in einer Größe von 4x4cm abgespeichert.
-Es hat eine Auflösung von 300 dpi und liegt in dem Ordner, den ich
-angebe (Pfad) unter dem Namen “Plotname”.
+Es hat eine Auflösung von 300 dpi und liegt in dem Ordner, den ich mit
+“Pfad” angebe. Dann benenne ich das Bild mit “Plotname” und gut ist.
 
-Zusammenfassung:
-================
+# Zusammenfassung:
 
 In diesem Kapitel ging es um die Grundlagen der Datenvisualisierung in
 R. Wir haben ein Paket namens ggplot2 kennengelernt, welches auf anhieb
-schön formatierte Grafiken erstellt. Es benötigt immer die Angabe des
-Datensatzes und in `aes`(thetics) die Angabe, welche Spalten auf welcher
-Achse abgetragen werden sollen. Mithilfe von `theme`-Angaben können wir
-die Schriftgrößen und -farben ändern, mithilfe con `scale`-Angaben, wie
+schön formatierte Grafiken erstellt. Es benötigt mit `data =` die Angabe
+des Datensatzes und in `aes()`(thetics) wird immer spezifiziert, wie die
+entsprechenden Variablen dargestellt werden sollen. Zudem muss man mit
+`geom_` die Form definieren. Mithilfe von `theme()`-Angaben können wir
+die Schriftgrößen und -farben ändern, mithilfe von `scale_`-Angaben, wie
 die Legende aussehen soll.
 
 Herzlichen Glückwunsch! Wir werden noch zig Grafiken mit ggplot
