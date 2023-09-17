@@ -4,6 +4,8 @@ author:
   - Sophie C. Schmidt:
       email: s.c.schmidt@uni-koeln.de
       correspondence: true
+contributor: 
+  - Sara Schiesberg
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   md_document:
