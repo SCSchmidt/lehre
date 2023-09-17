@@ -1,5 +1,4 @@
-Visualisierung metrischer Daten
-==============================
+# Visualisierung metrischer Daten
 
 In der letzten Stunde haben wir vor allem mit nominalen Daten gearbeitet
 und sie dargestellt. Dafür eignen sich Balkendiagramme ganz
@@ -16,13 +15,13 @@ Deshalb lernen wir ein paar neue Diagramme kennen.
 Aber zuerst die Daten laden:
 
 ``` r
+# Pakete und Daten laden
 library(palmerpenguins)
-data("penguins")
 library(ggplot2)
+data("penguins")
 ```
 
-Histogramm
-----------
+## Histogramm
 
 Fangen wir an mit Histogrammen. Histogramme sind sehr beliebt für
 metrische Daten, weil man relativ einfach die Verteilung der Werte
@@ -35,16 +34,15 @@ Wir wissen ja schon, dass in dem Datensatz ein paar Werte fehlen,
 deswegen spezifizieren wir wieder, dass diese einfach rausgenommen
 werden sollen:
 
-Ein Beispiel:
+Führt mal dieses Beispiel aus:
 
 ``` r
-ggplot(data = penguins)+
-  geom_histogram(aes(x = body_mass_g),  na.rm = TRUE)
+# Histogramm erstellen
+ggplot(data = penguins) +
+  geom_histogram(aes(x = body_mass_g), na.rm = TRUE)
 ```
 
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-![](B05_ggplot_continued_files/figure-markdown_github/Histogramm_gewicht_peng-1.png)
+![](../figures/Histogramm_gewicht_peng-1.png)
 
 Wenn ihr das ausgeführt habt, sollte eine Meldung aufgeploppt sein:
 “`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.”
@@ -54,21 +52,27 @@ heißt, dass der gesamte Datensatz in 30 gleich große Klassen unterteilt
 wurde.
 
 Probiert einmal verschiedene Werte für die Klassengröße (binwidth) in
-dem Beispiel aus, zB einmal 5 und einmal 500:
+dem Beispiel aus, z. B. einmal 5 und einmal 500:
 
 ``` r
-ggplot(data = penguins)+
-  geom_histogram(aes(x = body_mass_g), binwidth = 5, na.rm = TRUE) # Klassengröße 5. Versucht doch einmal andere Werte und schaut, was passiert!
+# Histogramm mit Klassengröße 5 erstellen
+ggplot(data = penguins) +
+  geom_histogram(aes(x = body_mass_g), binwidth = 5, na.rm = TRUE) 
 ```
 
-![](B05_ggplot_continued_files/figure-markdown_github/hist_peng2-1.png)
+![](../figures/hist_peng2-1.png)
+
+Versucht doch einmal andere Werte und schaut, was passiert!
 
 ``` r
+# Histogramm mit Klassengröße 500 erstellen
 ggplot(data = penguins)+
-  geom_histogram(aes(x = body_mass_g), binwidth = 500, na.rm = TRUE) # Klassengröße 500. Versucht doch einmal andere Werte und schaut, was passiert!
+  geom_histogram(aes(x = body_mass_g), binwidth = 500, na.rm = TRUE)
 ```
 
-![](B05_ggplot_continued_files/figure-markdown_github/hist_peng3-1.png)
+![](../figures/hist_peng3-1.png)
+
+Versucht doch einmal andere Werte und schaut, was passiert!
 
 Was lernen wir daraus? Die Wahl der Klassengröße macht eine Menge aus,
 wie ich die Daten wahrnehme und welche Aussagen ich über sie treffen
@@ -76,26 +80,26 @@ werde.
 
 Was gibt es noch für Möglichkeiten der Datenvisualisierung?
 
-Boxplot
--------
+## Boxplot
 
 Ich hatte ja schon erläutert, was ein Boxplotdiagramm ist. Hier noch
 einmal zur Erinnerung:
 
 -   Q1 = 1. Quartil. Bis hier liegen die ersten 25% meiner Werte, wenn
     ich sie aufsteigend sortiere
--   (Q2 =) Median, den kennen wir schon. Bis hier liegen 50 % meiner
+-   Q2 = Median, den kennen wir schon. Bis hier liegen 50 % meiner
     Werte, wenn ich sie aufsteigend sortiere
 -   Q3 = 3. Quartil, bis hier liegen 75% meiner Werte, wenn ich sie
     aufsteigend sortiere
--   Q3 - Q1 ist der Quartilsabstand: In diesem Bereich um den Median
-    herum liegen 50% der “mittleren” Werte. Er wird durch die Box
+-   Q3 - Q1 ist der Interquartilsabstand: In diesem Bereich um den
+    Median herum liegen 50% der “mittleren” Werte. Er wird durch die Box
     gekennzeichnet
--   Bartenden sind das 1,5fache des Quartilsabstandes vom Median aus
-    gerechnet (oder am Ende der Verteilung)
--   Extreme liegen außerhalb der Bartenden
--   Ausreißer sind mehr als das 3fache des Quartilsabstandes vom Median
-    entfernt
+-   Bartenden bzw. “Whisker” kennzeichen den geben den minimalen und den
+    maximalen Wert an.
+-   *Aber:* Bei der Berechnung des Minimus und des Maximums bleiben
+    Ausreißer unberücksichtigt. Ausreisser sind Werte, die mehr als das
+    1.5fache vom oberen bzw. unteren Quartil entfernt sind. So macht es
+    zumindest ggplot, in anderen Programmen wird das anders definiert!
 
 Ein Boxplottdiagramm eignet sich sehr gut, um mehrere Verteilungen EINER
 Variablen zu vergleichen. Also mehrere Gruppen in meinem Datensatz, aber
@@ -105,17 +109,19 @@ abgetragen.
 Ein Beispiel:
 
 ``` r
-ggplot(data = penguins)+
+# Boxplot-Diagramm erstellen
+ggplot(data = penguins) +
   geom_boxplot(aes(x = species,  # auf der x-Achse die Art
                    y = body_mass_g), # auf der y-Achse das Gewicht
                na.rm = TRUE) + # alle NAs müssen raus
-  labs(x ="Art",               # Beschriftung der Achsen
-       y ="Gewicht",
-       title = "Das Gewicht der Arten im Vergleich")+
+  labs(x = "Art",               # Beschriftung der Achsen
+       y = "Gewicht",
+       title = "Das Gewicht der Arten im Vergleich") +
   theme_bw()
 ```
 
-![](B05_ggplot_continued_files/figure-markdown_github/ein_Boxplotdiagramm-1.png)
+![](../figures/ein_Boxplotdiagramm-1.png)
+
 Ich kann gut erkennen, dass die Pinguin-Art Gentoo deutlich schwerer ist
 als die anderen beiden.
 
@@ -128,8 +134,7 @@ Hinweis: Ihr müsst bei dem Code oben eigentlich nur den Vektor, der das
 Gewicht bezeichnet mit dem Vektor austauschen, der die Flipper-Länge
 angibt. Und dann die Achse wieder richtig beschriften.
 
-Streudiagramme
---------------
+## Streudiagramme
 
 Bei Streudiagrammen kann ich zwei Variablen einer Einheit gegeneinander
 plotten und noch weitere nominale Daten hinzu-visualisieren.
@@ -139,26 +144,28 @@ zu den aesthetics-Elementen, deshalb tun wir die Info in die Klammern
 hinter aes():
 
 ``` r
-ggplot(data = penguins)+
-  geom_point(aes(x = bill_depth_mm, y = bill_length_mm), na.rm = TRUE)
+# Streudiagramm erstellen
+ggplot(data = penguins, aes(x = bill_depth_mm, y = bill_length_mm)) +
+  geom_point(na.rm = TRUE)
 ```
 
-![](B05_ggplot_continued_files/figure-markdown_github/Streudiagramm_basics-1.png)
+![](../figures/Streudiagramm_basics-1.png)
 
 Jetzt können wir damit wieder die Dinge tun, die wir mit dem
 Balkendiagramm gemacht hatten, also die Achsen beschriften, einen Titel
 vergeben und den Style ändern:
 
 ``` r
-ggplot(data = penguins)+
+# Streudiagramm mit angepasstem Titel und Achsbeschriftung erstellen
+ggplot(data = penguins) +
   geom_point(aes(x = bill_depth_mm, y = bill_length_mm), na.rm = TRUE) + 
   labs(x =" Dicke des Schnabels",
        y ="Höhe des Schnabels",
-       title = "Schnabelmaße")+
+       title = "Schnabelmaße") +
   theme_bw()
 ```
 
-![](B05_ggplot_continued_files/figure-markdown_github/Streudiagramm_mit_titel-1.png)
+![](../figures/Streudiagramm_mit_titel-1.png)
 
 Was kann man noch tolles machen? Die Form der Punkte von einer Variablen
 bestimmen lassen! Und die Farbe!
@@ -169,15 +176,17 @@ Form der Punkte bestimmt, lege ich mit “shape” fest, die Farbe mit
 Geschlecht als Farbe an.
 
 ``` r
-ggplot(data = penguins)+
-  geom_point(aes(x = bill_depth_mm, y = bill_length_mm, shape = species, color = sex), na.rm = TRUE) + 
+# Streudiagamm mit Farb- und Formunterschieden erstellen
+ggplot(data = penguins, aes(x = bill_depth_mm, y = bill_length_mm, 
+                            shape = species, color = sex)) +
+  geom_point(na.rm = TRUE) + 
   labs(x =" Dicke des Schnabels",
        y ="Höhe des Schnabels",
-       title = "Schnabelmaße")+
+       title = "Schnabelmaße") +
   theme_bw()
 ```
 
-![](B05_ggplot_continued_files/figure-markdown_github/StreudiagrammSchoenePunkten-1.png)
+![](../figures/StreudiagrammSchoenePunkten-1.png)
 
 Oooooh, schaut euch mal das Ergebnis an! Da könnte man schon fast was
 interpretieren!
@@ -189,25 +198,27 @@ Geschlechtern erkennen lassen?
 Und wir sollten die Beschriftung der Legende wieder anpassen:
 
 ``` r
-ggplot(data = penguins)+
-  geom_point(aes(x = bill_depth_mm, y = bill_length_mm, shape = species, color = sex), na.rm = TRUE) + 
-  labs(x =" Dicke des Schnabels",
-       y ="Höhe des Schnabels",
-       title = "Schnabelmaße")+
-  theme_bw()+
- scale_colour_discrete(name  ="Geschlecht",
+# Streudiagramm mit angepasstem Legendentitel erstellen
+ggplot(data = penguins, aes(x = bill_depth_mm, y = bill_length_mm, shape = species, color = sex)) +
+  geom_point(na.rm = TRUE) + 
+  labs(x = "Dicke des Schnabels",
+       y = "Höhe des Schnabels",
+       title = "Schnabelmaße") +
+  theme_bw() +
+ scale_colour_discrete(name = "Geschlecht",
                        breaks = c(NA, "female", "male"),
-                       labels = c("unbest.", "weibl.", "männl."))+
+                       labels = c("unbest.", "weibl.", "männl.")) +
  scale_shape_discrete(name  ="Art")
 ```
 
-![](B05_ggplot_continued_files/figure-markdown_github/Streudiagramm_Legendenbeschriftung-1.png)
+![](../figures/Streudiagramm_Legendenbeschriftung-1.png)
+
 Was bedeutet das alles?
 
 Mit `scale_colour_discrete` kann ich Legenden (`scales`) verändern, die
 mit `color` innerhalb des aesthetics-Bereichs meines Codes für die
-Graphik definiert werden und die DISKRET sind (also nominale / ordinale
-Daten).
+Graphik definiert werden und die DISKRET sind (also in erster Linie
+nominale / ordinale Daten).
 
 Hier benenne ich den Legendentitel mit `name =` um.
 
@@ -220,29 +231,26 @@ Das gleiche kann ich mit der Legende für die FORM der Punkte machen:
 
 Voll gut!
 
-Letzte Hinweise ggplot
-----------------------
+## Letzte Hinweise ggplot
 
 GGplot hat noch viel viel mehr Möglichkeiten. Um einen Überblick zu
 bekommen, empfehle ich den Blogpost hier zu lesen, der vorführt, wie
 sich so eine Visualisierung entwickeln kann und am Ende richtig richtig
 gut aussieht:
-<a href="https://cedricscherer.netlify.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/" class="uri">https://cedricscherer.netlify.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/</a>
+<https://cedricscherer.netlify.com/2019/05/17/the-evolution-of-a-ggplot-ep.-1/>
 
 Hilfen, um mit R und ggplot zurechtzukommen sind:
 
--   das englische R-Cookbook:
-    <a href="http://www.cookbook-r.com/" class="uri">http://www.cookbook-r.com/</a>
-    (das nutze ich sehr häufig)
+-   das englische R-Cookbook: <http://www.cookbook-r.com/> (das nutze
+    ich sehr häufig)
 
 -   die Schummelzettel:
-    <a href="https://www.rstudio.com/wp-content/uploads/2015/06/ggplot2-german.pdf" class="uri">https://www.rstudio.com/wp-content/uploads/2015/06/ggplot2-german.pdf</a>
+    <https://www.rstudio.com/wp-content/uploads/2015/06/ggplot2-german.pdf>
 
 -   dieses R-Intro-Buch:
-    <a href="https://r-intro.tadaa-data.de/book/visualisierung.html" class="uri">https://r-intro.tadaa-data.de/book/visualisierung.html</a>
+    <https://r-intro.tadaa-data.de/book/visualisierung.html>
 
--   das deutsche Wikibook zu R:
-    <a href="https://de.wikibooks.org/wiki/GNU_R" class="uri">https://de.wikibooks.org/wiki/GNU_R</a>
+-   das deutsche Wikibook zu R: <https://de.wikibooks.org/wiki/GNU_R>
     und
 
 Ganz ehrlich: Ich muss ständig googeln, wie ich noch einmal die
