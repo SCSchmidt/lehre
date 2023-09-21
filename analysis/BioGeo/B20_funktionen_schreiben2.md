@@ -1,25 +1,24 @@
-Funktionen schreiben
-====================
+# Funktionen schreiben
 
-Wir haben jetzt schon Funktionen angewandt und an ein-zwei Stellen
-wurden Funktionen extra definiert (die getmode-Funktion und in dem
-Giraffen-Tutorial).
+Wir haben jetzt schon Funktionen angewandt und im Einzelfall auch
+definiert.
 
 Die Syntax dafür ist immer gleich:
 
-    myfunction <- function(x) {
-    das wird mit x passieren
-    }
+    myfunction <- function(x){
+      das wird mit x passieren
+      }
 
-Die neue Funktion heißt “myfunction”, sie wird auf eine Variable x
-angewandt und was mit x passiert, wird in den geschweiften Klammern
-definiert. x ist dabei der Platzhalter für das Objekt, dass der Nutzer
+Die neue Funktion heißt “`myfunction`”, sie wird auf eine Variable `x`
+angewandt und was mit `x` passiert, wird in den geschweiften Klammern
+definiert. `x` ist dabei der Platzhalter für das Objekt, dass der Nutzer
 dann in die Funktion hineingeben wird.
 
 Stellen wir uns vor, ich möchte eine Funktion für die Berechnung des
 doppelten Mittelwertes von Vektoren. Die könnte z. B. so aussehen:
 
 ``` r
+# Funktionsdefinition: doppelter Mittelwert
 zwei_m <- function(x){
   2*sum(x)/length(x)
   }
@@ -27,16 +26,18 @@ zwei_m <- function(x){
 
 Ich rechne zwei mal die Summe von x (d.h. x muss ein Vektor sein) und
 teile dies durch die Länge des Vektors (Anzahl der Einträge). Ich nenne
-die Funktion zwei\_m.
+die Funktion zwei_m.
 
-zwei\_m kann ich jetzt anwenden:
+zwei_m kann ich jetzt anwenden:
 
 ``` r
+# Pakete und Daten laden
 library(palmerpenguins)
 data(penguins)
 
+# Funktion anwenden
 zwei_m(penguins$body_mass_g)
-#> [1] NA
+## [1] NA
 ```
 
 Tja. Doof, ne. Das Problem kennen wir ja schon. Im Datensatz sind
@@ -45,6 +46,7 @@ NA-Werte, aber die Funktion hat noch keine Möglichkeit damit umzugehen.
 Erweitern wir sie also!
 
 ``` r
+# Funktionsdefinition: doppelter Mittelwert
 zwei_m <- function(x){ 
   x <- na.omit(x)  # entferne aus x alle NA und überschreibe x damit ("Überschreibung" passiert nur innerhalb der Formel)
   2*sum(x)/length(x)
@@ -54,11 +56,14 @@ zwei_m <- function(x){
 Testen wir es also:
 
 ``` r
+# Funktion anwenden
 zwei_m(penguins$body_mass_g)
-#> [1] 8403.509
+## [1] 8403.509
 ```
 
-Yay! In der Funktion habe ich definiert, dass das, was ich eingebe, erst
+Yay!
+
+In der Funktion habe ich definiert, dass das, was ich eingebe, erst
 durch die Funktion `na.omit()` geschickt wird und sich dabei selbst
 überschreibt. Damit wird dann weitergerechnet und - taadaaaaa - es gibt
 kein Problem mehr!
@@ -77,8 +82,7 @@ dieser Werte, mach das”. Oder “wenn das dabei rauskomm, dann mach was
 anderes als wenn dieses dabei herauskommt”. Das eröffnet das Thema der
 **Schleifen**.
 
-Schleifen
----------
+## Schleifen
 
 Grundsätzlich lassen sich drei Formen von Schleifen unterscheiden:
 
@@ -107,54 +111,63 @@ Die Variable x ist hierbei eine ganze Zahl (*integer*) oder jeder Wert
 innerhalb eines Vektors. Das kann zum Beispiel so aussehen:
 
 ``` r
+# Anzahl Iterationen definieren
 x <- 5
+
+# for-Schleife
 for(i in 0:x) {
-   print(i);
-}
-#> [1] 0
-#> [1] 1
-#> [1] 2
-#> [1] 3
-#> [1] 4
-#> [1] 5
+   print(i)
+  }
+## [1] 0
+## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5
 ```
 
 `for i in ...` ist dabei der Bereich, der sagt: für jedes Element i in …
 (oben dem Bereich 0 bis x, also 5) mache bitte das folgende { in
 geschweiften Klammern, hier: einfach nur “print”, d.h. drucke aus}.
 
-Stelle ich mir vor, ich habe einen Vektor mit Worten darin, kann ich
-dies auch so machen:
+Ich stelle mir einen Vektor mit Wörtern vor. Dann kann ich das auch so
+machen:
 
 ``` r
+# Vektor definieren
 x <- c("Mein", "Pinguin", "ist", "niedlich")
+
+# for-Schleife
 for(i in x) {
-   print(i);
-}
-#> [1] "Mein"
-#> [1] "Pinguin"
-#> [1] "ist"
-#> [1] "niedlich"
+  print(i);
+  }
+## [1] "Mein"
+## [1] "Pinguin"
+## [1] "ist"
+## [1] "niedlich"
 ```
 
 ### Die while-Schleife
 
 Die while-Schleife dienst grundsätzlich dazu, einen Code so lange
-auszuführen, wie eine bestimmte Bedingung erfüllt ist. Das kann z. B. so
-aussehen:
+auszuführen, wie eine bestimmte Bedingung erfüllt ist.
+
+Das kann z. B. so aussehen:
 
 ``` r
+# Zählvariable definieren
 i <- 0 
 
+# While-Schleife definieren
 while (i < 5) {
    i <- i+1;
    print(i);
-}
-#> [1] 1
-#> [1] 2
-#> [1] 3
-#> [1] 4
-#> [1] 5
+   }
+## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
+## [1] 5
 ```
 
 Was passiert?
@@ -182,16 +195,17 @@ Anforderung erfüllt die
 Die Syntax lautet:
 
 ``` r
+# Zählvariable definieren
 i <- 0
 repeat {
-   i = i+1;
-   if(i == 5) break;
+   i = i + 1;
+   if (i == 5) break;
    print(i)
-}
-#> [1] 1
-#> [1] 2
-#> [1] 3
-#> [1] 4
+   }
+## [1] 1
+## [1] 2
+## [1] 3
+## [1] 4
 ```
 
 Also, wiederhole (repeat) das addieren von 1 und drucken von i, aber
@@ -211,16 +225,19 @@ Dabei gilt immer if / falls (die Bedingung in der Runden Klammer wahr
 ist) {dann mach das in der geschweiften Klammer}:
 
 ``` r
+# Prüfzahl definieren
 d <- 100
+
+# If-Bedingung
   if (d >= 90) {
     print(paste("Sehr gut.", d , "ist größer als 90"))
     }
-#> [1] "Sehr gut. 100 ist größer als 90"
+## [1] "Sehr gut. 100 ist größer als 90"
 ```
 
 Also, wenn d größer 90 ist, dann drucke diesen zusammengefügten Satz
-(Funktion paste setzt einen string aus mehreren Teilen zusammen) “sehr
-gut”, der Wert d, “ist größer als 90”.
+(Funktion `paste()` setzt einen string aus mehreren Teilen zusammen)
+“sehr gut”, der Wert d, “ist größer als 90”.
 
 Ihr könnt ja mal ausprobieren, das d auf 85 zu setzen. Was passiert
 dann?
@@ -233,24 +250,27 @@ passiert.
 Dafür gibt es “else if”
 
 ``` r
-  punkte <- 85
-  if (punkte >= 90) {
-    print(paste("Sehr gut.", d , "ist größer als 90"))
-    } else if (punkte >= 80 & punkte < 90) {
-    print("Gut");    
-    } else {
-      print(paste("Nicht genügend.", d , "ist zu klein"));    
+# Prüfzahl definieren
+punkte <- 85
+
+# If-else-Bedingung
+if (punkte >= 90) {
+  print(paste("Sehr gut.", d , "ist größer als 90"))
+  } else if (punkte >= 80 & punkte < 90) {
+  print("Gut");    
+  } else {
+  print(paste("Nicht genügend.", d , "ist zu klein"));    
   }
-#> [1] "Gut"
+## [1] "Gut"
 ```
 
-Also: Wenn (if) die Variable `punkte` größer als 90 ist, drucke “Sehr
+Also: Wenn (`if`) die Variable `punkte` größer als 90 ist, drucke “Sehr
 gut”
 
-falls dem nicht so ist (else if) und die Variable Punkte liegt zwischen
-80 und 90, drucke “Gut”
+falls dem nicht so ist (`else if`) und die Variable Punkte liegt
+zwischen 80 und 90, drucke “Gut”
 
-und falls keine dieser Bedingungen erfüllt ist (else), drucke “nicht
+und falls keine dieser Bedingungen erfüllt ist (`else`), drucke “nicht
 genügend. der Wert ist zu klein”.
 
 Immer wird die Bedingung dabei in runde Klammern gesetzt und die Aktion
@@ -259,13 +279,15 @@ in geschweifte.
 Was macht der folgende Code?
 
 ``` r
-x <- c(1,3,8)
+# Prüfgröße definieren
+x <- c(1, 3, 8)
 
+# If-else-Bedingung definieren
 if (mean(x) > 3) {
   print(mean(x))
-} else {
+  } else {
   print("Der Mittelwert liegt unter 4")
-}
+    }
 ```
 
 **Aufgabe:** Diskutiert im Team:
@@ -375,10 +397,10 @@ library(yarrr)
 data("pirates")
 
 sw_nachgruppe(pirates, gruppe = "sex", variable = "weight")
-#>   gruppe     pWert
-#> 1 female 0.2341133
-#> 2   male 0.4111812
-#> 3  other 0.2840506
+##   gruppe     pWert
+## 1 female 0.2341133
+## 2   male 0.4111812
+## 3  other 0.2840506
 ```
 
 Und hier merkt ihr sicherlich schon etwas: Wenn ich nicht weiß, was ich
@@ -396,8 +418,7 @@ Fast alle Schritte haben wir während des Kurses schon einmal gemacht.
 Probieren wir das doch einmal aus mit dem Pinguindatensatz, ob das
 Gewicht nach Spezies normalverteilt ist.
 
-Zusammenfassend
----------------
+## Zusammenfassend
 
 Das Schreiben von kleinen Programmabläufen und Funktionen scheint von
 weitem erst einmal unheimlich kompliziert. Ist es aber nicht! Wenn ich
