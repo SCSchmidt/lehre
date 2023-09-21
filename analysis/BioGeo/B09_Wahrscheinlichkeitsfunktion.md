@@ -1,5 +1,4 @@
-Wahrscheinlichkeitsfunktionen
-=============================
+# Wahrscheinlichkeitsfunktionen
 
 Es gibt eine ganze Reihe verschiedene wichtige
 Wahrscheinlichkeitsdichtefunktionen, die für die Modellierung (d.h.
@@ -8,8 +7,7 @@ benutzt werden. Auf die beiden wichtigsten gehen wir hier ausführlich
 ein (Standardnormalverteilung und Binomialverteilung) und die anderen
 werden nur kurz erläutert.
 
-Standardnormalverteilung
-------------------------
+## Standardnormalverteilung
 
 Wenn eine normalverteilte Variable ganz bestimmten Parametern folgt, ist
 sie **standardnormalverteilt**.
@@ -20,37 +18,41 @@ auch in R ganz einfach. Schauen wir uns zuerst einmal die Gewichtsdaten
 von nur einer Spezies Pinguine in einem Histogramm an:
 
 ``` r
-library(ggplot2)
-library(tidyr)
+# Pakete Laden
 library(dplyr)
-
+library(ggplot2)
 library(palmerpenguins)
+library(tidyr)
+
+# Daten laden
 data("penguins")
 
-
+# Spezies auswählen
 chinstraps <- penguins %>%
   filter(species == "Chinstrap")
 
-
-ggplot()+
-  geom_histogram(data = chinstraps, aes(x = body_mass_g), na.rm = TRUE)
+# Histogramm erstellen
+ggplot(data = chinstraps, aes(x = body_mass_g), na.rm = TRUE) +
+  geom_histogram()
 ```
 
 Das sieht relativ normalverteilt aus, mit ein paar Lücken.
 
-Jetzt können wir die funktion `scales` nutzen, um “body\_mass\_g” der
+Jetzt können wir die funktion `scales()` nutzen, um “body_mass_g” der
 Chinstraps-Pinguine in eine standardnormalverteilte Zahlenreihe zu
 bringen:
 
 ``` r
+# Transformation Standardnormalverteilung
 chinstraps$body_mass_g_z <- scale(chinstraps$body_mass_g)
 ```
 
 Schauen wir uns jetzt das noch einmal an:
 
 ``` r
-ggplot()+
-  geom_histogram(data = chinstraps, aes(x = body_mass_g_z), na.rm = TRUE)
+# Histogramm erstellen
+ggplot(data = chinstraps, aes(x = body_mass_g_z), na.rm = TRUE) +
+  geom_histogram()
 ```
 
 Tada! Auf der x-Achse sehen wir, dass die Zahlenwerte sich verändert
@@ -60,20 +62,23 @@ Wir können ja mal ausrechnen, wie viele der Werte zwischen -1 und 1
 liegen:
 
 ``` r
-chinstraps_1s <- chinstraps %>% #neuen datensatz kreiieren
+# Datenauswahl speichern
+chinstraps_1s <- chinstraps %>% # neuen datensatz kreiieren
   filter(body_mass_g_z >= -1 & body_mass_g_z <= 1) # in dem die chinstraps liegen, deren z-transformiertes Gewicht zwischen -1 und 1 liegt
 ```
 
 Eigentlich müssten das jetzt etwa 68% sein. Rechnen wir also aus, wie
-viele 68 % derChinstrap-Pinguine sind. Dazu nutzen wir die praktische
-kleine Funktion `nrow`, die die Zeilen in einem Datensatz zählt und
+viele 68 % der Chinstrap-Pinguine sind. Dazu nutzen wir die praktische
+kleine Funktion `nrow()`, die die Zeilen in einem Datensatz zählt und
 damit bei uns die Anzahl der Pinguine in dem Datensatz. Das
-multiplizieren wir mit 68 und teilen durch 100. nrow nutzen wir auch, um
-den Datensazu chinstraps\_1s auszuzählen:
+multiplizieren wir mit 68 und teilen durch 100. `nrow()` nutzen wir
+auch, um den Datensatz chinstraps_1s auszuzählen:
 
 ``` r
+# Prozentsatz berechnen
 theorie_1s_chinstraps <- nrow(chinstraps)*68/100
 
+# Anzahl zählen
 nrow_chinstraps_1s <- nrow(chinstraps_1s)
 ```
 
@@ -81,6 +86,7 @@ Und die beiden Zahlen vergleichen wir einfach dadurch, dass wir sie
 voneinander abziehen:
 
 ``` r
+# Subtraktion
 theorie_1s_chinstraps - nrow_chinstraps_1s
 ```
 
@@ -95,11 +101,9 @@ Yes, we can!
 Es gibt für jedes Skalenniveau Tests, die prüfen, ob Daten
 normalverteilt sind.
 
-Wie sind meine Daten verteilt??
-===============================
+# Wie sind meine Daten verteilt??
 
-Normalverteilung: optisch und mit shapiro-wilk
-----------------------------------------------
+## Normalverteilung: optisch und mit shapiro-wilk
 
 ### Q-Q-plot
 
@@ -117,19 +121,22 @@ auf einer Diagonalen.
 
 Große systematische Abweichungen von dieser Diagonalen geben einen
 Hinweis darauf, die Messwerte doch nicht normalverteilt sind. Das
-Quantil-Quantil-Diagramm kann keinen Verteilungstest ersetzen.
-
-Das Paket, in dem Q-Q-plots für R umgesetzt wurden, heißt `ggpubr`,
-installieren wir es also, falls wir nicht in der Cloud unterwegs sind:
+Quantil-Quantil-Diagramm kann keinen Verteilungstest ersetzen. Das
+Paket, in dem Q-Q-plots für R umgesetzt wurden, heißt `ggpubr()`,
+installieren wir es also.
 
 ``` r
+# Paket installieren
 install.packages("ggpubr")
 ```
 
 Und wenden es an:
 
 ``` r
+# Paket laden
 library(ggpubr)
+
+# Q-Q-Plot erstellen
 ggqqplot(chinstraps$body_mass_g)
 ```
 
@@ -147,6 +154,7 @@ sind mehrere Spezies drin und damit wird das eine Wertereihe sein, die
 nicht normalverteilt ist:
 
 ``` r
+# Q-Q Plot erstellen
 ggqqplot(penguins$body_mass_g)
 ```
 
@@ -166,13 +174,14 @@ Kerndichtefunktion zeigen, an welchen Stellen, viele Werte liegen und an
 welchen wenige. Die y-Achse zeigt allerdings nicht mehr die absolute
 Häufigkeit, wie bei einem Histogramm, sondern einen relativ abstrakten
 Dichtewert. (Mehr Infos unter:
-<a href="http://archaeoinformatics.net/kernel-density-estimation-visualised-in-r/" class="uri">http://archaeoinformatics.net/kernel-density-estimation-visualised-in-r/</a>).
+<http://archaeoinformatics.net/kernel-density-estimation-visualised-in-r/>).
 
-In ggplot ist die Funktion dafür `geom_density`.
+In `ggplot2` ist die Funktion dafür `geom_density()`.
 
 ``` r
-ggplot(chinstraps) +
-  geom_density(aes(x = body_mass_g)) 
+# Densityplot erstellen
+ggplot(data = chinstraps, aes(x = body_mass_g)) +
+  geom_density() 
 ```
 
 Wenn ich mir das anschaue, sieht das der Normalverteilung recht ähnlich.
@@ -183,7 +192,8 @@ Testen wir also die Chinstrap-Gewichte jetzt mit dem richtigen Test:
 Shapiro, los geht’s!
 
 ``` r
-  shapiro.test(chinstraps$body_mass_g)
+# Shapiro-Test durchführen
+shapiro.test(chinstraps$body_mass_g)
 ```
 
 Ok, ok, was ist hier passiert?
@@ -212,12 +222,12 @@ R sagt:
 theoretischen Verteilung im Bezug auf die Wahrscheinlichkeit abgeglichen
 wird, dass dieser Wert entsteht.
 
-*p* ist die Wahrscheinlichkeit, dass wir uns irren, wenn wir die H\_0 -
+*p* ist die Wahrscheinlichkeit, dass wir uns irren, wenn wir die H_0 -
 Hypothese ablehnen.
 
-Was war H\_0 noch einmal?
+Was war H_0 noch einmal?
 
-H\_0 ist: Es gibt keinen signifikatanten Unterschied zwischen der
+H_0 ist: Es gibt keinen signifikatanten Unterschied zwischen der
 Normalverteilung und meiner Messwertreihe.
 
 Wir irren uns also mit einer Chance von 56 %, wenn wir das ablehnen und
@@ -237,8 +247,7 @@ Gentoo-Pinguine!**
 Neben der Normalverteilung gibt es auch andere Verteilungsarten, die
 wichtig für die Statistik sind:
 
-Die Binomialverteilung
-----------------------
+## Die Binomialverteilung
 
 Die Binomialverteilung kommt von “bi – nomen”, d. h. eine Verteilung
 zweier nominaler Werte einer Variablen. Es darf nur diese zwei
@@ -251,8 +260,7 @@ Anwesenheits- Abwesenheitsmerkmale nennen. Denn wenn eine Variable nur
 “anwesend” und “abwesend” kodiert (dichotom oder binär), dann entsteht
 immer automatisch eine Binomialverteilung.
 
-Binomialtest
-------------
+## Binomialtest
 
 Der Binomialtest testet die Häufigkeit eines Auftretens zweier
 **nominalen** Werte gegenüber einer angenommenen theoretischen
@@ -266,11 +274,11 @@ der Pinguine ist genau 52:48.
 
 Daraus entwickeln wir die statistischen Hypothesen:
 
--   H\_0 = Die Stichprobe lässt keinen Rückschluss auf die
+-   H_0 = Die Stichprobe lässt keinen Rückschluss auf die
     Grundgesamtheit zu und es kann keine Überrepräsentation von Männchen
     oder Weibchen im Datensatz festgestellt werden
 
--   H\_1 = ungerichtet: Es gibt Unterschiede in der Häufigkeit des
+-   H_1 = ungerichtet: Es gibt Unterschiede in der Häufigkeit des
     Auftretens nach Geschlecht; gerichtet: es gibt mehr Männchen oder
     mehr Weibchen im Datensatz
 
@@ -278,12 +286,13 @@ Der Binomialtest ist in R base umgesetzt und sehr leicht ausführbar.
 Zuerst zählen wir aus, wie viele Männchen und Weibchen wir haben. Dafür
 gibt es einen einfachen Trick: Wir lassen R zählen, wie häufig
 `penguins$sex == "male"` wahr ist (TRUE) und dadurch, dass wir das wie
-eine Zahl behandelt und die Funktion `sum` (aufsummieren) darauf
+eine Zahl behandelt und die Funktion `sum()` (aufsummieren) darauf
 ausführen, wandelt er alle TRUE in “1” um. Das gleiche noch einmal für
 Frauen, daran denken, dass in manchen Datensätzen nichts steht
 (`na.rm = TRUE`) und voilà
 
 ``` r
+# Männliche und weibliche Pinguine zählen
 m <- sum(penguins$sex == "male", na.rm = TRUE)
 w <- sum(penguins$sex == "female", na.rm = TRUE)
 ```
@@ -291,11 +300,8 @@ w <- sum(penguins$sex == "female", na.rm = TRUE)
 Wir haben die beiden Zahlen.
 
 ``` r
-# Das ist die allgemeine Syntax binom.test(nsuccesses, ntrials, p, alternative="two.sided" OR "greater" OR "lesser")
-
-# wir sagen: keine Ahnung, in welche Richtung das Ungleichgewicht geht:
-
-binom.test(m, (m + w), 0.48, alternative = "two.sided")
+# Binomialtest durchführen
+binom.test(m, (m + w), 0.48, alternative = "two.sided") # Das ist die allgemeine Syntax binom.test(nsuccesses, ntrials, p, alternative= "two.sided" OR "greater" OR "lesser"). Mit two sided sagen wir: keine Ahnung, in welche Richtung das Ungleichgewicht geht
 ```
 
 Der Output sagt:
@@ -317,7 +323,7 @@ unsere beiden Datensätze waren `data:  m and (m + w)`. Die Anzahl von
 Pinguine) und einen `p-Wert` von 0,38.
 
 Die Alternativhypothese wird noch einmal genannt: “Die wahre
-Wahrscheinlichkeit, dass man ein Männchen”zieht" ist nicht gleich 48%."
+Wahrscheinlichkeit, dass man ein Männchen”zieht” ist nicht gleich 48%.”
 
 Es wird das 95%-Konfidenzintervall angegeben. Hier sehen wir, dass mit
 einer Wahrscheinlichkeit von 95% der “wahre” Chance, zufällig ein
@@ -331,16 +337,16 @@ Männchen sind, ist 38%. Deswegen weisen wir die Nullhypothese nicht
 zurück. Es gibt keine signifikante Abweichung von der angenommenen
 Verteilung.
 
-**Aufgabe: Schaut noch einmal im Piratendatensatz, ist dort die
-Verteilung der Männer und Frauen auch annähernd gleich? **
+**Aufgabe: Schaut noch in den Piratendatensatz, ist dort die Verteilung
+der Männer und Frauen auch annähernd gleich? **
 
 Denkt daran:
 
+    install.packages("yarrr")
     library(yarrr)
     data("pirates")
 
-Die Poisson-Verteilung
-----------------------
+## Die Poisson-Verteilung
 
 Die Poisson-Verteilung wird dann eingesetzt, wenn man die Häufigkeit
 eines Ereignisses über eine gewisse Zeit betrachtet. z. B., wie hoch ist
@@ -353,26 +359,28 @@ binomialverteilten Zufallsgröße \< 10 ist. Das ist günstig, weil die
 Poissonverteilung leichter zu berechnen ist als die Binomialverteilung.
 
 Lest euch diese Seite durch, die die Informationen gut zusammenfasst:
-<a href="https://matheguru.com/stochastik/poisson-verteilung.html" class="uri">https://matheguru.com/stochastik/poisson-verteilung.html</a>
+<https://matheguru.com/stochastik/poisson-verteilung.html>
 
 Probiert vor allem den slider ganz unten aus!
 
 In R lässt sich die Poissonverteilung zB so generieren:
 
 ``` r
+# Poissonverteilung erzeugen
 p_bsp <- rpois(1000, 10) # rpois(n, lambda-value)
 ```
 
 und dann plotten:
 
 ``` r
-ggplot()+
+# Densityplot
+ggplot() +
   geom_density(aes(x = p_bsp))
 ```
 
 Wir können testen, ob eine Messreihe einer bestimmten Häufigkeit pro
 Zeiteinheit folgt, in dem wir den `poisson.test` machen. Als Werte
-werden angegeben: 1. x = die Anzal von Events (was auch immer wir
+werden angegeben: 1. x = die Anzahl von Events (was auch immer wir
 gezählt hatten), 2. T = wie viele Zeiteinheiten verstrichen sind, in der
 die Zählung stattfand und 3. r = das hypothetische Verhältnis, gegen das
 ich testen möchte. Wie bei den anderen Tests kann ich als Alternative
@@ -384,6 +392,7 @@ und ich habe eine Kamera 20 Tage dastehen gehabt und in der Zeit kamen
 75 Füchse vorbei, dann kann ich das mit diesem Code untersuchen:
 
 ``` r
+# Poissontest durchführen
 poisson.test(75, T = 20, r = 4,
     alternative = c("two.sided"),
     conf.level = 0.95)
@@ -411,8 +420,7 @@ unserer Annahme (es sind 4 Füche pro Tag) gibt.
 **Aufgabe** Überlegt, wofür ihr einen Poisson-Test evtl. noch gebrauchen
 könntet!
 
-Die logistische Verteilung
---------------------------
+## Die logistische Verteilung
 
 Die logistische Verteilung ähnelt der Normalverteilung in der Form, hat
 aber einen “schwereren Schwanz”, d.h. höhere “Kurtosis”, d.h. sie
@@ -423,7 +431,6 @@ Geräten zu modellieren oder für die Beschreibung von Wachstumsprozessen
 mit Sättigungstendenz.
 
 ![](https://upload.wikimedia.org/wikipedia/commons/4/4a/Logistic_a0_b05.png)
-
 (blau die Dichteverteilung, rot die kumulative Funktion)
 
 In R kann ich eine zufällige Stichprobe aus der logistischen
@@ -432,25 +439,24 @@ gezogenen Werte ist, location die Verschiebung auf der X-Achse und scale
 wie breit sie wird:
 
 ``` r
-# rlogis(n,location,scale)
+# Logistische Verteilung erzeugen
+logis_bsp <- rlogis(1000, 4, 1) # rlogis(n,location,scale)
 
-logis_bsp <- rlogis(1000, 4, 1)
-
-ggplot()+
+# Densityplot erstellen
+ggplot() +
   geom_density(aes(x = logis_bsp))
 ```
 
 **Aufgabe**: Probiert doch einmal ein paar unterschiedliche Werte aus!
 Wie verändert sich die Verteilung?
 
-Logarithmische Normalverteilung (lognormal)
--------------------------------------------
+## Logarithmische Normalverteilung (lognormal)
 
 Die logaritmische Normalverteilung kann nur positive Werte annehmen. Da
 sie die Verteilung von y = ln(x) beschreibt, wobei ln den natürlichen
 Logarithmus zur Basis 10 beschreibt. Das ist für viele natürliche
 Phänomene damit eine etwas bessere Beschreibung als die
-Normalverteilung, da z.B. Körpergröße keine Minuswerte annehmen kann.
+Normalverteilung, da z. B. Körpergröße keine Minuswerte annehmen kann.
 Viele Variationen natürlicher Phänomene lassen sich mit der
 Log-Normalverteilung beschreiben, da sich hier viele kleine prozentuale
 Abweichungen zusammenwirken, also miteinander multiplizieren. In der
@@ -470,8 +476,10 @@ In R kann die Funktion `rlnorm` genutzt werden, um eine Stichprobe aus
 aus der Verteilung mit den gesetzten Parametern zu ziehen.
 
 ``` r
-lnorm_bsp <- rlnorm(1000, meanlog=0, sdlog=0.5)
+# logaritmische Normalverteilung erzeugen 
+lnorm_bsp <- rlnorm(1000, meanlog = 0, sdlog = 0.5)
 
+# Densityplot erstellen
 ggplot()+
   geom_density(aes(x = lnorm_bsp))
 ```
@@ -480,8 +488,7 @@ ggplot()+
 rlnorm “meanlog” und “sdlog”? Was vermutet ihr, bedeutet das? Wie groß
 ist der Einfluss von den beiden Werten? Probiert ein wenig aus!
 
-Herzlichen Glückwunsch!
------------------------
+## Herzlichen Glückwunsch!
 
 Wir haben gelernt, wie man eine Verteilung untersucht, um festzustellen,
 ob sie normalverteilt ist! Wir haben mit dem binomial-Test geschaut, ob
