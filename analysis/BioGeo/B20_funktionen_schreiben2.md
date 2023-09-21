@@ -139,7 +139,7 @@ x <- c("Mein", "Pinguin", "ist", "niedlich")
 
 # for-Schleife
 for(i in x) {
-  print(i);
+  print(i)
   }
 ## [1] "Mein"
 ## [1] "Pinguin"
@@ -316,107 +316,31 @@ Ihr benötigt
 
 4.  zwei kleine Mini-Vektoren zum Testen.
 
-Viel Erfolg!
+#### Übung: Welche Spezies hat den längsten Schnabel?
 
-### Beispiel
+In der Praxis kommt es recht häufig vor, dass man Gruppenvergleiche mit
+Hilfe einer for-Schleife macht. Schreibt doch mal eine Schleife, die für
+jede Spezies unterschiedliche statistische Kennziffern zur Schnabellänge
+ausgibt.
 
-Stellen wir uns vor, wir wollen shapiro-wilk für das Gewicht aller drei
-Spezies Pinguine rechnen. Das sind drei Funktionen, kann ich da eine
-daraus machen? Und mir gemeinsam ausgeben lassen, welche
-Irrtumswahrscheinlichkeit bei jedem Test herauskommt?
-
-Jetzt ist es die Kunst des Programmierens, sich genau zu überlegen,
-welche Schritte man dafür benötigt.
-
-1.  Die Funktion braucht als Eingabe etwas, das den Datensatz in seine
-    Gruppen splittet und die Funktion braucht als Eingabe die zu
-    testende Variable.
-
-2.  Ich brauche die einzelnen Werte für die zu splittende Variable
-
-3.  Ich muss die Gruppen anhand dieser Werte erstellen (subset)
-
-Hier beginnt eine Schleife:
-
-1.  den Test pro Gruppe berechnen
-
-2.  Ich muss die Teststatistik auslesen
-
-3.  Ich muss dies in einer hübschen Tabelle ablegen. Erfahrungsgemäß
-    muss diese vorher angelegt werden
-
-Hier endet die Schleife
-
-1.  Die Tabelle muss ausgegeben werden.
+Ich gebe Euch hier mal ein Beispiel, wie man so einen Vergleich aufbauen
+kann:
 
 ``` r
-# 1. Eingabeparameter definieren
+# Vektor erstellen
+inseln <- unique(penguins$island) # enthält nur "einzigartige" Werte
 
-sw_nachgruppe <- function(df, gruppe, variable){ 
-
-# 2. die verschiedenen Werte des gruppiernden Merkmals abgreifen   
-  
-  level <- levels(as.factor(df[[gruppe]])) # levels zeigt, welche Werte in einem Faktor-Vektor vorkommen (mit as.factor sicherstellen, dass es nicht aus Versehen ein Character-Vektor ist)
-  
-  # (6.) Vorbereiten der Tabelle muss vor der Schleife passieren
-  df_p <- data.frame(gruppe = character(length(level)),
-                       pWert = double(length(level))) 
-   # erstelle die Spalte gruppe als character-Spalte mit so vielen Zeilen, wie der Vektor "level" Einträge hat (length)              
-
-# Vobrereiten eines "Zeilen-Zählers" für 6.
-   z <- 0
-  
-# Schleife für Gruppenbildung und Berechnung:  
-  for (i in level) { # für jeden der Werte in level
-    
-#3. Gruppenbildung
-  s <- subset(df, df[[gruppe]] == i) # filtere den Datensatz
-  w <- s[[variable]] # weise die relevante Wertereihe einem Vektor zu
-  
-#4. Berechnung
-  y <- shapiro.test(w) # berechne den Shapiro-Test auf die Variable
-  
-#5. + 6. Teststatistik auslesen und in Tabelle ablegen
-     z <- z+1 # "hochzählen", um die richtigen Zeilen des Ausgabe-Datensatzes anzuwählen
-
-    df_p$gruppe[z] <- i
-    df_p$pWert[z] <- y$p.value
+# for-Schleife
+for(insel in inseln) { # Iteration über jede Insel
+  penguins_islands <- subset(penguins, island == insel) # Auswahl d. Insel
+  mittel <- (mean(penguins_islands$body_mass_g, na.rm =TRUE)) # Mittel pro Insel
+  stabw <- (sd(penguins_islands$body_mass_g, na.rm =TRUE)) # Stabw pro Insel 
+  print(paste("Auf der Insel", insel, "wiegen die Pinguine im Durchschnitt", 
+              round(mittel/100, 0), "+/-", round(stabw/100, 0), "kg.")) 
   }
-  # Schleife zuende
-
- #7. Gesamtdatensatz ausgeben
-  print(df_p)
-}
-# Funktion zuende
 ```
 
-Testen der Funktion:
-
-``` r
-library(yarrr)
-data("pirates")
-
-sw_nachgruppe(pirates, gruppe = "sex", variable = "weight")
-##   gruppe     pWert
-## 1 female 0.2341133
-## 2   male 0.4111812
-## 3  other 0.2840506
-```
-
-Und hier merkt ihr sicherlich schon etwas: Wenn ich nicht weiß, was ich
-in eine Funktion eingeben muss, dann kann ich damit nicht arbeiten. Für
-diese Variable müssen die Spaltennamen des Datensatzes pirates, nach
-denen die Gruppen eingeteilt werden sollen (gruppe) und der Spaltenname
-für die Variable, deren Normalverteilung berechnet werden soll
-(variable) in Hochkommas geschrieben werden (als string).
-
-Geht den Code der Funktion Schritt für Schritt durch. Versteht ihr, was
-passiert?
-
-Fast alle Schritte haben wir während des Kurses schon einmal gemacht.
-
-Probieren wir das doch einmal aus mit dem Pinguindatensatz, ob das
-Gewicht nach Spezies normalverteilt ist.
+Viel Erfolg!
 
 ## Zusammenfassend
 
