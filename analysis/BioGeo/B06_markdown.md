@@ -1,7 +1,3 @@
-``` r
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Hinweise zur Reproduzierbarkeit
 
 ## Style guide
@@ -9,9 +5,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Damit man seinen eigenen Code später auch noch gut lesen kann und auch
 andere Leute ihn gut lesen können, gibt es ein paar Hinweise, wie er
 geschrieben wird, sogenannte “style guides”. Ich orientiere mich an dem
-Style Guide der “Initiative für Statistische Analysen in Archäologie
-Kiel” (<https://github.com/ISAAKiel/StyleGuide>) und gebe euch hier ein
-paar Hinweise:
+Style Guide von Hadley Wickham (<http://adv-r.had.co.nz/Style.html>) und
+gebe euch hier ein paar Hinweise:
 
 1.  Leerzeichen um jeden Operator (`=, +, -, <-`, etc.)) herum, kein
     Leerzeichen vor einem Komma, aber eins dahinter.
@@ -19,52 +14,50 @@ paar Hinweise:
 2.  Namen von Datensätzen und Variablen sollten keine Sonderzeichen
     enthalten. Leerzeichen sollten mit einem Unterstrich \_ ersetzt
     werden. “Sprechende” Namen, die einen Sinn ergeben, sind nützlich
-    (zB `mean_body_mass_g` und nicht einfach nur `m`).
+    (z. B. `mean_body_mass_g` und nicht einfach nur `m`).
 
-3.  Eine Zeile Code sollte nicht länger als 80 Zeichen sein. Stattdessen
-    ist es sinnvoll, den Code hinter jedem Komma “umzubrechen”, denn
-    dann hat an einen besseren Überblick und kann ihn viel besser
+3.  Eine Zeile Code sollte nicht länger als 80 Zeichen sein. Wenn der
+    Code zu lang wird ist es sinnvoll hinter einem Komma “umzubrechen”.
+    So hat man einen besseren Überblick und kann viel besser
     kommentieren (siehe 4.). Rstudio “setzt” das auch von alleine
     sinnvoll, in dem die neue Zeile innerhalb einer Klammer dann auf der
     gleichen “Höhe” beginnt, wie der vorhergehende Eintrag.
 
-4.  Kommentiert den Code mit einem Hashtag (\#)-Symbol.
+4.  Kommentiert den Code mit einem Hashtag (#)-Symbol.
 
--   VOR dem Code und in eine eigene Zeile kommen längere Hinweise, was
-    der folgende Code machen soll: zB “\# Histogramm erstellen, um
-    Verteilung der Größe der Pinguine einzuschätzen”
+-   VOR dem Code und in eine eigene Zeile kommen Hinweise, was der
+    folgende Code machen soll: z. B. “\# Histogramm erstellen”
 -   IN DIE GLEICHE ZEILE wie Code kommen kurze Hinweise auf die genutzte
-    Funktionen und Argumente, zB:
+    Funktionen und Argumente,
+
+z.B.:
 
 ``` r
+# Pakete und Daten laden
 library(ggplot2)
-library("palmerpenguins")
-data("penguins")
+library(palmerpenguins)
+data(penguins)
 
-# Histogramm erstellen, um Verteilung der Größe der Pinguine einzuschätzen
-ggplot()+
-  geom_histogram(data = penguins, aes(x = body_mass_g), 
-                 binwidth = 100, # Klassengröße 100g zeigt klare Verteilungsstrukturen
+# Histogramm erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 100, # Klassengröße 100g zeigt klare Verteilungsstrukturen
                  na.rm = TRUE) # zwei NA-Sätze müssen entfernt werden
 ```
 
 -   Tipp: lieber zu viel als zu wenig kommentieren.
 
 1.  Lasst ein bisschen Platz zwischen verschiedenen Sinneinheiten im
-    Code. Eine Leerzeile zwischen `data("penguins")` und dem Kommentar
-    im Bsp erleichtert das Lesen ungemein.
+    Code. Eine Leerzeile zwischen `data("penguins")` und dem nächsten
+    Codeblock im Beispiel erleichtert das Lesen ungemein.
 
 ## R Markdown
 
-#### wer nicht in der Cloud arbeitet:
-
-Als erstes: bitte Rmarkdown installiern:
+Als erstes: bitte Rmarkdown installieren:
 
 ``` r
+# Paket installieren
 install.packages("rmarkdown")
 ```
-
-#### weiter für alle
 
 Ein *Rmarkdown*-Dokument (Rmd) ist eigentlich nur ein txt-Dokument, also
 das simpelste an Textdatei was man sich vorstellen kann. In dem ich in
@@ -86,23 +79,22 @@ sogenannter “YAML-Header”. Er beginn und endet mit 3 Minuszeichen in
 einer eigenen Zeile. In ihm werden einige Meta-Daten zu dem Dokument
 abgelegt:
 
--   Der Titel wird hinter `title:` in Hochkommas geschrieben
--   Hinter `author:` schreibt man seinen eigenen Namen in Hochkommas
+-   Der Titel wird hinter `title:` in Anführungszeichen geschrieben
+-   Hinter `author:` schreibt man seinen eigenen Namen in
+    Anführungszeichen
 -   `date:` ist nicht verpflichtend, aber das kann hilfreich sein
 -   und mit `output:` wird spezifiziert, in was für eine Art Dokument
     das Rmarkdown-Dokument verwandelt werden soll. Es gibt
     “html_document”, “word_document” oder “pdf_document” und tatsächlich
     noch einige andere Versionen, die hier nicht so wichtig sind.
 
-Wenn das Paket `knitr` installiert ist (wer nicht in der Cloud arbeitet:
-bitte installiert es), gibt es oben den **Knit**-Knopf (englisch für
-stricken und das Symbol ist ein Wollknäul mit Stricknadeln), der das
-Dokument umwandelt. Wer faul ist wie ich, benutzt den Shortcut
-Strg+Umschalt+k.
+Oben im source pane gibt es den **Knit**-Knopf (englisch für stricken
+und das Symbol ist ein Wollknäul mit Stricknadeln), der das Dokument
+umwandelt. Wer faul ist wie ich, benutzt den Shortcut Strg+Umschalt+k.
 
 Überschriften werden in einer einfachen Syntax gegliedert. Ein Hashtag
-(\#) markiert die oberste Überschrift, zwei Hashtags (\#\#) die zweite
-Rangordnung, drei Hashtags (\#\#\#) die nächste. “Dokument-Struktur” ist
+(#) markiert die oberste Überschrift, zwei Hashtags (##) die zweite
+Rangordnung, drei Hashtags (###) die nächste. “Dokument-Struktur” ist
 eine Überschrift dritten Grades:
 `### Dokument-Struktur{#dokument-struktur}`.
 
@@ -114,12 +106,12 @@ wieder zu der Überschrift Dokument-Struktur. Markiert wurde das
 folgendermaßen: `[hierauf](#dokument-struktur)`.
 
 Praktisch, nicht wahr? Ein Anker steht in geschweiften Klammern ({}) und
-beginnt mit einer Rautensymbol (\#). Er darf keine Leerzeichen
-enthalten! Wenn auf den Anker verwiesen werden soll, wird er in runde
-Klammern () hinter das Wort in eckigen Klammern \[\], das als Link
-formatiert wird, geschrieben.
+beginnt mit einer Rautensymbol (#). Er darf keine Leerzeichen enthalten!
+Wenn auf den Anker verwiesen werden soll, wird er in runde Klammern ()
+hinter das Wort in eckigen Klammern \[\], das als Link formatiert wird,
+geschrieben.
 
-So viele Rauten… Hashtags… \#\#\# … Hilfe!
+So viele Rauten… Hashtags… \### … Hilfe!
 
 Nicht verwirren lassen! Innerhalb eines Code-Chunks und innerhalb eines
 “normalen R-Skripts” gilt die Raute als Symbol zum Markieren von
@@ -130,26 +122,27 @@ Klammern () wird daraus ein Link, der auf den Anker verweist.
 
 ### Text und Code (das R in RMarkdown)
 
-In einem Rmd gibt es “normale” Textbereiche, wie diesen hier und Code
-Chunks: Code chunks sind die Bereiche, in denen ich Code unterbringen
-kann. Man erstellt am einfachsten einen mit dem Shortcut Strg+Alt+i.
+In einem Rmd gibt es “normale” Textbereiche, wie diesen hier und
+Code-Chunks: Code-Chunks sind die Bereiche, in denen ich Code
+unterbringen kann. Man erstellt am einfachsten einen mit dem Shortcut
+Strg+Alt+i.
 
-Sie folgen einer bestimmten Logik und werden durch drei Hochkommas
+Sie folgen einer bestimmten Logik und werden durch drei Backticks
 (\`\`\` = die Art, die man auf der deutschen Tastatur neben dem
 Back-Pfeil findet) und einer öffnenden geschweiften Klammer mit einem r
-darin geöffnet. Daneben kann ich den Code Chunk benennen. Kann voll
+darin geöffnet. Daneben kann ich den Code-Chunk benennen. Kann voll
 praktisch sein, wenn ich später mal darauf referenzieren möchte.
-Dahinter kann man noch Parameter für den Code Chunk setzen, dazu gleich
+Dahinter kann man noch Parameter für den Code-Chunk setzen, dazu gleich
 mehr. Nach diesen Parametern folgt jedoch eine schließende geschweifte
 Klammer und der Bereich für Code beginnt. Er ist immer etwas dunkler
 hinterlegt. In diese erste Zeile sollte nichts weiter hinter die
 geschweifte Klammer kommen.
 
-Der Code Chunk muss aber auch beendet werden. Dafür braucht man wieder
-die drei Hochkommas alleine (\`\`\`) in einer Zeile.
+Der Code-Chunk muss aber auch beendet werden. Dafür braucht man wieder
+die drei Backticks alleine (\`\`\`) in einer Zeile.
 
 ``` r
-# das hier ist ein Code Chunk. Ich sollte also nur Code hinein schreiben
+# das hier ist ein Code-Chunk. Ich sollte also nur Code hinein schreiben
 # alles was nicht Code ist, muss auskommentiert werden, sonst will pandoc es gerne als Code behandeln und fängt an zu weinen, weil es sehr fehlerhafter Code wäre
 ```
 
@@ -160,46 +153,49 @@ Grafik führen soll, wird die Grafik angezeigt:
 
 (Mehr zum Bilder einfügen [hier](#bilder-einfügen))
 
-Die Parameter des Code Chunks können bestimmen, ob der Code mit als Code
-in das html-Dokument übertragen werden werden soll (`echo = TRUE`) oder
-nicht (`echo = FALSE`) oder falls ein Diagramm erstellt wird, wie groß
-es sein soll (fig.height und fig.width). Einen Parameter, den ich immer
-benutze, um die Skripte zu erstellen, ist zB “`eval = FALSE`”, was
-besagt, dass der Code in diesem Chunk nicht ausgeführt werden soll.
-Ansonsten würde ich bei jedem Umwandeln des RMarkdown-Dokuments in die
-html alle Pakete neu installieren, deren Installationscode ich
-hinschreibe, das wäre Quatsch. Diese Parameter werden mit Komma
-voneinander getrennt, weitere findet ihr unter:
-<https://rmarkdown.rstudio.com/lesson-3.html> und eine super
+Die Parameter des Code-Chunks können bestimmen, ob der Code mit als Code
+in das output-Dokument übertragen werden werden soll (`echo = TRUE`)
+oder nicht (`echo = FALSE`) oder falls ein Diagramm erstellt wird, wie
+groß es sein soll (`fig.height` und \``fig.width`). Einen Parameter, den
+ich immer benutze, wenn ich in den Skripten `install.packages()`
+verwende, ist z. B. “`eval = FALSE`”, was besagt, dass der Code in
+diesem Chunk nicht ausgeführt werden soll. Ansonsten würde ich bei jedem
+Umwandeln des RMarkdown-Dokuments in die html alle Pakete neu
+installieren, deren Installationscode ich hinschreibe, das wäre Quatsch.
+Diese Parameter werden mit Komma voneinander getrennt, weitere findet
+ihr unter: <https://rmarkdown.rstudio.com/lesson-3.html> und eine super
 Zusammenstellung hier: <https://yihui.org/knitr/options/>. Man kann sie
 aber auch händisch einstellen, wenn man auf das kleine Zahnradsymbol
 klickt.
 
-Noch ein Beispiel für einen Code Chunk. Ich möchte das Histogramm aus
-dem Beispiel oben in dieses Dokument einfügen. Diesmal gebe ich nicht
-den Parameter `eval = FALSE` sondern `eval = TRUE` und spezifiziere,
-dass die Grafik 5cm groß sein soll. Dadurch dass in meinem obersten Code
-Chunk in diesem Dokument im [setup](#header)
-`knitr::opts_chunk$set(echo = TRUE)` gesetzt habe, gilt `echo = TRUE`
-als default für alle Code Chunks. Damit wird der Code immer mit
-ausgeschrieben.
+Wenn ich möchte, dass ein Code-Chunk in meinem Output-Dokument
+abgebildet wird, muss ich nicht extra `eval = TRUE` setzen, weil dies
+den Standardeinstellungen von R-Markdown entspricht. Für den folgenden
+Output spezifiziere ich in den Chunk-Options, dass die Grafik 5 cm groß
+sein soll. Dann lade ich erst einmal die Pakete und Daten ein. Von der
+Konsole kennt ihr schon Warnungen, wie beispielsweise: “Warnung: Paket
+‘palmerpenguins’ wurde unter R Version 4.3.1 erstellt”. Diese Warnungen
+habe ich hier unterdrückt, indem ich im obersten Code-Chunk mit
+`knitr::opts_chunk$set(warnings = FALSE)` einige der
+Standardeinstellungen überschrieben haben. Der erste Code-Chunk ist im
+Output nicht sichtbar, weil dessen Erscheinung mit `include = FALSE`
+unterdrückt wurde ;-).
 
 ``` r
+# Pakete und Daten laden
 library(ggplot2)
-library("palmerpenguins")
-data("penguins")
+library(palmerpenguins)
+data(penguins)
 
-# Histogramm erstellen, um Verteilung der Größe der Pinguine einzuschätzen
-ggplot()+
-  geom_histogram(data = penguins, aes(x = body_mass_g), 
-                 binwidth = 100, # Klassengröße 100g zeigt klare Verteilungsstrukturen
+# Histogramm erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 100, # Klassengröße 100g zeigt klare Verteilungsstrukturen
                  na.rm = TRUE) # zwei NA-Sätze müssen entfernt werden
 ```
 
 ![](B06_markdown_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
-Wenn ich das nicht möchte, muss ich noch einmal in meinen Code Chunk
-Options spezifizieren, dass `echo = FALSE` sein soll. Bsp:
+Nun zum Vergleich derselbe Code-Chunk mit der Option `echo = FALSE`:
 
 ![](B06_markdown_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
@@ -209,8 +205,8 @@ schreibe, Code sein soll, es geht davon aus, dass das alles Text ist.
 install.packages(“knitr”) tut also genau gar nichts.
 
 Was man aber machen kann, ist Variablen, die man erstellt hat, und
-kleine Berechnungen im Text einbetten. Man brauch ein Hochkomma \` r
-“Variablenname / Befehl” und wieder ein Hochkomma ´ einfach mitten im
+kleine Berechnungen im Text einbetten. Man brauch ein Backtick \` r
+“Variablenname / Befehl” und wieder ein Backtick ´ einfach mitten im
 Fließtext. Der Median von der Spalte body_mass_g ist 4050g. Geschrieben
 habe ich nicht die Zahl sondern: \` r median(penguins$body_mass_g, na.rm
 = TRUE)\` und das Programm hat es sozusagen “on the fly” im Text für
@@ -224,7 +220,7 @@ so eine Fehlerquelle reduziere.
 Die Bilder im Text habe ich per Markdown eingefügt. Sie sind online
 verfügbar, deshalb war der Code für das erste der folgende:
 `![](https://d33wubrfki0l68.cloudfront.net/44f781299f23419d5314e5322e7c44393f7190d3/c5915/images/markdownchunk.png)`.
-Um Bilder einzufügen, die irgendwoe auf meinem PC liegen, gilt:
+Um Bilder einzufügen, die irgendwo auf meinem PC liegen, gilt:
 `![](Pfad/zum/Bild/bild.jpg`)
 
 Links lassen sich auch einfügen, und zwar als [Hyperlink im
@@ -273,10 +269,7 @@ RMarkdown verknüpft Markdown, eine Auszeichnungssprache mit
 Möglichkeiten R-Code auszuführen. Der große Vorteil eines
 RMarkdown-Dokumentes ist es, dass man seinen Code und den Text zur
 Interpretation beisammen hat. So lassen sich direkt Zeitschriftenartikel
-mit Berechnungen, Analysen, Grafiken etc in einem Dokument ablegen. Man
-kann in Markdown mit einem Literaturverwaltungsprogramm zusammenarbeiten
-und sich automatisch Literaturverzeichnisse generieren lassen. Dazu
-später mehr.
+mit Berechnungen, Analysen, Grafiken etc in einem Dokument ablegen.
 
 ### Links
 
@@ -292,29 +285,28 @@ gutes Tutorial: <https://commonmark.org/help/tutorial/>. Der neuste
 heice shice mit dem Visual Markdown Editor wird hier beschrieben:
 <https://rstudio.github.io/visual-markdown-editing/#/>
 
-**Aufgabe** Im Beispielprojekt und damit auch in dem Projekt, was ihr
-für euch erstellt habt, liegt eine RmD-Datei unter “/analysis/paper/”.
-Schaut sie euch an, drückt *knit* und schaut, was passiert.
+**Aufgabe** In Olat gibt es einen Ordner “beispiel_markdown”. Darin
+liegt eine Rmd und ein Bild. Ladet Euch diese Dateien runter und legt
+sie in eurem Projektordner ab. Öffnet die Rmd und drückt dann auf *knit*
+und schaut, was passiert.
 
 Anschließend probiert einmal folgendes aus:
 
--   im YAML-header steht ein großes Stück Code
+-   im YAML-header steht ein Stück Code
 
 <!-- -->
 
     output: 
-       bookdown::word_document2:
-         fig_caption: yes
-         reference_docx: "../templates/template.docx" # Insert path for the DOCX file
-         pandoc_args:
-         - --lua-filter=../templates/scholarly-metadata.lua
-         - --lua-filter=../templates/author-info-blocks.lua
-         - --lua-filter=../templates/pagebreak.lua
+      word_document
+        toc: true
+        number_sections: true
 
 Ersetzt es durch
 
     output:
       html_document
+        toc: true
+        number_sections: true
 
 und auf *knit* drücken (oder Strg+shift+k). Was passiert?
 
@@ -322,16 +314,16 @@ An die Stelle könnt ihr auch einmal schreiben:
 
     output:
       pdf_document
+          toc: true
+          number_sections: true
 
 und dann *knit* drücken.
 
 Toll oder?! Mit einem Knopfdruck aus einer “Grund”-Datei drei
 unterschiedliche Formate exportieren, ohne Probleme. Mit Code, der
-korrekt umgewandelt wird. Ich schreibe inzwischen alle meine Artikel in
-Rmarkdown, da ich so am einfachsten den Output generieren kann, der
-gewünscht ist.
-
-Die in dem Originaldokument gegebene reference_docx definiert solche
-Sachen wie Überschriften formatiert werden sollen, wenn es als docx
-ausgegeben werden soll. Die pandoc-arcs sind für ähnliche Dinge da. Aber
-das führt hier zu weit.
+korrekt umgewandelt wird. Dabei kann für eine wissenschaftliche Arbeit
+auch tool nutzen, die das Zitieren leichter machen. Wenn Euch das
+interessiert, schaut euch doch noch dieses
+[Skript](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B07_rrtools.md).
+Ich schreibe inzwischen alle meine Artikel in Rmarkdown, da ich so am
+einfachsten den Output generieren kann, der gewünscht ist.
