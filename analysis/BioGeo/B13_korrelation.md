@@ -1,39 +1,26 @@
-``` r
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  warning = FALSE,
-  message = FALSE,
-  echo = TRUE,
-  eval = FALSE,
-  comment = "#>",
-  fig.path = "../figures/",
-  fig.width=6, 
-  fig.height=6
-)
-```
+# Korrelation
 
-Korrelation
-===========
-
-Um Zusammenhänge zu erfassen, gibt es für jedes Skalenniveau
-unterschiedliche Methoden:
+Ganz ähnlich wie bei dem Test auf Unterschiede, ist auch bei einer
+Untersuchung auf Zusammenhänge das Skalenniveau und die Verteilung
+entscheidend für die Auswahl eines geeigneten Verfahrens:
 
 -   für nominale Daten: Cramérs V
 
--   für ordinale Daten: Kendalls Tau
+-   für ordinale und nicht-normalverteilte metrische Daten: Kendalls Tau
+    oder Spearmans Rho
 
--   für metrische Daten: Pearson-Bravais r
+-   für metrische, normatverteilte Daten: Pearson-Bravais r
 
-für nominale Daten kurz wiederholt:
------------------------------------
+## Cramers V
 
 Cramérs V kennen wir schon. Nachdem der Chi-Qudrat-Test einen
 Zusammenhang aufgezeigt hat, können wir Cramérs V nutzen, um die Stärke
-des Zusammenhangs zu untersuchen. Chi-Quadrat ist in base
+des Zusammenhangs zu untersuchen. Chi-Quadrat ist in `base`
 vorinstalliert, für Cramérs V brauchen wir das Paket `lsr`.
 
-Als Beispiel stellen wir uns vor, wir hätten eine Wiese und untersuchen,
-ob zwei Grasarten Sonnenplätze oder nicht Sonnenplätze bevorzugen.
+Als Beispiel stellen wir uns vor, wir hätten eine Wiese und untersucht.
+Nun wollen wir wissen, ob zwei Grasarten Sonnenplätze oder
+nicht-Sonnenplätze bevorzugen.
 
 Wir erstellen einmal eine kleine Stichprobe, zwei Test-Quadranten und
 zählen aus:
@@ -44,8 +31,10 @@ nicht in der Sonne 15 Halme, Gras 2 nicht in der Sonne 41 Halme.
 Daraus bauen wir einen Datensatz:
 
 ``` r
+# Beispieldatensatz erstellen
 df <- cbind(c(27, 15),c(21,41)) # cbind = "column bind" und kombiniert zwei Vektoren zu einem Datensatz
 
+# Benennung
 colnames(df) <- c("Gras1", "Gras2") # ich benenne die Spalten
 rownames(df) <- c("Sonne", "keineSonne") # ich benenne die Zeilen
 ```
@@ -53,6 +42,7 @@ rownames(df) <- c("Sonne", "keineSonne") # ich benenne die Zeilen
 Jetzt können wir als erstes den Chi-Quadrat-Test rechnen:
 
 ``` r
+# Test durchführen
 chisq.test(df)
 ```
 
@@ -61,8 +51,10 @@ Und der p-wert ist so klein, das ist sicherlich ein Zusammenhang.
 Jetzt der Cramers V:
 
 ``` r
+# Paket laden
 library(lsr)
 
+# Cramers V berechnen
 cramersV(df)
 ```
 
@@ -75,29 +67,36 @@ welchem College die Piraten waren einen Zusammenhang hat. Vielleicht war
 das ja nur bei einem der beiden Colleges ein Trend:
 
 ``` r
+# Pakete und Daten laden 
 library(yarrr)
 data(pirates)
 
+# Häufigkeitstabelle erstellen
 table(pirates$headband, pirates$college)
 
-e <- chisq.test(table(pirates$headband, pirates$sword.type))
-
+# Testergebnis als Objekt definieren
+e <- chisq.test(pirates$headband, pirates$college)
 e
 ```
 
 Wie kann man das Ergebnis interpretieren?
 
-Denkt dran, man kann sich die Residuals (also die Abweichungen vom
-erwarteten zu beobachteten Wert) anschauen:
+Man kann sich die Residuals (also die Abweichungen vom erwarteten zu
+beobachteten Wert) anschauen:
 
 ``` r
+# Residuen betrachten
 e$residuals
 ```
 
 Jetzt noch der Cramers V:
 
 ``` r
-cramersV(table(pirates$headband, pirates$college))
+# Paket laden 
+library(lsr)
+
+# Cramers V berechnen
+cramersV(pirates$headband, pirates$college)
 ```
 
 Der Wert ist 0,03. Was sagt uns das?
@@ -108,36 +107,42 @@ Cramers V ist allerdings etwas sensibler gegenüber großen Datensätzen
 und sieht einfach keinen nennenswerten Zusammenhang, weil die
 Abweichungen sehr klein sind im Verhältnis zur Stichprobengröße.
 
-Kendalls Tau für ordinale Daten
--------------------------------
+## Kendalls Tau
 
-Rechnen wir doch einfach das Bsp aus der Präsentation nach: Wir haben
-einen Datensatz mit 4 Wolfsrudeln, deren Anzahl von Wölfen und Größe
-ihres Territoriums. Wir brauchen für den Test zwei Vektoren, die in der
-richtigen Reihenfolge diese beiden Wertereihen darstellen:
+Rechnen wir doch ein Beispiel: Wir haben einen Datensatz mit
+Jahreseinkommen und Wohnfläche pro Haushalt und fragen uns ob es hier
+einen Zusammenhang gibt. Wir testen vorab, ob diese Variablen
+normalverteilt sind.
 
 ``` r
-ha <-  c(2, 1, 4, 1.5)
-nWoelfe <-  c(6, 9, 15, 3)
+# Beispiele definieren 
+einkommen_jahr_brutto <-  c(35.000, 37.000, 40.000, 44.000, 46.000, 
+                            47.000, 50.000, 52.000, 70.000, 120.00 )
+wohnflaeche_qm <-  c(30, 55, 50, 60, 67, 70, 55, 80, 100, 300)
+
+# Pre-Test durchführen
+shapiro.test(einkommen_jahr_brutto)
+shapiro.test(wohnflaeche_qm)
 ```
 
-Jetzt geben wir diese in die Korrelationstestfunktion ein. R wählt
+Ok. das sind klassische Beispiele für schiefe Verteilungen. Machen wir
+hier also mit einem paramterfreien Verfahren weiter. Wir geben unsere
+Variablen in die Korrelationstestfunktion für Kendalls Tau ein. R wählt
 automatisch die benötigte Version (a ist standard und b, wenn es
 Bindungen gibt). Über “alternative” kann man definieren, ob man schon
 glaubt, dass die erste oder zweite Gruppe größere Ränge einnimmt als die
 andere. Wir testen “two.sided”, d.h. wir wissen das nicht:
 
 ``` r
- cor.test(ha, nWoelfe, method = "kendall", alternative = "two.sided")
+# Test berechnen
+cor.test(einkommen_jahr_brutto, wohnflaeche_qm, method = "kendall", alternative = "two.sided")
 ```
-
-Sieh an, ich hab mich nicht verrechnet. :-)
 
 Wenn man sehr viele Daten hat (sehr lange Vektoren), die man testen
 möchte, kann die Berechnung sehr lange dauern (da ja jedes Paar
 gegeneinander getestet werden muss). Dann informiert euch über Spearmans
 Rho
-(<a href="https://www.crashkurs-statistik.de/spearman-korrelation-rangkorrelation/" class="uri">https://www.crashkurs-statistik.de/spearman-korrelation-rangkorrelation/</a>),
+(<https://www.crashkurs-statistik.de/spearman-korrelation-rangkorrelation/>),
 der ist eigentlich wie der folgende (Pearson und Bravais r), aber an
 Rängen wie Kendalls Tau. Er gilt als “weniger genau”, aber für große
 Datensätze besser geeignet.
@@ -145,21 +150,32 @@ Datensätze besser geeignet.
 Der Code ist simpel:
 
 ``` r
- cor.test(ha, nWoelfe, method = "spearman", alternative = "two.sided")
+# Test berechnen
+cor.test(einkommen_jahr_brutto, wohnflaeche_qm, method = "spearman", alternative = "two.sided")
 ```
 
-Jetzt aber geht es noch um metrische Daten:
+## Pearson und Bravais’ R
 
-Pearson und Bravais’ R
-======================
+Nehmen wir doch also einfach Größe- und Gewicht der Piraten.
 
-Für diesen Test können wir den gleichen Befehl nutzen, müssen nur die
-Methode ändern. Und den Datensatz, denn mit Vektoren der Länge 4 ist der
-Pearson-und Bravais’ R nicht glücklich.
-
-Nehmen wir doch also einfach Größe- und Gewicht der Piraten:
+Der Korrelationskoeffizient nach Pearson und Bravais gehört zu den
+parametrischen Verfahren. Dementsprechend beginnen wir hier erst einmal
+mit einem Test auf Normalverteilung.
 
 ``` r
+# Test durchführen
+shapiro.test(pirates$height)
+shapiro.test(pirates$weight)
+```
+
+Puh, für das Gewicht können wir die Hypothese einer Normalverteilung
+gerade noch so beibehalten :-)
+
+Für den Korrelationstest können wir nun erneut den Befehl `cor.test()`
+nutzen.
+
+``` r
+# Test durchführen
 cor.test(pirates$height, pirates$weight, method = "pearson", alternative = "two.sided")
 ```
 
