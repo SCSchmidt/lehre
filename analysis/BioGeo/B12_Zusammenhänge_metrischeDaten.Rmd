@@ -1,9 +1,11 @@
 ---
-title: "Zusammenhänge ordinaler Daten"
+title: "Parametrische Verfahren"
 author:
   - Sophie C. Schmidt:
       email: s.c.schmidt@uni-koeln.de
       correspondence: true
+contributor: 
+  - Sara Schiesberg
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   md_document:
@@ -12,77 +14,79 @@ always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
+# Setup
 knitr::opts_chunk$set(
-  echo = TRUE,
-  eval = TRUE,
   warning = FALSE,
+  message = FALSE,
   comment = "#>",
   fig.path = "./figures/",
-  fig.width=5, 
-  fig.height=5)
-
-
+  fig.width = 5, 
+  fig.height = 5)
 ```
+# Parametrische Verfahren
 
-# Vergleich zweier Gruppen
+Parametrisch bedeutet, dass die Daten ein metrisches Skalenniveau haben und **normalverteilt sein müssen**, damit man den Test darauf anwenden kann.
+D.h. man sollte immer zuerst einen Test auf Normalverteilung machen, wie wir ihn schon kennengelernt haben. 
+
+## Vergleich zweier Gruppen
 
 Hier geht es darum, zwei Gruppen zu vergleichen und zu schauen, ob sie eventuell aus der gleichen Grundgesamtheit stammen könnten oder ob die Unterschiede signifikant sind. 
 
-# Parametrische Verfahren
+### F-Test
 
-Parametrisch bedeutet, dass die Daten  ein metrisches Skalenniveau haben und **normalverteilt sein müssen**, damit man den Test darauf anwenden kann.
-D.h. man sollte immer zuerst einen Test auf Normalverteilung machen, wie wir ihn schon kennengelernt haben. 
-
-## F-Test
 Der F-Test vergleicht die Varianzen von metrischen Variablen. Schauen wir uns doch noch einmal die Flossenlänge unserer Pinguine an und differenzieren sie nach Geschlecht. 
 
 ```{r}
-
+# Paket und Daten laden
 library(palmerpenguins)
 data(penguins)
 
-# zwei Datensätze nach Geschlecht trennen:
-
+# Auswahl definieren
 penguins_f <- subset(penguins, penguins$sex == "female")
 penguins_m <- subset(penguins, penguins$sex == "male")
-
 ```
 
-Der F-Test ist in `base` R vorprogrammiert und die Funktion heißt `var.test`. 
+Der F-Test ist in `base` R vorprogrammiert und die Funktion heißt `var.test()`. 
 
 ```{r}
+# Test durchführen
 var.test(x = penguins_f$flipper_length_mm,
          y = penguins_m$flipper_length_mm,
          alternative = "two.sided")
 ```
+
 Die Alternativhypothese ist, dass das Verhältnis der beiden Varianzen zueinander nicht 1 entspricht -- sie also unterschiedlich sind.
 
 Der p-Wert "kratzt" mit 0,052 an der Grenze zur Signifikanz. Wenn wir die Signifikanzniveaus also nicht als trennscharf sonder eher "Richtlinien" verstehen, können wir hier sagen, dass es hier vielleicht doch signifikante Unterschiede zwischen den zwei Gruppen gibt.
 
-Wir wissen ja, was ein Problem sein wird: Wir haben mehrere Pinguinarten in unserer Stichprobe. Vllt nehmen wir deshalb doch mal lieber nur die Pinguine einer Art.
+Wir wissen ja, was ein Problem sein wird: Wir haben mehrere Pinguinarten in unserer Stichprobe. Vielleicht nehmen wir deshalb doch mal lieber nur die Pinguine einer Art.
 
 ```{r}
+# Auswahl definieren
 gentoo <- subset(penguins, penguins$species == "Gentoo") 
 ```
 
 So kann ich auch gleich noch eine zweite Art und weise demonstrieren, wie der Code der Funktion auch aussehen kann:
 
 ```{r}
+# Test durchführen
 var.test(flipper_length_mm ~ sex, na.rm = TRUE, data = gentoo)
 ```
 
 Dieser p-Wert ist sehr klein. Wir können also sicher davon ausgehen, dass die Varianz der beiden Gruppen nicht gleich ist.
 
-Schauen wir uns das doch noch einmal visualisiert an, das hilft meistens bei der Intepretation. Ein Boxplot zeichnet ja immer das 1. und 3. Quartil ab und kann deshalb als Annäherung an die Standardabweichung bezeichnet werden:
+Schauen wir uns das doch noch einmal visualisiert an, das hilft meistens bei der Interpretation. Ein Boxplot zeichnet ja immer das 1. und 3. Quartil ab und kann deshalb als Annäherung an die Standardabweichung bezeichnet werden:
 
 ```{r gentoo_flipper_sex}
+# Paket laden
 library(ggplot2)
 
-ggplot()+
-geom_boxplot(data = gentoo, 
-               aes(y=flipper_length_mm, 
-                   x = sex))
+# Boxplot erstellen
+ggplot(data = na.omit(gentoo), 
+       aes(y = flipper_length_mm, x = sex)) +
+  geom_boxplot(na.rm = TRUE)
 ```
+
 Ja, die beiden "boxes" sind doch deutlich unterschiedlich groß und stark voneinander verschoben.
 
 Nehmen wir noch einmal ein anderes Beispiel: Das Gewicht, das war doch schon einmal eine Aufgabe.
@@ -92,19 +96,19 @@ Ach ja, trennen wir mal die Geschlechter vorher, schließlich heißt die Vorauss
 Also: 1. Ein subset nach dem Geschlecht der Tiere machen und 2. dann den Shapiro-Wilk-Test für die beiden Gruppen. 
 
 ```{r}
-
+# Auswahl definieren 
 gentoo_f  <- subset(gentoo, gentoo$sex == "female")
 gentoo_m  <- subset(gentoo, gentoo$sex == "male")
 
-
+# Test durchführen
 shapiro.test(gentoo_f$body_mass_g)
 shapiro.test(gentoo_m$body_mass_g)
-
 ```
 
 Sehr gut, diese beiden Variablen sind normalverteilt. Jetzt der F-Test:
 
 ```{r}
+# Test durchführen
 var.test(data = gentoo, body_mass_g ~ sex, na.rm = TRUE)
 ```
 
@@ -112,10 +116,12 @@ Der p-Wert ist relativ groß. Das bedeutet, die Varianz der beiden Gruppen ist r
 
 Machen wir also mit diesem Bsp jetzt den t-Test:
 
-## t-test
+### t-test
 
 Wir testen jetzt, ob sich die Mittelwerte so weit unterscheiden, dass wir von zwei unterschiedlichen Gruppen ausgehen können:
+
 ```{r}
+# Test durchführen
 t.test(data = gentoo, body_mass_g ~ sex, na.rm = TRUE,
          alternative = "two.sided")
 ```
@@ -124,53 +130,57 @@ Es wurde ein Welch-Test durchgeführt, weil R die Varianz der Grundgesamtheit no
 
 Der p-Wert erlaubt es uns, die Alternativhypothese sicher anzunehmen.
 
-Jetzt erweitern wir das Spektrum der Gruppen. Durch einen Faktor getrennt, der aber mehr als nur 2 Ausprägungenannehmen kann, können zB durch den Faktor "species" drei Gruppen entstehen. Bevor wir diese jedoch auf ihren Mittelwertsunterschied testen können, müssen wir auch hier die Varianzgleichheit untersuchen:
+Jetzt erweitern wir das Spektrum der Gruppen. Durch einen Faktor getrennt, der aber mehr als nur 2 Ausprägungenannehmen kann, können z. B durch den Faktor "species" drei Gruppen entstehen. Bevor wir diese jedoch auf ihren Mittelwertsunterschied testen können, müssen wir auch hier die Varianzgleichheit untersuchen:
 
-## Levene-Test
+### Levene-Test
 
-Der Levene-Test ist im Paket "car" umgesetzt.
-Wie immer installieren bitte nur diejenigen das Paket, die nicht in der Cloud arbeiten!
+Der Levene-Test ist im Paket "car" umgesetzt. Diese muss zuerst installiert werden. 
+
 ```{r, eval = FALSE}
+# Paket installieren
 install.packages("car")
 ```
 
 ```{r}
+# Paket laden
 library (car)
+
+# Test durchführen
 leveneTest(data = penguins, body_mass_g ~ species, na.rm = TRUE)
 ```
+
 Ein sehr kleiner p-Wert sagt: Die Gruppen haben nicht die gleiche Varianz. 
 
 Nehmen wir also ein anderes Beispiel, und zwar die Flügellänge. Haben da die Pinguinspezies eine ähnliche Varianz?
 
 ```{r}
+# Test durchführen
 leveneTest(data = penguins, flipper_length_mm ~ species, na.rm = TRUE)
-
 ```
 
 Jawohl! Der p-Wert ist sehr hoch, das heißt, wir können von Varianzhomogenität ausgehen.
 
+## Vergleich zwischen mehr als 2 Gruppen
 
+### einfaktorielle ANOVA
 
-## einfaktorielle ANOVA
+Mit einer einfaktoriellen ANOVA lässt sich ein Test auf Unterschiede durchführen, der mehr als zwei Gruppen berücksichtigt. Wir nehmen hier als Beispiel die drei verschiedenen Pinguinspezies. Die einfaktorielle ANOVA ist bereits in `base` umgesetzt, mit der Funktion `aov()`.
 
-Die ANOVA ist bereits in `base` umgesetzt, mit der Funktion `aov`.
-
-Aus irgendwelchen Gründen wir bei der ANOVA der p-Wert nicht gleich angezeigt. Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben:
+Aus irgendwelchen Gründen wird bei der ANOVA der p-Wert nicht gleich angezeigt. Deswegen weisen wir das Ergebnis der eigentlichen Test-Berechnung einer Variablen zu und lassen uns dann das Ergebnis zusammengefasst ausgeben:
 
 ```{r}
-# eigentliche ANOVAberechnung
-res.aov <- aov(flipper_length_mm ~ species, data = penguins)
+# Ergebnisse als Objekt definieren
+res.aov <- aov(flipper_length_mm ~ species, data = penguins) # eigentliche ANOVAberechnung
 
 # Zusammenfassung des Ergebnisses
 summary(res.aov)
-
 ```
 
 Höchstsignifikant! Das bedeutet? Die Art hat einen Einfluss auf die Flügellänge der Pinguine. 
 
 Wer hätte es gedacht. ;-)
 
-## mehrfaktorielle ANOVA
+### mehrfaktorielle ANOVA
 
 Eine mehrfaktorielle ANOVA ist in R relativ aufwändig. 
 
@@ -184,15 +194,17 @@ Als erstes checken wir alle Voraussetzungen:
 
 Machen wir hier also ein QQ-plot für alle Werte gleichzeitig:
 
-```{r check_normalverteilung_pir}
+```{r}
+# Pakete und Daten einladen
+library(ggpubr)
 library(yarrr)
 data(pirates)
+```
 
-library(ggpubr)
+In `ggpubr` gibt es im Unterschied zu `ggplot2` kein `aes()` und die Variablennamen müssen im Funktionsaufruf in "Hochkommas". Da `ggpubr` im Hintergrund `ggplot2` laufen hat, können wir ggplot2-Funktionalitäten wie `theme_bw()` und `facet_grid()` aufrufen. `theme_bw()` gibt ein hübsches Layout. Und `facet_grid()` ist einfach genial: es erzeugt mit nur einem Funktionsaufruf viele Diagramme. Diese zeigen in unserem Anwendungsfall die Verteilung für unterschiedliche Kombinationen von Merkmalsausprägungen. 
 
-# in ggpubr gibt es im unterschied zu ggplot2 kein aes und die Variablennamen müssen an dieser Stelle in "Hochkommas".
-# da es aber im Hintergrund ggplot2 laufen hat, können wir die ggplot2-Funktionalitäten wie theme_bw und facet_grid aufrufen
-
+```{r check_normalverteilung_pir}
+# Q-Q-Plot erstellen
 ggqqplot(pirates, "height", 
          ggtheme = theme_bw()) +
   facet_grid(college ~ sex) # facet grid stellt nach den gegebenen Variablen mehrere Plots nebeneinander
@@ -207,11 +219,11 @@ Testen wir also als nächstes, ob
 Dafür nehmen wir den leveneTest aus dem Paket `car`. Wir stellen die abhängige metrische Variablen den beiden kategorialen Faktoren gegenüber:
 
 ```{r}
+# Paket Laden
 library(car)
 
-# leveneTest(abhängige Variable ~ Faktor1*Faktor2, data = df)
-leveneTest(height ~ sex*college, data = pirates)
-
+# Test durchführen
+leveneTest(height ~ sex*college, data = pirates) # leveneTest(abhängige Variable ~ Faktor1*Faktor2, data = df)
 ```
 
 Die Wahrscheinlichkeit steht unter `Pr(>F)` und liegt deutlich über 0,05. Wir können also von einer Varianzgleichheit ausgehen.
@@ -219,7 +231,10 @@ Die Wahrscheinlichkeit steht unter `Pr(>F)` und liegt deutlich über 0,05. Wir k
 Dann also jetzt die ANOVA. Wie oben geben wir die Berechnung erst in eine Variable und lassen uns das Ergebnis dann zusammengefasst ausgeben:
 
 ```{r}
+# Ergebnisse als Objekt definieren
 res.aov <- aov(height ~ sex * college, data = pirates)
+
+# Zusammenfassung 
 summary(res.aov)
 ```
 
@@ -231,47 +246,45 @@ Ganz klar: Das Geschlecht hat einen großen Einfluss, aber das College nicht.
 Schauen wir uns das einmal an, plotten wir doch einfach die Körpergröße der Piraten in einem Boxplot nach College und Geschlecht:
 
 ```{r boxplot_pir_college-sex-height}
-ggplot(data = pirates)+
-  geom_boxplot(aes(x = college,
-                   col = sex,#
-                   y = height))
+# Boxplot erstellen
+ggplot(data = pirates, 
+       aes(x = college, col = sex, y = height)) +
+  geom_boxplot()
 ```
-Ja. Die Unterschiede zwischen den Colleges sind sehr viel  kleiner als zwischen den Geschlechtern.
 
-Erinnert ihr euch an das Thema "crossed" und "nested", das ich beim Chi-Quadrat-Test aufgeworfen hatte? Da bei diesem Datensatz alle Geschlechter in den Colleges vorkommen, haben wir ein "crossed design" (ein gekreuztes Design).
+Ja. Die Unterschiede zwischen den Colleges sind sehr viel kleiner als zwischen den Geschlechtern.
 
 Sehr gut! Wir haben in diesem Kapitel untersucht, wie metrische Variablen eventuell von gruppierenden Faktoren abhängig sein können und wie wir das testen. 
 
 **Aufgabe: Als Übung versucht doch das gleiche noch einmal herauszufinden für das Gewicht der Piraten. Hängt das Gewicht vom College oder dem Geschlecht ab? **
 
-## multivariate Analysis of Variance
+### multivariate Analysis of Variance
 
-Jetzt schauen wir, wie mehrere abhängige Variablen gleichtzeitig untersucht werden können.
+Jetzt schauen wir, wie mehrere abhängige Variablen gleichtzeitig untersucht werden können. Wir machen hier ein Studiendesign mit 2 abhängigen und einer unabhängigen Variable. Theoretisch lassen sich mit dieser Methode aber auch noch komplexere Fragen untersuchen, die eine Vielzahl an abhängigen und unabhängigen Variablen beinhalten. 
 
-Hängen Größe und Gewicht von dem Geschlecht ab?
+Hängen Größe und Gewicht von dem Geschlecht ab? 
 
-Dazu benutzen wir die Funktion `manova`, so wird die multivariate Varianzanalyse auch meistens abgekürzt.
+Dazu benutzen wir die Funktion `manova()`, so wird die multivariate Varianzanalyse auch meistens abgekürzt.
 
-wir fügen beide Variablen mit einem cbind (column bind) zusammen und setzen diese mit der Tilde gegenüber den Faktor Geschlecht. Wie auch vorhin wird das Ergebnis einer Variablen zugewiesen und dann mit `summary` ausgegeben. 
-
+Wir fügen beide Variablen mit einem `cbind()` (column bind) zusammen und setzen diese mit der Tilde gegenüber den Faktor Geschlecht. Wie auch vorhin wird das Ergebnis einer Variablen zugewiesen und dann mit `summary()` ausgegeben. 
 
 ```{r}
-library(yarrr)
-data(pirates)
-
+# Ergebnis als Objekt definieren
 res.man <- manova(cbind(height, weight) ~ sex, data = pirates)
 
+# Zsammenfassung des Ergebnisses
 summary(res.man)
 ```
 Wir haben eine hochsignifikanten Zusammenhang! 
 
 Mit einem speziellen summary-Befehl können wir uns die Details ansehen:
 
-
 ```{r}
+# Zusammenfassung der Ergebnisse
 summary.aov(res.man)
 ```
-Erst wird uns "response height", also die Ergebnisse für die Größe und dann "response weight", die Ergebnisse für das Gewicht angezeigt. Wir sehen unterschiede in den absoluten Werten, aber hochsignifikant sind beide.
+
+Erst wird uns "response height", also die Ergebnisse für die Größe und dann "response weight", die Ergebnisse für das Gewicht angezeigt. Wir sehen Unterschiede in den absoluten Werten, aber hochsignifikant sind beide.
 
 Wie ist das mit der Spezies, den Pinguinen, ihrer Flipper-Length und dem Gewicht?
 
