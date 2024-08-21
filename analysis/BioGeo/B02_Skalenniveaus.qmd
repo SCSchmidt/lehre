@@ -1,0 +1,206 @@
+---
+title: "Datentypen in R"
+authors:
+  - name: Sara Schiesberg
+    email: saraschiesberg@uni-koblenz.de
+  - name: Sophie C. Schmidt
+    email: s.c.schmidt@fu-berlin.de 
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+project:
+  type: website
+  output-dir: docs
+---
+
+```{r setup, include=FALSE}
+# Setup
+knitr::opts_chunk$set(
+  eval = FALSE,
+  warning = FALSE, 
+  message = FALSE
+  )
+```
+
+# Skalenniveaus und Datentypen in R
+
+In dem Vorlesungsvideo ging es um **Skalenniveaus** und Ihr habt auch schon die Datentypen in R kennengelernt. Noch mal zur Erinnerung:
+
+-   `double` und `integer`: metrisch
+
+-   `Date` für Datumsangaben, die i. d. R intervallskaliert sind.
+
+-   `ordered factor` ist ordinal
+
+-   `factor` ist nominal.
+
+-   `level` sind die Merkmalsausprägungen des factors. Diese sind im Unterschied zum `character` begrenzt.
+
+-   `boolean`: Das sind TRUE / FALSE - Angaben, man braucht sie häufig innerhalb von Funktionen, um bestimmte Parameter einzustellen
+
+# Daten laden
+
+Um das alles einmal auszuprobieren, nehmen wir wieder den Pinguin-Datensatz:
+
+Zuerst laden wir das Paket:
+
+```{r}
+# Paket laden
+library(palmerpenguins)
+```
+
+Und dann die Daten:
+
+```{r}
+# Daten laden
+data("penguins")
+```
+
+Jetzt mache ich noch einen kleinen Trick und ergänze drei Spalten. Lasst den Code mal durchlaufen, wir brauchen die Spalten später als Beispiel.
+
+```{r}
+# Paket laden
+library(dplyr)
+
+# Spalten ergänzen
+penguins <- penguins %>% # Das Objekt penguins wird neu definiert
+  mutate(
+    ID = row_number(), 
+    gewichtsklasse = rep(c("leicht", "mittel", "schwer"), length.out = n()), # Wiederhole Muster
+    farbe = rep(c("pink", "blau", "gelb"), length.out = n()))
+```
+
+# Datentyp inspizieren und verändern
+
+Nun wollen wir uns die Datentypen genauer anschauen!
+
+Der `class()`-Befehl zeigt uns, welches Datenformat das einzelne Objekt hat.
+
+Schauen wir uns als erstes den gesamten Datensatz an:
+
+```{r}
+# Datentyp abfragen
+class(penguins)
+```
+
+Der Output erzählt uns, dass es sich um eine Tabelle, einen `data.frame` handelt.
+
+Jetzt nehmen wir doch einmal nur eine Spalte der Tabelle, die erste, `species`
+
+```{r}
+# Datentyp abfragen
+class(penguins$species)
+```
+
+Ahja. Das sieht ja schon ganz richtig aus. Aber wie ist es mit unseren neuen Spalten?
+
+```{r}
+# Daten abfragen
+class(penguins$farbe)
+```
+
+Moment, warum ist das denn jetzt `character`? 😳 Die Farbe ist doch eindeutig nominalskaliert und es gibt doch nur drei Merkmalsausprägungen! Da ändern wir doch besser mal den Datentypen ab.
+
+```{r}
+# Variable in factor umwandeln
+penguins$farbe <- factor(penguins$farbe)
+```
+
+Im Prinzip überschreiben wir die Variable mit der neuen Definition. Überprüft mal, hat es geklappt?
+
+Schauen wir doch mal, wie es für die Größenklassen aussieht.
+
+```{r}
+# Datentyp abfragen
+class(penguins$gewichtsklasse)
+```
+
+Herrjemine, auch falsch! 😖
+
+Um den Datentyp hier anzupassen, kann ich erneut `factor()` nutzen. Allerdings gebe ich jetzt mit `ordered = TRUE` noch zusätzlich an, dass es ein `ordered factor` sein soll. Wichtig ist auch, dass wir die `levels` in der richtige Reihenfolge eingeben.
+
+```{r}
+# Umwandlung zum ordered factor
+penguins$gewichtsklasse <- factor(penguins$gewichtsklasse, 
+                                  levels = c("leicht", "mittel", "schwer"), 
+                                  ordered = TRUE)
+```
+
+Schauen wir uns das Ergebnis an:
+
+```{r}
+# Datentyp abfragen
+class(penguins$gewichtsklasse)
+```
+
+Schauen wir uns doch jetzt die Spalten mit den Zahlen etwas genauer an. 
+
+```{r}
+# Datentypen abfragen
+class(penguins$bill_length_mm)
+```
+Hier sehe ich ersteinmal nur `numeric`. `numeric` ist in R die allgemeine Klasse für Fließkommazahlen. Wir können uns das mit `typeof()` nocheinmal genauer anschauen.   
+
+```{r}
+# Datentypen abfragen
+typeof(penguins$bill_length_mm)
+```
+
+Wie gesagt, gibt es Unterschiede bei metrischen Daten. Vergleichen wir doch mal die Schnabellänge (`bill_length_mm`) und die Flügel-Flossenlänge (`flipper_length_mm`) an:
+
+```{r}
+# Datentypen abfragen
+class(penguins$flipper_length_mm)
+```
+
+Während die Schnabellänge eine `double` ist, handelt es sich bei der Flossenlänge um `integer`. Woran könnte das liegen? Beide Angaben sind in Millimeter angegeben.
+
+Dann haben wir noch die neue Spalte `ID`.
+
+```{r}
+# Merkmalsausprägungen abfragen
+class(penguins$ID)
+```
+
+Oh, das ist auch integer! Aber was soll das heissen? Ist Pinguin Nummer 2 nur halb so ID-ig wie Pinguin Nummer 4? Ich kann mir vorstellen, dass eine Wage auf der alle Pinguine stünden, die Summe aller Pinguineinzelgewichte zeigt. Aber was würde die Summe aller Pinguin IDs bedeuten? 😲
+
+Besser ist, das auch umzuwandeln:
+
+```{r}
+# Variable in einen character-Vektor umwandeln
+penguins$ID <- as.character(penguins$ID)
+```
+Jetzt probieren wir doch mal: 
+
+```{r}
+# Summe berechnen
+sum(penguins$ID)
+```
+Die Fehlermeldung ist eigentlich eindeutig. Wir haben den Computer angewiesen, mit Text zu rechnen. Da er nicht von alleine auf die Idee kommt, den Text in Zahlen umzuwandeln, gibt er uns den Fehler aus.
+
+Puh, jetzt ist die Welt wieder ok 😌.
+
+Aber stellt Euch doch mal vor, wir hätten aus Versehen das Gewicht der Pingunie in einen `character` umgewandelt. 
+
+```{r}
+# Variable in einen character-Vektor umwandeln
+penguins$body_mass_g <- as.character(penguins$body_mass_g)
+```
+
+Der Vektor `penguins$body_mass_g` wurde von uns mit einem anderen Datentyp überschrieben als er vorher war.
+
+Was passiert, wenn wir einfach die Daten noch einmal neu einladen?
+
+Also den `data()`-Befehl noch einmal benutzen?
+
+Ha! Damit überschreiben wir die falschen Daten einfach wieder. Solange wir unsere Originaldaten irgendwo haben und diese NICHT ÜBERSCHREIBEN (deswegen legen wir sie immer in einem anderen Ordner ab als die Daten, die wir aus R hinaus wieder irgendwo abspeichern, nämlich im Ordner raw data). Die Originaldaten sind im Paket palmerpenguins unangetastet geblieben, weil wir sie nicht exportiert haben.
+
+Und man braucht das alles nicht neu zu schreiben oder so, nein, man scrollt in seinem Skript-Dokument einfach nach oben und wiederholt den Befehl, der da noch irgendwo steht.
+
+Tatsächlich ist das relativ häufig notwendig, wenn man versucht etwas umzusetzen, was man noch nie gemacht hat und ein paar unterschiedliche Dinge ausprobieren möchte.... muss... 😉
+
+Allgemeiner Tipp: Wenn nur ein Teil des Skripts funktioniert, immer erst einmal stehen lassen, kopieren und an der Kopie rumprobieren bis alles klappt. Wenn man die Lösung irgendwann hat, kommentiert man sie sich und löscht alles, was vorher nicht geklappt hatte.
+
+Und noch ein spezieller Tipp: Wir haben hier immer `class()` benutzt um den Datentyp abzufragen. Probiert doch auch mal `str(penguins)`. Was seht Ihr dann? 
+
+# Zusammenfassung
+
+Was haben wir hier gerade gelernt? Wir haben etwas über das Verhältnis von Datentypen und Skalenniveaus in R erfahren. Und wir haben gelernt, wie man den Datentyp eines Objektes herausfindet und umwandelt. Das sind ganz grundlegende Dinge, die wir immer wieder brauchen werden!
