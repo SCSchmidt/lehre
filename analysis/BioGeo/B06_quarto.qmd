@@ -1,0 +1,217 @@
+---
+title: "Quarto und Styleguide"
+author:
+  - name: Sophie C. Schmidt
+    email: s.c.schmidt@fu-berlin.de 
+  - name: Sara Schiesberg
+    email: saraschiesberg@uni-koblenz.de
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format: html
+---
+
+```{r setup, include = FALSE}
+# Setup
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE)
+```
+
+# Quarto und Styleguide
+
+## Quarto
+
+In dem Praxisvideo habt ihr jetzt schon die grundlegende Funktionalitäten von Quarto kennengelernt. In diesem Skript findet ihr noch einmal einige grundlegende Information zur Syntax.
+
+Ein *Quarto*-Dokument (qmd) ist eigentlich nur ein txt-Dokument, also das simpelste an Textdatei was man sich vorstellen kann. In dem ich in dieser Textdatei einer bestimmten Syntax folge, kann ich die Datei von einem Programm im Hintergrund (namens pandoc) in hübsch formatierte Word-, html- oder PDF-Dateien umwandeln. Zum Bsp lassen sich Überschriften mit dem Rautensymbol markieren, Listen mit einem einfach Minus-Symbol und Text durch Unterstriche *kursiv* und durch zwei Sternchensymbole **fett** drucken:
+
+![Die qmd und der geenderte Qutput!](./figures/qmd_and_viewer.png)
+
+### Dokument-Struktur {#dokument-struktur}
+
+In dem Bild oben steht ganz am Beginn der sogenannte "YAML-Header". Er beginn und endet mit 3 Minuszeichen in einer eigenen Zeile. In ihm werden einige Meta-Daten zu dem Dokument abgelegt:
+
+-   Der Titel wird hinter `title:` in Anführungszeichen geschrieben
+-   Hinter `author:` schreibt man seinen eigenen Namen in Anführungszeichen
+-   `date:` ist nicht verpflichtend, aber das kann hilfreich sein
+-   und mit `format:` wird spezifiziert, in was für eine Art Dokument das Quarto-Dokument verwandelt werden soll. Wichtig sind `html`, `pdf` und `docx` (für Word-Dokumente).
+
+Oben im source pane gibt es den **Render**-Button, der das Dokument umwandelt. Daneben ist ein kleines Zahnrad mit dem ihr zu den Einstellungen gelangt. Hier könnt ihr beispielsweise auswählen, wie ihr die Vorschau sehen möchtet.
+
+Überschriften werden in einer einfachen Syntax gegliedert. Ein Hashtag (#) markiert die oberste Überschrift, zwei Hashtags (##) die zweite Rangordnung, drei Hashtags (###) die nächste. "Dokument-Struktur" ist eine Überschrift dritten Grades: `### Dokument-Struktur{#dokument-struktur}`.
+
+![Überschriften mit Markdown!](./figures/header.jpg)
+
+Ach, was soll denn dieses `{#dokument-struktur}`? Das setzt einen Anker. Mit einem Anker kann ich links innerhalb des Dokuments setzen. Also, auf andere Überschriften verweisen. Wer html kennt, dem ist das Prinzip bekannt. Wenn ihr [hierauf](#dokument-struktur) klickt, dann springt ihr wieder zu der Überschrift Dokument-Struktur. Markiert wurde das folgendermaßen: `[hierauf](#dokument-struktur)`.
+
+Praktisch, nicht wahr? Ein Anker steht in geschweiften Klammern ({}) und beginnt mit einer Rautensymbol (#). Er darf keine Leerzeichen enthalten! Wenn auf den Anker verwiesen werden soll, wird er in runde Klammern () hinter das Wort in eckigen Klammern \[\], das als Link formatiert wird, geschrieben.
+
+So viele Rauten... Hashtags... \### ... Hilfe!
+
+Nicht verwirren lassen! Innerhalb eines Code-Chunks und innerhalb eines "normalen R-Skripts" gilt die Raute als Symbol zum Markieren von Kommentaren. Im Text-Teil eines Markdown-Dokuments zeichnet es eine Überschrift aus, wenn davor und danach eine Leerzeile steht. In geschweiften Klammern ({}) beginnt ein Hasthag einen Anker, in runden Klammern () wird daraus ein Link, der auf den Anker verweist.
+
+### Text 
+
+Es gibt bestimmte 
+
+### Bilder einfügen {#bilder-einfügen}
+
+Die Bilder im Text haben wir per Markdown eingefügt. Ein Bild, das online verfügbar ist, lässt sich so einfügen: `![](https://quarto.org/docs/blog/posts/2024-07-11-1.5-release/images/thumbnail.png)`. Um Bilder einzufügen, die irgendwo auf meinem PC liegen, gilt: `![](Pfad/zum/Bild/bild.jpg`)
+
+Links lassen sich auch einfügen, und zwar als [Hyperlink im Text](https://quarto.org/docs/get-started/hello/rstudio.html) (Code: `[Hyperlink im Text](https://quarto.org/docs/get-started/hello/rstudio.html`)
+
+oder einfach so: <https://quarto.org/docs/get-started/hello/rstudio.html>.
+
+### Code
+
+In einer Quarto gibt es "normale" Textbereiche, wie diesen hier und Code-Chunks: Code-Chunks sind die Bereiche, in denen ich Code unterbringen kann. Man erstellt am einfachsten einen mit dem Shortcut Strg+Alt+i.
+
+Die Code-Chunks folgen einer bestimmten Logik und werden durch drei Backticks (\`\`\` = die Art, die man auf der deutschen Tastatur neben dem Back-Pfeil findet) und einer öffnenden geschweiften Klammer mit einem r darin geöffnet. Das r sagt hier, dass der Chunk Coder enthält, der in R geschrieben ist. Theoretisch kann Quatro nämlich auch mit anderen Programmiersprachen umgehen. Daneben kann ich den Code-Chunk benennen. Kann voll praktisch sein, wenn ich später mal darauf referenzieren möchte. Gut benannte Code-Chunks können auch sehr hilfreich bei der Fehlersuche sein 😟. Mit einem Namen kann mir R nämlich sehr gut kommunizieren, welcher Chunk den Fehler verursacht hat. Am Schluss wird der Code-Chunk von drei Backticks geschlossen (\`\`\`).
+
+```{r Name}
+# Das hier ist ein Code-Chunk. Ich sollte also nur Code oder Code-Optionen hinein schreiben. Alles was nicht Code oder Code-Optionen sind, muss auskommentiert werden, sonst will pandoc es gerne als Code behandeln und fängt an zu weinen, weil es sehr fehlerhafter Code wäre. Aber Moment mal, was sind denn Code-Optionen? 
+```
+
+Code-Optionen steuern den allgemeinen Umgang mit Code und dessen Ausgaben. Standardmässig wird der Code ausgeführt, angezeigt und im Ergebnis dargestellt. Wenn ich jedoch möchte, dass der Code nicht ausgeführt wird, dann gebe ich (`echo = FALSE`) ein. Möchte ich, dass der Code nicht ausgeführt wird dann teile ich das durch (`eval = FALSE`) mit. Das nutzen wir hier in den Skripten beispielsweise immer für `install.packages()`, da ein Paket nicht bei jedem Redern neu installiert werden soll.
+
+oder falls ein Diagramm erstellt wird, wie groß es sein soll (`fig.height` und \``fig.width`).  Ansonsten würde ich bei jedem Umwandeln des RMarkdown-Dokuments in die html alle Pakete neu installieren, deren Installationscode ich hinschreibe, das wäre Quatsch. Diese Parameter werden mit Komma voneinander getrennt, weitere findet ihr unter: <https://rmarkdown.rstudio.com/lesson-3.html> und eine super Zusammenstellung hier: <https://yihui.org/knitr/options/>. Man kann sie aber auch händisch einstellen, wenn man auf das kleine Zahnradsymbol klickt.
+
+```{r Chunk-Options}
+#| warning: false
+# hier steht was drin.
+```
+
+![](./figures/Chunk_options.jpg)
+
+(Mehr zum Bilder einfügen [hier](#bilder-einfügen))
+
+Wenn ich möchte, dass ein Code-Chunk in meinem Output-Dokument abgebildet wird, muss ich nicht extra `eval = TRUE` setzen, weil dies den Standardeinstellungen von R-Markdown entspricht. Für den folgenden Output spezifiziere ich in den Chunk-Options, dass die Grafik 5 cm groß sein soll. Dann lade ich erst einmal die Pakete und Daten ein. Von der Konsole kennt ihr schon Warnungen, wie beispielsweise: "Warnung: Paket ‘palmerpenguins’ wurde unter R Version 4.3.1 erstellt". Diese Warnungen habe ich hier unterdrückt, indem ich im obersten Code-Chunk mit `knitr::opts_chunk$set(warnings = FALSE)` einige der Standardeinstellungen überschrieben haben. Der erste Code-Chunk ist im Output nicht sichtbar, weil dessen Erscheinung mit `include = FALSE` unterdrückt wurde ;-).
+
+```{r, eval = TRUE, fig.height = 5}
+# Pakete und Daten laden
+library(ggplot2)
+library(palmerpenguins)
+data(penguins)
+
+# Histogramm erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 100, # Klassengröße 100g zeigt klare Verteilungsstrukturen
+                 na.rm = TRUE) # zwei NA-Sätze müssen entfernt werden
+```
+
+Nun zum Vergleich derselbe Code-Chunk mit der Option `echo = FALSE`:
+
+```{r, eval = TRUE, echo = FALSE, fig.height = 5}
+# Daten und Pakte laden
+library(ggplot2)
+library(palmerpenguins)
+data(penguins)
+
+# Histogramm erstellen, um Verteilung der Größe der Pinguine einzuschätzen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 300, # Klassengröße 300g 
+                 na.rm = TRUE) # zwei NA-Sätze müssen entfernt werden
+```
+
+Außerhalb eines Code Chunks weiß pandoc jedoch nicht, dass was ich schreibe, Code sein soll, es geht davon aus, dass das alles Text ist.
+
+install.packages("knitr") tut also genau gar nichts.
+
+Was man aber machen kann, ist Variablen, die man erstellt hat, und kleine Berechnungen im Text einbetten. Man brauch ein Backtick \` r "Variablenname / Befehl" und wieder ein Backtick ´ einfach mitten im Fließtext. Der Median von der Spalte body_mass_g ist `r median(penguins$body_mass_g, na.rm = TRUE)`g. Geschrieben habe ich nicht die Zahl sondern: \` r median(penguins\$body_mass_g, na.rm = TRUE)\` und das Programm hat es sozusagen "on the fly" im Text für mich ausgerechnet.
+
+Das ist suuuuper praktisch, weil ich mir so keine Zahlen merken muss und so eine Fehlerquelle reduziere.
+
+### Kommentare
+
+Auch in Markdown-Text kann man Kommentare abgeben, die nicht mehr sichtbar sind, wenn das Dokument in eine html/docx oder pdf umgewandelt wird. Sie werden im "html-style" geschrieben: Mit <!-- hier steht das Kommentar -->
+
+Schaut einmal in mein Rmd-Dokument (unter <https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/analysis/BioGeo/B06_markdown.Rmd>) um zu sehen, was ich unter dieser Zeile kommentiert habe.
+
+<!-- Haha. Das hier ist unsichtbar -->
+
+### super neuste Neuigkeiten: Visual editor
+
+Die neuste Rstudio-Version hat ein ganz neues tolles feature: Den visual markdown editor. Man findet dies oben rechts am Rande des Markdown-Fensters. Ein kleines unauffälliges A:
+
+![](images/Screenshot_visual_md_1_II.png)
+
+Wenn man darauf klickt, ändert sich die Ansicht und plötzlich findet man sich in einem fast Word-ähnlichem Interface wieder:
+
+![](images/Screenshot_visual_md_2.png)
+
+Während man schreibt und seine Formatierungen "zusammenklickt" entsteht "in Wirklichkeit" ein Rmd-Dokument, mit all den Auszeichnungen, wie sie oben beschrieben wurden. Das erleichtert das Arbeiten am Anfang sicher ungemein!
+
+Einen Code-Chunk findet man übrigens unter "insert" / "einfügen".
+
+-   Tipp: lieber zu viel als zu wenig kommentieren.
+
+5.  Lasst ein bisschen Platz zwischen verschiedenen Sinneinheiten im Code. Eine Leerzeile zwischen `data("penguins")` und dem nächsten Codeblock im Beispiel erleichtert das Lesen ungemein.
+
+### Zusammenfassung
+
+Quatro verknüpft Markdown, eine Auszeichnungssprache mit Möglichkeiten R-Code auszuführen. Der große Vorteil eines RMarkdown-Dokumentes ist es, dass man seinen Code und den Text zur Interpretation beisammen hat. So lassen sich direkt Zeitschriftenartikel mit Berechnungen, Analysen, Grafiken etc in einem Dokument ablegen.
+
+## Style guide
+
+Damit man seinen eigenen Code später auch noch gut lesen kann und auch andere Leute ihn gut lesen können, gibt es ein paar Hinweise, wie er geschrieben wird, sogenannte "style guides". Ich orientiere mich an dem Style Guide von Hadley Wickham (<http://adv-r.had.co.nz/Style.html>) und gebe euch hier ein paar Hinweise:
+
+1.  Leerzeichen um jeden Operator (`=, +, -, <-`, etc.)) herum, kein Leerzeichen vor einem Komma, aber eins dahinter.
+
+2.  Namen von Datensätzen und Variablen sollten keine Sonderzeichen enthalten. Leerzeichen sollten mit einem Unterstrich \_ ersetzt werden. "Sprechende" Namen, die einen Sinn ergeben, sind nützlich (z. B. `mean_body_mass_g` und nicht einfach nur `m`).
+
+3.  Eine Zeile Code sollte nicht länger als 80 Zeichen sein. Wenn der Code zu lang wird ist es sinnvoll hinter einem Komma "umzubrechen". So hat man einen besseren Überblick und kann viel besser kommentieren (siehe 4.). Rstudio "setzt" das auch von alleine sinnvoll, in dem die neue Zeile innerhalb einer Klammer dann auf der gleichen "Höhe" beginnt, wie der vorhergehende Eintrag.
+
+4.  Kommentiert den Code mit einem Hashtag (#)-Symbol.
+
+-   VOR dem Code und in eine eigene Zeile kommen Hinweise, was der folgende Code machen soll: z. B. "\# Histogramm erstellen"
+-   IN DIE GLEICHE ZEILE wie Code kommen kurze Hinweise auf die genutzte Funktionen und Argumente,
+
+z.B.:
+
+```{r, eval = FALSE}
+# Histogramm erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 100, # Klassengröße 100g zeigt klare Verteilungsstrukturen
+                 na.rm = TRUE) # zwei NA-Sätze müssen entfernt werden
+```
+
+### Links
+
+Wer mehr zu Markdown allgemein lesen will, sei hierauf verwiesen: <https://vijual.de/2019/03/11/artikel-mit-markdown-und-pandoc-schreiben/> (insb. Kap 1). Details zu RMarkdown findet ihr hier: <http://rmarkdown.rstudio.com> und einen sehr praktischen Schummelzettel hier: <https://rstudio.com/wp-content/uploads/2015/06/rmarkdown-german.pdf>. Hilfreich ist auch dieses Buch: <https://bookdown.org/yihui/rmarkdown>. Wer auf interaktive Weise mehr Markdown lernen möchte, findet hier ein gutes Tutorial: <https://commonmark.org/help/tutorial/>. Der neuste heice shice mit dem Visual Markdown Editor wird hier beschrieben: <https://rstudio.github.io/visual-markdown-editing/#/>
+
+**Aufgabe** In Olat gibt es einen Ordner "beispiel_markdown". Darin liegt eine Rmd und ein Bild. Ladet Euch diese Dateien runter und legt sie in eurem Projektordner ab. Öffnet die Rmd und drückt dann auf *knit* und schaut, was passiert.
+
+Anschließend probiert einmal folgendes aus:
+
+-   im YAML-header steht ein Stück Code
+
+<!-- -->
+
+```         
+output: 
+  word_document
+    toc: true
+    number_sections: true
+```
+
+Ersetzt es durch
+
+```         
+output:
+  html_document
+    toc: true
+    number_sections: true
+```
+
+und auf *knit* drücken (oder Strg+shift+k). Was passiert?
+
+An die Stelle könnt ihr auch einmal schreiben:
+
+```         
+output:
+  pdf_document
+      toc: true
+      number_sections: true
+```
+
+und dann *knit* drücken.
+
+Toll oder?! Mit einem Knopfdruck aus einer "Grund"-Datei drei unterschiedliche Formate exportieren, ohne Probleme. Mit Code, der korrekt umgewandelt wird. Dabei kann für eine wissenschaftliche Arbeit auch tool nutzen, die das Zitieren leichter machen. Wenn Euch das interessiert, schaut euch doch noch dieses [Skript](https://github.com/SCSchmidt/lehre/blob/R-Kurs-Koblenz/docs/B07_rrtools.md). Ich schreibe inzwischen alle meine Artikel in Rmarkdown, da ich so am einfachsten den Output generieren kann, der gewünscht ist.
