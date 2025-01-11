@@ -1,0 +1,300 @@
+---
+title: "Basics und mehr"
+author:
+  - name: Sara Schiesberg
+    email: saraschiesberg@uni-koblenz.de
+  - name: Sophie C. Schmidt
+    email: s.c.schmidt@fu-berlin.de 
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format: html
+knitr:
+  opts_chunk: 
+    warning: false
+    message: false
+self-contained: true
+---
+
+# Häufigkeiten visualsieren
+
+Wir beschäftigen uns jetzt damit Häufigkeiten darzustellen. Datenvisualsierungen sind eine ganz grundlegende Technik mit wir uns einen Überblick über die aufgenommenen Daten beschaffen. In R gibt es mehrere Möglichkeiten. Ganz einfache *"plots"* (Grafiken) kann mit *base R* erstellen, aber schönere und komplexere Grafiken gehen am besten mit dem Paket `ggplot2`.
+
+## `ggplot2` - Logik!
+
+`ggplot2` ist ein Paket, das von Hadley Wickham entwickelt wurde, und viele Funktionen zur Visualisierung von Daten bietet. Es folgt einer eigenen Logik, der *"Grammar of Graphics"* und gehört zum Tidyverse. Grundlegend ist eine Art *"Layer-Konzept"*. So kann ich mit jeder weiteren Zeile Code einen neuen Layer zu dem Diagramm hinzufüge, wie bei der Bildbearbeitung mit Photoshop oder Gimp.
+
+Erarbeiten wir uns das Schritt für Schritt.
+
+In jedem `ggplot2`-Diagramm müssen 3 Dinge definiert werden:
+
+-   Welche Daten es benutzen soll ggplot(`data =`),
+
+-   Wie die einzelnen Variablen im Diagramm umgesetzt werden sollen (`aes()` von aesthetics). Ein Merkmal kann beispielsweise auf der x- oder der y-Achse abgetragen werden. Oder die Mermalsausprägungen werden durch eine Farbskala visualisiert.
+
+-   Welche Form das Diagramm abbilden soll (`geom_`). Beispielsweise Punkte, Balken oder Linien.
+
+Alles andere danach sind in erster Linie Verschönerungsmaßnahmen. Mit `labs()` lassen sich Beschriftungen von Achsen, Titeln, Untertiteln, Legenden und anderen Texten im Plot anpassen. Durch `theme()` kann das gesamte Erscheinungsbild des Plots angepasst werden und `coord_flip()` vertauscht x- und y-Achse.
+
+Nehmen wir uns ein Beispiel vor und erarbeiten es uns der Reihe nach.
+
+## Ein Säulendiagramm
+
+Ein Säulendiagramm eignet sich um die Häufigkeiten von nominalen oder ordinalen Merkmalsausprägungen darzustellen. Ihr könnt es ja mal mit metrischen probieren, dann seht ihr schnell, warum das nicht gut ist 😉.
+
+Wir lernen heute zwei neue Pakete kennen. Das ist zum einen natürlich `ggplot2` für die Diagramme. Das zweite ist `kableExtra` für Tabellen.
+
+```{r}
+#| eval: false
+install.packages(c("ggplot2", "kableExtra"))
+```
+
+Dann laden wir die Pakete und unseren Beispieldatensatz in die enviroment.
+
+```{r}
+# Pakete und Daten laden
+library(ggplot2)
+library(palmerpenguins)
+library(dplyr)
+library(kableExtra)
+data("penguins")
+```
+
+Dann bauen wir ein erstes einfaches Säulendiagramm. Der Befehl für diese Art des Diagramms ist `geom_bar`.
+
+Die Information `data =` und `aes()` können entweder direkt in die runden Klammern hinter `ggplot()` geschrieben werden ODER sie werden in `geom_` gesetzt. Letztere Möglichkeit ist vor allen Dingen für sehr komplizierte Diagramme geeignet, bei denen sich die einzelnen Geometrien auf unterschiedlichen Daten beziehen. Wir verwenden hier die einfachere Vorgehensweise und schreiben alles in den `ggplot()` Auruf. Die folgende `geom_` *"erbt"* dann die entsprechenden Infos. 
+
+Wie aber soll das Säulendiagramm (`geom_bar()`) aussehen, welche Spalte des Datensatzes soll genau wie dargestellt werden? Das ist die Information die in  eingegeben werden muss.
+
+Wir möchten jetzt also ein Säulendiagramm bauen, dass auf der x-Achse die verschiedenen Spezies des penguin-Datensatzes und die Häufigkeiten (wie viele Datensätze aus den verschiedenen Spezies gibt es) auf der y-Achse zeigt:
+
+```{r erstes_saeulendiag}
+# Säulendiagramm erstellen
+ggplot(data = penguins, 
+       aes(x = species)) + 
+  geom_bar() 
+```
+
+Das + am Ende jeder Zeile sagt R, dass der Befehl in der nächsten Zeile weiter geht, ähnlich wie bei der pipe.
+
+Das ist doch schonmal was. Die Information die wir wollen, wird schnell und einfach angezeigt.
+
+Aber schön ist es noch nicht.
+
+Geben wir den Achsen eine andere Beschriftung. Mit dem `labs()`-Befehl lassen sich die Achsenbeschriftungen und die Überschriften ändern. Zusätzlich füge ich mit `caption` auch noch einen Quellenangabe ein.
+
+```{r erstes_saeulendiag_achsen}
+# Säulendiagramm mit Achsbeschriftung und Titel erstellen
+ggplot(data = penguins, 
+       aes(x = species)) + 
+  geom_bar() + 
+  labs(y = "Anzahl",
+       x = "Art",
+       title = "Anzahl Tiere pro Spezies", 
+       caption = "Daten: palmerpenguins::penguins")
+```
+
+Wir können auch die Säulen bunt einfärben. Der Befehl `fill` gibt den Balken unterschiedliche Farben, je nach den Angaben in der Spalte, die ich spezifiziere (hier wieder Spezies):
+
+```{r erstes_saeulendiag_bunt}
+# Diagramm mit farbigen Säulen erstellen
+ggplot() + 
+  geom_bar(data = penguins, 
+           aes(x = species, fill = species)) + 
+  labs(y = "Anzahl",
+       x = "Art",
+       title = "Anzahl Tiere pro Spezies",
+       caption = "Daten: palmerpenguins::penguins")
+```
+
+Vielleicht nervt euch auch, so wie mich, dass die Reihenfolge der Balken nicht nach Größe geordnet ist?
+
+Ändern wir das doch einmal!
+
+Leider bedeutet das in R, dass wir unseren Datensatz ändern müssen. Da R bei `geom_bar()` während der Diagrammerstellung erst die Häufigkeiten zählt, kann er im Vorhinein nicht die Reihenfolge nach den Häufigkeiten sortieren.
+
+Also müssen wir R helfen und erst die Häufigkeiten auszählen und ihm dann einen neuen Befehl geben.
+
+### Exkurs: Häufigkeitstabellen erstellen
+
+Häufigkeitstabellen sind ein sehr nützliches Werkzeug, mit dem wir uns die Verteilung einer oder mehrerer Kategorien in einem Datensatz anschauen können. Ihr habt bereits den Tidyverse-Stil kennengelernt mit dem wir eine Tabelle zu Verarbeitung durch eine "pipe" schicken. Hier verwenden wir den `group_by()`-Befehl, der die Daten gruppiert. Mit `summarize()` aggregieren wir dann die Daten gemäß dieser Gruppen: `n = n()` sagt: "erzeuge mir eine neue Spalte namens n, welche die Anzahl der Einträge pro Gruppe enthält".
+
+```{r}
+# Häufigkeitstabelle mit einer Gruppenvariable
+species_count <- penguins %>% # Objektdefinition
+  group_by(species) %>%  # gruppiert die Daten nach der Spezies
+  summarize(n = n()) # Häufigkeiten für die Spezies
+#species_count
+```
+
+Schauen wir uns die Tabelle doch mal an.
+
+```{r}
+# Häufigkeitstabelle mit einer Gruppenvariable anschauen
+species_count
+```
+
+Das ist hilfreich, aber nicht schön. 😑
+
+Gerade im Kontext von Quarto kann `kable()` aus dem Paket `kableExtra` für ein schönes Layout sorgen. Zusätzlich werden hier auch noch die Spalten mit den deutschen Bezeichnungen umbenannt. 
+
+```{r}
+# Schöne Häufigkeitstabelle mit einer Gruppenvariable anschauen
+species_count %>%
+  rename(Spezies = species, Anzahl = n) %>% # Spalten umbennen
+  kable() # Layout
+```
+
+
+Besser 😎.
+
+### x nach Häufigkeiten sortieren
+
+Jetzt können wir endlich die Daten wieder visualisieren. Aber Achtung, wenn wir `ggplot2` nicht selber die Häufigkeiten auszählen lassen wollen, sondern sie ihm "an die Hand geben", nehmen wir nicht `geom_bar()` sondern `geom_col()` und spezifizieren mit y die Höhe des Balkens.
+
+```{r saeulendiag}
+# Säulendiagramm erstellen
+ggplot(data = species_count, 
+       aes(x = species, y = n, fill = species)) + 
+  geom_col() + 
+  labs(y = "Anzahl",
+       x = "Art",
+       title = "Anzahl Tiere pro Spezies", 
+       caption = "Daten: palmerpenguins::penguins")
+```
+
+*"Aber ey!"* werdet ihr sagen. Die Balken sind ja noch nicht in der richtigen Reihenfolge. Richtig. Aber jetzt können wir das machen, in dem wir eine ganz kleine Änderung einfügen: Wir ordnen x um, englisch "`reorder()`". 
+
+```{r ordnung-x}
+# Geordnetes Säulendiagramm erstellen
+ggplot(data = species_count, 
+       aes(x = reorder(species, -n), y = n, fill = species)) + 
+  geom_col() + 
+  labs(y = "Anzahl",
+       x = "Art",
+       title = "Anzahl Tiere pro Spezies")
+```
+
+Nehmt in dem Code oben doch mal das `-` vor dem n weg. Was passiert dann?
+
+`ggplot2` hat uns hier automatische eine Legende erzeugt, weil der Parameter `fill = species` als aesthetic definiert wurde. Da jedoch auch die x-Achse bereits nach species unterteilt ist, wird die Legende redundant und trägt wenig zur Übersichtlichkeit bei. In solchen Fällen ist es sinnvoll, die Legende auszublenden, um das Diagramm klarer und aufgeräumter zu gestalten. Dies kann einfach durch das Anpassen des Themes mit der `theme()`-Funktion erfolgen.
+
+```{r legende weg}
+# Geordnetes Säulendiagramm erstellen
+ggplot(data = species_count, aes(x = reorder(species, -n), y = n, fill = species)) + 
+  geom_col() + 
+  labs(y = "Anzahl",
+       x = "Art",
+       title = "Anzahl Tiere pro Spezies") +
+  theme(legend.position = "none")
+```
+
+Herzlichen Glückwunsch! 😁 Das sieht doch langsam nach einer publizierbaren Grafik aus.
+
+## Lolli-Chart
+
+In dem Vorlesungsvideo habt ihr ja schon das Lollipop-Chart als moderne Alternative zum Säulendiagramm kennengelernt. Lasst uns das auch noch umsetzten!
+
+Wir benutzen hier im Wesentlichen denselben Code wie für das Säulendigagramm oben. Anstelle der Säulen `geom_bar` werden hier jedoch Punkte `geom_point` verwendet.  Dann kommt ein weiterer Layer, nämliche eine Linie mit hinzu  `geom_segment`. Das ist eben das geniale an `ggplot2`: es kann unendliche viele Arten von Diagrammen erzeugen, indem es verschiedene Geometrien übereinander *"layert"*.
+
+Die Segmente brauchen *"von bis"* Angaben. Deswegen gebe ich hier noch die Koordinaten der Endpunkte an. Die restlichen Koordinaten *"erbt"* der `geom_segment`-layer aus dem übergeordneten `ggplot()`-Aufruf. 
+
+```{r lollipop}
+# Lollipop-Chart erstellen
+ggplot(data = species_count, 
+       aes(x = reorder(species, -n), y = n, colour = species)) +
+  geom_point(size = 6) + # Köpfe d. Lollis mit der Punktgröße 6
+  geom_segment(aes(xend = species, y = 0, yend = n), # "Stiel" d. Lollis. 
+               color = "darkgrey") + # in dunkelgrau
+  labs(y = "Anzahl",
+       x = "Art",
+       title = "Anzahl Tiere pro Spezies", 
+       caption = "Daten: palmerpenguins::penguins") +
+  theme(legend.position = "none") # Legende unterdrücken
+```
+In dem Code oben wird die Punktgröße und die Farbe der Segmente spezifiziert. Setzt die Punktgröße und die Segmentfarbe doch mal in die aestehtics und schaut was dann passiert! (z. B. `geom_point(aes(size = n))`
+
+## x- und y vertauschen
+
+Wenn wir der Meinung sind, wir hätten die Spezies lieber auf der y-Achse, dann können wir das ganze einfach um 90 Grad kippen. Der Befehl heißt `coord_flip()` und wird einfach mit einem `+` unten dran gehängt:
+
+```{r x_und_y vertauschen}
+# Lollipop-Chart drehen
+ggplot(data = species_count, 
+       aes(x = reorder(species, -n), y = n, colour = species)) +
+  geom_point(size = 6) + # Köpfe d. Lollis mit der Punktgröße 6
+  geom_segment(aes(xend = species, y = 0, yend = n), # "Stiel" d. Lollis. 
+               color = "darkgrey") + # in dunkelgrau
+  labs(y = "Anzahl",
+       x = "Art",
+       title = "Anzahl Tiere pro Spezies", 
+       caption = "Daten: palmerpenguins::penguins") +
+  theme(legend.position = "none") + # Legende unterdrücken
+  coord_flip() # dreht das Diagramm
+```
+
+## Heatmap 
+
+In dem Vorlesungsvideo habt Ihr ja schon Grafiken kennengelernt, die Häufigkeiten für zwei verschiedene kategoriale Variablen zeigen. Probieren wir doch auch das noch aus, machen wir eine heatmap!
+
+Zu diesem Zweck brauchen wir eine Häufigkeitstabelle, die Häufikeiten für zwei Kategorien enthält. Das ist im Tidyverse super-easy: Ich schreibe einfach zwei Variablen in `group_by()` und zähle dann aus!
+
+```{r}
+# Häufigkeitstabelle mit zwei Gruppenvariablen
+species_island_count <- penguins %>% 
+  group_by(species, island) %>%  # gruppiert die Daten nach Spezies und Insel
+  summarize(n = n()) # Häufigkeiten für Spezies pro Insel
+
+# Visualsierung als Tabelle
+species_island_count %>% 
+  rename(Spezies = species, Insel = island, Anzahl = n) %>% # Spalten umbenennen
+  kable() # Layout
+```
+
+Auch das zweite Diagramm setze ich aus zwei verschiedenen Geometrien zusammen: `geom_tile()` und `geom_text()`. Die Farbe der Kacheln wird ebenso durch die Anzahl der Pinguine (`fill = n`) bestimmt, wie der Text auf den Kacheln (`label = n`). Auch hier unterdrücke ich die Legende, weil die Werte ja auf den Kacheln stehen. 
+
+```{r heatmap}
+#  Heatmap erstellen
+ggplot(data = species_island_count, 
+       aes(x = species, y = island, fill = n, label = n)) +
+  geom_tile(colour = "white", linewidth = 2) + # Kacheln mit weisser Umrandung
+  geom_text(colour = "white", size = 10) + # Beschriftung
+  labs(title = "Anzahl Tiere pro Spezies und Insel", 
+       x = "Art", 
+       y = "Insel", 
+       caption = "Daten: palmerpenguins::penguins") + 
+  theme(legend.position = "none")
+```
+
+
+# Bilder sichern
+
+Mit einem Quarto-Dokument werden die Diagramme ja automatisch in das gerenderte Dokument eingefügt. Manchmal ist es jedoch auch hilfreich, die Grafiken seperat abzuspeichern.
+
+Das ist ganz einfach.
+
+Den *letzten* Plot, den wir erstellt haben, können wir mit diesem Code speichern:
+
+```{r Bild speichern, eval = FALSE}
+# Bild exportieren
+ggsave("Pfad/Plotname.png", width = 4, height = 4, units = "cm", dpi = 300)
+```
+
+Wir geben an, welchen Namen die Datei haben soll. Das kann auch ein Pfad werden, damit es in einem bestimmten Ordner gespeichert wird. Mit der Endung (hier:png) teilen wir das Dateiformat mit. `width =` und `height =` sagen wie groß das Bild in `units = "cm"` ist. Außerdem wird die Auflösung mit `dpi = 300` spezifiziert. Super praktisch!
+
+(D. h. ich hab das Bild als png in einer Größe von 4 x 4 cm abgespeichert. Es hat eine Auflösung von 300 dpi und liegt in dem Ordner, den ich mit "Pfad" angebe. Dann benenne ich das Bild mit "Plotname" und gut ist.
+
+# Zusammenfassung:
+
+In diesem Kapitel ging es um die Grundlagen der Datenvisualisierung in R. Wir haben ein Paket namens `ggplot2` kennengelernt, welches auf anhieb schön formatierte Grafiken erstellt. Es benötigt mit `data =` die Angabe des Datensatzes und in `aes()`(thetics) wird immer spezifiziert, wie die entsprechenden Variablen dargestellt werden sollen. Zudem muss man mit `geom_` die Form definieren. 
+
+Wir haben in diesem Skript ein Säulendiagramm, ein Lollipop-Chat und eine Heatmap umgesetzt. Diese Grafiken sind prima geeignet um Häufigkeiten pro Kategorie darzustellen. 
+
+Herzlichen Glückwunsch! Wir werden noch zig Grafiken mit `ggplot2` erstellen und dieses Basiswissen immer wieder brauchen.
+
+Wenn Ihr noch mehr zu statistischen Grafiken wissen wollt, schaut doch mal in unserem Olat-Kurs bei "Literatur" vorbei. 
+
+- [Fundamentals of Data Visualization](javascript:parent.gotonode(110194839949093)) ist eines meiner Lieblingsbücher. 
+
+- [ggplot2: elegant graphics for data analysis](javascript:parent.gotonode(110194839941541)) ist das Standardwerk zu diesem Paket!
+
+
+
