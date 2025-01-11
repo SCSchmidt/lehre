@@ -1,0 +1,210 @@
+---
+title: "Visualisierung metrischer Daten"
+author:
+  - name: Sara Schiesberg
+    email: saraschiesberg@uni-koblenz.de
+  - name: Sophie C. Schmidt
+    email: s.c.schmidt@fu-berlin.de 
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format: html
+knitr:
+  opts_chunk: 
+    warning: false
+    message: false
+self-contained: true
+---
+
+In dem letzten Skript haben wir vor allem mit nominalen Daten gearbeitet und Häufigkeiten dargestellt. Nun geht es darum die Verteilung metrischer Daten darzustellen.
+
+Deshalb lernen wir heute ein paar neue Diagramme zu coden.
+
+-   Histogramme und Densityplots
+
+-   Violinien- und Boxplots
+
+-   Streudiagramm
+
+Zum Schluss zeige ich euch mit `facets_wrap` eine Funktionalität, die man auf alle möglichen Diagramme anwenden kann!
+
+Aber ersteinmal laden wir die Daten und die Pakete:
+
+```{r Daten laden}
+# Pakete und Daten laden
+library(palmerpenguins)
+library(ggplot2)
+data("penguins")
+```
+
+## Histogramme und Densityplots
+
+Fangen wir mit Histogrammen an. Histogramme sind sehr beliebt für metrische Daten, weil sie die Verteilung der Werte anschaulich darstellen. Ein Histogramm sieht zwar manchmal wie ein Säulendiagramm aus, ist aber nicht dasselbe! Im Gegensatz zu Säulendiagrammen zeigen Histogramme die Häufigkeit von Werten in definierten Klassen für eine metrische Variable.
+
+Um ein Histogramm zu erzeugen, verwenden wir `geom_histogram`. Da wir schon wissen, dass in dem Datensatz ein paar Werte fehlen, kommt in den Funktionsaufruf der Hinweis, dass diese nicht beachtet werden sollen (`na.rm = TRUE`). In den aesthetics gebe ich lediglich an, welche Variable dargestellt werden soll. Den Rest macht `ggplot2` dann ganz alleine, praktisch!
+
+Schickt dieses Beispiel mal an die Konsole:
+
+```{r histogramm}
+# Histogramm erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(na.rm = TRUE)
+```
+
+Wenn ihr das ausgeführt habt, sollte eine Meldung aufgepoppt sein: "`stat_bin()` using `bins = 30`. Pick better value with `binwidth`." `binwidth` bezeichnet die Größe, also Breite, der Klasse. `bins = 30` heißt, dass der gesamte Datensatz in 30 gleich große Klassen unterteilt wurde.
+
+Probiert einmal verschiedene Werte für die Klassengröße (`binwidth`) aus:
+
+```{r histogram_small_bindwith}
+#| eval: false
+# Histogramm mit kleiner Klassengröße erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 5, na.rm = TRUE) 
+```
+
+Versucht doch einmal andere Werte und schaut, was passiert!
+
+```{r histogramm_large_bindwith}
+#| eval: false
+# Histogramm mit großer Klassengröße erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_histogram(binwidth = 500, na.rm = TRUE)
+```
+
+Die Dichtefunktion ist eine glattere Version eines Histogramms. Jeder Datenpunkt wird mit einer kleinen Gaußschen Glockenkurve versehen, und diese Kurven werden summiert. Wo viele Punkte nah beieinander liegen, entstehen höhere Werte. Die resultierende Kurve zeigt die Verteilung der Daten, wobei die y-Achse einen abstrakten Dichtewert angibt, nicht die absolute Häufigkeit ([mehr Infos](http://archaeoinformatics.net/kernel-density-estimation-visualised-in-r/)).
+
+Der Code für einen Densityplot sieht im Prinzip ganz ähnlich aus wir der für ein Histogramm. Auch hier reicht es aus, wenn wir in den aesthetics die metrische Variable spezifizieren. Anstelle von `geom_histogram` verwenden wir hier aber `geom_density`.
+
+```{r densityplot}
+# Densityplot erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_density(na.rm = TRUE)
+```
+
+Probiert doch mal:
+
+```{r densityplot_large_bandwith}
+#| eval: false
+## Densityplot mit großer Bandbreite erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_density(bw = 500, na.rm = TRUE)
+```
+
+```{r densityplot_small_bandwidth}
+#| eval: false
+## Densityplot mit kleiner Bandbreite erstellen
+ggplot(data = penguins, aes(x = body_mass_g)) +
+  geom_density(bw = 10, na.rm = TRUE)
+```
+
+So, was lernen wir daraus?
+
+Histogramme und Densityplots sind prima Möglichkeiten um die Verteilung einer metrischen Variablen darzustellen. Allerdings sollten wir uns klarmachen, dass die Wahl der Klassen bzw. der Bandbreiten einen starken Einfluss darauf hat, wie wir die Verteilung der Daten wahrnehmen. Meiner Erfahrung nach ist es oft am besten mit den default-Einstellungen zu arbeiten. Das bedeutet in der Praxis spezifiziere ich `bw` oder `binwidth` eigentlich nur im Ausnahmefall.
+
+Was mache ich denn wenn ich zwei Verteilung vergleichen möchte? Im Vorlesungsvideo habt Ihr ja schon von Violinen- und Boxplots gehört. Die coden wir als nächstes. Ganz unten gibt es aber noch einen [Joker](#facets) mit dem ich auch Historgramme und Densityplots zum Vergleich einsetzten kann.
+
+# Violinen- und Boxplots
+
+Sowohl das Violinen- wie auch das Boxplotdiagramm sind sehr gut geeignet die Verteilung einer metrischen Variablen differenziert nach einer Gruppenvariablen zu betrachten.
+
+Ein Violinendiagramm ist im Wesentlichen eine achssymmetrisch gespiegelte Dichtekurve. Diese Darstellung lässt sich mit `geom_violin()` erzeugen. In den aesthetics legen wir fest, dass die Gruppenvariable auf der einen (`x = species`) und die metrische Variable auf der andere Achse (`y = body_mass_g`) abgetragen wird. Es sieht ganz gut aus wenn die Farbe der Violinen auch durch die Gruppenvariable (`fill = species`) gesteuert wird.
+
+```{r violinenplot}
+# Violinienplot
+ggplot(data = penguins, aes(x = species, y = body_mass_g, fill = species)) +
+  geom_violin(na.rm = TRUE)
+```
+
+Ich kann jetzt gut erkennen, dass die Pinguin-Art Gentoo deutlich schwerer ist als die anderen beiden.
+
+Yay!
+
+Wir beprechen die Boxplots noch einmal eingehender in dem Vorlesungsteil zu den Kennziffern. Ich möchte euch aber hier schon einmal den Code für ein boxplot zeigen. Das funktioniert nämlich ähnlich wie bei einem Violinenplot. Allerdings verwende ich für ein Boxplot `geom_boxplot`.
+
+```{r boxplot}
+# Boxplot
+ggplot(data = penguins, 
+       aes(x = species, y = body_mass_g, fill = species)) +   
+  geom_boxplot(na.rm = TRUE) 
+```
+
+# Streudiagramme
+
+Bei Streudiagrammen kann ich zwei metrische Variablen gegeneinander plotten. Zu diesem Zweck legen wir in den aesthetics fest, welche Variable auf welcher Achse abgetragen wird (`x = bill_depth_mm, y = bill_length_mm`). Die Geometrie für ein Streudiagramm ist `geom_point`.
+
+```{r Streudiagramm}
+# Streudiagramm
+ggplot(data = penguins, 
+       aes(x = bill_depth_mm, y = bill_length_mm)) +
+  geom_point(na.rm = TRUE)
+```
+
+Ok, das können wir doch noch ein bisschen tunen! Ich lege zusätzlich noch weitere Merkmale in den aesthetics fest.
+
+```{r Streudiagramm_farbe_shape}
+# Streudiagamm mit Farb- und Formunterschieden erstellen
+ggplot(data = penguins, 
+       aes(x = bill_depth_mm, y = bill_length_mm,
+           shape = species, color = sex)) +
+  geom_point(na.rm = TRUE)
+```
+
+Oooooh, schaut euch mal das Ergebnis an! Da könnte man schon fast was interpretieren!
+
+Ich habe in diesem Skript den Fokus auf die `geoms` gelegt, die wir zur Erstellung von Histogrammen, Densityplots, Violinen- und Boxplots sowie Struediagrammen brauchen. Im letzten Skript habt ihr bereits gesehen, wie man mit `labs()` gut beschriftete Diagramme erstellt. Im Prinzip könnt ihr an jeden der hier gezeigten Codeblöcke noch einen `labs()` -Befehl dranhängen – davon würden alle Grafiken in diesem Skript profitieren! 😃 
+
+Hübschen wir doch zum Abschluss noch das Streudiagramm etwas auf.
+
+```{r Streudiagramm_Legendenbeschriftung}
+# Streudiagramm mit angepasstem Legendentitel
+ggplot(data = penguins, 
+       aes(x = bill_depth_mm, y = bill_length_mm, 
+           shape = species, color = sex)) +
+  geom_point(na.rm = TRUE) + 
+  labs(x = "Dicke des Schnabels",
+       y = "Höhe des Schnabels",
+       title = "Schnabelmaße") +
+ scale_colour_discrete(name = "Geschlecht",
+                       breaks = c(NA, "female", "male"),
+                       labels = c("unbest.", "weibl.", "männl.")) +
+ scale_shape_discrete(name  ="Art")
+```
+
+Was bedeutet das alles?
+
+Mit `scale_colour_discrete` kann ich die Legende für die Farbskala anpassen, die mit `color` in den aesthetics definiert ist. Die Funktion `scale_colour_discrete` gilt für diskrete Daten, also hauptsächlich nominale oder ordinale Kategorien.
+
+Mit `name` kann ich den Titel der Legende ändern. `breaks` gibt die spezifischen Merkmalsausprägungen an, die in der Legende erscheinen sollen. Diese Werte werden dann mit den `labels` umbenannt (der erste Wert bei `breaks` erhält das erste Label bei `labels`).
+
+Dasselbe Prinzip gilt für die Legende zur Form der Punkte, die mit `scale_shape_discrete` angepasst werden kann, allerdings brauche ich dort die Arten ja nicht umzubenennen 😃.
+
+Voll gut!
+
+# Facets {#facets}
+
+Facets kennt ihr bereits aus dem Vorlesungsteil; sie sind ein leistungsstarkes Werkzeug in `ggplot2`, mit dem ihr eure Daten nach verschiedenen Kategorien aufteilen und separat visualisieren könnt. Facets lassen sich auf jedes der hier gezeigten Diagramme anwenden: auf diese Art könnt ihr Untergruppe eurer Daten in einer aufgeräumten Form betrachten.
+
+Im Code geht das ganz easy: ihr hängt einfach `facet_wrap()` an! Hier ein Beispiel mit den Densityplots.
+
+```{r densityplot_facets}
+# Densityplot erstellen
+ggplot(data = penguins, aes(x = body_mass_g, color = species))+
+  geom_histogram(na.rm = TRUE) + 
+  facet_wrap(~species, ncol = 1) 
+```
+
+Gebt doch mal `nrow = 1` anstelle von `ncol = 1` an und schaut was dann passiert.
+
+Hier noch ein Beispiel mit den Violinenplots:
+
+```{r violinenplot_facets}
+# Violinienplot
+ggplot(data = penguins, 
+       aes(x = species, fill = species, y = body_mass_g)) +
+  geom_violin(na.rm = TRUE) +
+  facet_wrap(~sex)
+```
+
+# Zusammenfassung
+
+Wir haben hier mehrere Visualisierungen für die Verteilung von metrischen Daten gecodet: Histogramme, Densityplots, Boxplots, Violinenplots und Streudiagramme. Zum Schluss haben wir dann `facet_wrap()` kennengelernt, eine Funktionalität, die für alle Diagrammtypen verwendet werden kann. Das ist das Tolle an `ggplot2` – es funktioniert wie ein Baukastensystem, aus dem ihr euch nach Bedarf bedienen könnt, um die optimale Lösung zu finden. Ihr könnt zum Beispiel immer eine gute Beschriftung mit `labs()` hinzufügen, die Legende mit `theme()` ausblenden oder die Achsen mit `coord_flip()` vertauschen. Diese Modularität von ggplot2 ermöglicht es euch, jeden Aspekt eines Plots flexibel und unabhängig anzupassen.
+
+Ganz ehrlich, lasst Euch nicht aus der Ruhe bringen wenn mal was nicht klappt. Ich muss auch ständig nachschauen, wie ich noch einmal die Legendenbeschriftung ändere und ähnliches. Aber am Schluss klappt es dann doch immer, verprochen 😃!
