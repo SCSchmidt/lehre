@@ -43,7 +43,7 @@ Jetzt geben wir diese in die Korrelationstestfunktion ein. R wählt automatisch 
 #> 0.3333333
 ```
 
-Sie mal einer an! Nicht verrechnet!
+Sieh mal einer an! Nicht verrechnet!
 
 Ein letztes Wort zu Kendalls Tau: Wenn man sehr viele Daten hat (sehr lange Vektoren), die man testen möchte, kann die Berechnung recht lange dauern (da ja jedes Paar gegeneinander getestet werden muss). Sollte das zu einem Rechnerabsturz oder so führen, informiert euch über Spearmans Rho (z.B.: <https://www.crashkurs-statistik.de/spearman-korrelation-rangkorrelation/>), der ist eigentlich wie der folgende (Pearson und Bravais r), aber an Rängen wie Kendalls Tau und geht deshalb auch mit ordinalen Daten. Er gilt als "weniger genau", aber für große Datensätze besser geeignet.
 
